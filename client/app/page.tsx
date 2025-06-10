@@ -10,6 +10,8 @@ export default function Page() {
 
     const test = useQuery(trpc.test2.queryOptions());
 
+    const logout = useMutation(trpc.auth.logout.mutationOptions());
+
     return (
         <div>
             <Button
@@ -23,6 +25,7 @@ export default function Page() {
             >
                 a
             </Button>
+            <Button onClick={() => logout.mutate()}>b</Button>
             {test.data && <div>{JSON.stringify(test.data)}</div>}
         </div>
     );

@@ -49,19 +49,9 @@ app.use(
     })
 );
 
-app.get('/api/logout', async (c) => {
-    await revokeSession(c);
-    return c.text('You have been successfully logged out!');
-});
-
 app.get('/api/auth/callback', async (c) => {
     c.set('oidcClaimsHook', oidcClaimsHook);
     return processOAuthCallback(c);
-});
-
-app.get('/api/me', async (c) => {
-    const auth = await getAuth(c);
-    return c.text(`Hello <${auth?.email}>!`);
 });
 
 app.use('*', oidcAuthMiddleware());
