@@ -8,6 +8,8 @@ export default function Page() {
 
     const register = useMutation(trpc.auth.register.mutationOptions());
 
+    const test = useQuery(trpc.test.queryOptions());
+
     return (
         <div>
             <Button
@@ -21,6 +23,7 @@ export default function Page() {
             >
                 a
             </Button>
+            {test.data && <div>{JSON.stringify(test.data)}</div>}
         </div>
     );
 }

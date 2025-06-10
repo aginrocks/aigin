@@ -1,13 +1,16 @@
-import { router } from './trpc';
+import { publicProcedure, router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
 import { initDatabase } from './db';
 import { authRouter } from '@routers/auth';
-import { Hono } from 'hono';
+import { Context, Hono } from 'hono';
 import { trpcServer } from '@hono/trpc-server';
 import { serve } from '@hono/node-server';
 import dotenv from 'dotenv';
 import { getAuth, oidcAuthMiddleware, processOAuthCallback, revokeSession } from '@hono/oidc-auth';
+import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
+import { createContext } from './context';
+import { oidcClaimsHook } from './oidc';
 
 dotenv.config();
 extendZod(z);
@@ -20,6 +23,13 @@ initDatabase().then(() => {
 
 const appRouter = router({
     auth: authRouter,
+    test: publicProcedure.query(async ({ ctx }) => {
+        const user = await ctx.getAuth();
+        console.log('User:', user);
+        return {
+            email: user?.email,
+        };
+    }),
 });
 
 // Export type router type signature,
@@ -31,6 +41,7 @@ app.use(
     trpcServer({
         router: appRouter,
         endpoint: '/api/trpc',
+        createContext,
     })
 );
 
@@ -40,6 +51,7 @@ app.get('/api/logout', async (c) => {
 });
 
 app.get('/api/auth/callback', async (c) => {
+    c.set('oidcClaimsHook', oidcClaimsHook);
     return processOAuthCallback(c);
 });
 
