@@ -8,7 +8,7 @@ export default function Page() {
 
     const register = useMutation(trpc.auth.register.mutationOptions());
 
-    const test = useQuery(trpc.test.queryOptions());
+    const test = useQuery(trpc.test2.queryOptions());
 
     return (
         <div>

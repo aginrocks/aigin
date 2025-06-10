@@ -1,4 +1,4 @@
-import { publicProcedure, router } from './trpc';
+import { protectedProcedure, publicProcedure, router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
 import { initDatabase } from './db';
@@ -8,7 +8,6 @@ import { trpcServer } from '@hono/trpc-server';
 import { serve } from '@hono/node-server';
 import dotenv from 'dotenv';
 import { getAuth, oidcAuthMiddleware, processOAuthCallback, revokeSession } from '@hono/oidc-auth';
-import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 
@@ -28,6 +27,11 @@ const appRouter = router({
         console.log('User:', user);
         return {
             email: user?.email,
+        };
+    }),
+    test2: protectedProcedure.query(async ({ ctx }) => {
+        return {
+            user: ctx.auth.given_name,
         };
     }),
 });
