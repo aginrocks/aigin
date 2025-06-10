@@ -1,4 +1,3 @@
-import { createHTTPServer } from '@trpc/server/adapters/standalone';
 import { publicProcedure, router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
@@ -17,7 +16,6 @@ initDatabase().then(() => {
 });
 
 const appRouter = router({
-    greeting1: publicProcedure.query(() => 'hello tRPC v10!'),
     auth: authRouter,
 });
 
