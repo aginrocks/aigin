@@ -8,8 +8,10 @@
     "outDir": "dist",
     "skipLibCheck": true,
     "baseUrl": "src",
+    "composite": true,
     "paths": {
       "@models/*": ["./models/*"],
+      "@routers/*": ["./routers/*"],
       "@/*": ["./*"]
     },
   },

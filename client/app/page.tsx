@@ -1,17 +1,26 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { useTRPC } from '@lib/trpc';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 export default function Page() {
     const trpc = useTRPC();
 
-    const greeting = useQuery(trpc.greeting1.queryOptions());
+    const register = useMutation(trpc.auth.register.mutationOptions());
 
     return (
         <div>
-            <Button>a</Button>
-            {greeting.data}
+            <Button
+                onClick={() =>
+                    register.mutate({
+                        email: 'test@test.test',
+                        password: 'test',
+                        name: 'Test User',
+                    })
+                }
+            >
+                a
+            </Button>
         </div>
     );
 }
