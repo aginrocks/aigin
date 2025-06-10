@@ -54,7 +54,9 @@ app.get('/api/auth/callback', async (c) => {
     return processOAuthCallback(c);
 });
 
-app.use('*', oidcAuthMiddleware());
+app.get('/api/login', oidcAuthMiddleware(), async (c) => {
+    return c.redirect('/');
+});
 
 const server = serve({
     fetch: app.fetch,

@@ -1,5 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { TRPCContext } from './context';
+import { User } from '@models/user';
 
 /**
  * Initialization of tRPC backend
@@ -22,6 +23,24 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
             message: 'You must be logged in to access this resource.',
         });
     }
+
+    console.log('Auth:', auth);
+
+    await User.updateOne(
+        {
+            email: auth.email,
+            name: auth.given_name,
+            username: auth.preferred_username,
+            subject: auth.sub,
+        },
+        {
+            subject: auth.sub,
+        },
+        {
+            upsert: true,
+        }
+    );
+
     return next({
         ctx: {
             ...ctx,
