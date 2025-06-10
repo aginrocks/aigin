@@ -1,5 +1,6 @@
 'use client';
-import { useTRPC } from '@/lib/trpc';
+import { Button } from '@/components/ui/button';
+import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
 
 export default function Page() {
@@ -7,5 +8,10 @@ export default function Page() {
 
     const greeting = useQuery(trpc.greeting1.queryOptions());
 
-    return <div>{greeting.data}</div>;
+    return (
+        <div>
+            <Button>a</Button>
+            {greeting.data}
+        </div>
+    );
 }
