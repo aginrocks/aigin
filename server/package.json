@@ -12,11 +12,14 @@
   "description": "",
   "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39",
   "dependencies": {
+    "@hono/node-server": "^1.14.4",
+    "@hono/trpc-server": "^0.3.4",
     "@trpc/server": "^11.3.1",
     "@zodyac/zod-mongoose": "^4.1.0",
     "ai": "^4.3.16",
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.5.0",
+    "hono": "^4.7.11",
     "module-alias": "^2.2.3",
     "mongoose": "^8.15.1",
     "zod": "^3.25.57"
