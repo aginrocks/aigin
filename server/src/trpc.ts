@@ -26,25 +26,29 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
 
     console.log('Auth:', auth);
 
-    await User.updateOne(
-        {
-            email: auth.email,
-            name: auth.given_name,
-            username: auth.preferred_username,
-            subject: auth.sub,
-        },
-        {
-            subject: auth.sub,
-        },
-        {
-            upsert: true,
-        }
-    );
+    const user = (
+        await User.findOneAndUpdate(
+            {
+                email: auth.email,
+                name: auth.given_name,
+                username: auth.preferred_username,
+                subject: auth.sub,
+            },
+            {
+                subject: auth.sub,
+            },
+            {
+                upsert: true,
+                returnDocument: 'after',
+            }
+        )
+    ).toObject();
 
     return next({
         ctx: {
             ...ctx,
             auth,
+            user,
         },
     });
 });

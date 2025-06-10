@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 export default function Page() {
     const trpc = useTRPC();
 
-    const test = useQuery(trpc.test2.queryOptions());
+    const test = useQuery(trpc.auth.info.queryOptions());
 
     const logout = useMutation(trpc.auth.logout.mutationOptions());
 
