@@ -11,5 +11,4 @@ export const userSchema = z.object({
 export type TUser = z.infer<typeof userSchema>;
 
 const schema = zodSchema(userSchema);
-const User = mongoose.model('User', schema);
-export default User;
+export const User = mongoose.model('User', schema);
