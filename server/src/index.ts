@@ -24,7 +24,6 @@ const appRouter = router({
     auth: authRouter,
     test: publicProcedure.query(async ({ ctx }) => {
         const user = await ctx.getAuth();
-        console.log('User:', user);
         return {
             email: user?.email,
         };

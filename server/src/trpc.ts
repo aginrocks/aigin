@@ -24,8 +24,6 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
         });
     }
 
-    console.log('Auth:', auth);
-
     const user = (
         await User.findOneAndUpdate(
             {
