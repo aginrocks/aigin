@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { z } from 'zod';
 import zodSchema from '@zodyac/zod-mongoose';
+import { PROVIDER_IDS } from '@constants/providers';
 
 const modelProvider = z.object({
     enabled: z.boolean().default(false),
@@ -12,14 +13,12 @@ export const userSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     username: z.string().min(1, 'Username is required'),
     email: z.string().email('Invalid email address'),
-    providers: z.object({
-        google: modelProvider,
-        openai: modelProvider,
-        openrouter: modelProvider,
-        groq: modelProvider,
-        github: modelProvider,
-        anthropic: modelProvider,
-    }),
+    providers: z.object(
+        PROVIDER_IDS.reduce((acc, id) => {
+            acc[id] = modelProvider;
+            return acc;
+        }, {} as Record<(typeof PROVIDER_IDS)[number], typeof modelProvider>)
+    ),
 });
 
 export type TUser = z.infer<typeof userSchema>;

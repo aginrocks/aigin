@@ -3,8 +3,10 @@ export const PROVIDER_IDS = [
     'openai',
     'openrouter',
     'groq',
-    'github',
+    'azure',
     'anthropic',
+    'deepseek',
+    'xai',
 ] as const;
 
 export type Provider = {
@@ -35,7 +37,7 @@ export const PROVIDERS: Provider[] = [
         logo: '/api/static/groq.svg',
     },
     {
-        id: 'github',
+        id: 'azure',
         name: 'GitHub',
         logo: '/api/static/github.svg',
     },
@@ -43,5 +45,15 @@ export const PROVIDERS: Provider[] = [
         id: 'anthropic',
         name: 'Anthropic',
         logo: '/api/static/anthropic.svg',
+    },
+    {
+        id: 'deepseek',
+        name: 'DeepSeek',
+        logo: '/api/static/deepseek.svg',
+    },
+    {
+        id: 'xai',
+        name: 'xAI',
+        logo: '/api/static/xai.svg',
     },
 ] as const;
