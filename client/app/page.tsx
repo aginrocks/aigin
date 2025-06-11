@@ -12,8 +12,8 @@ export default function Page() {
 
     return (
         <div>
-            <Button onClick={() => logout.mutate()}>b</Button>
-            {test.data && <div>{JSON.stringify(test.data)}</div>}
+            {/* <Button onClick={() => logout.mutate()}>b</Button>
+            {test.data && <div>{JSON.stringify(test.data)}</div>} */}
         </div>
     );
 }
