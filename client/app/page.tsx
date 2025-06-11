@@ -10,10 +10,13 @@ export default function Page() {
 
     const test = useQuery(trpc.auth.info.queryOptions());
 
+    const [chatId, setChatId] = useState<string | null>(null);
+
     const generate = useMutation(
         trpc.chat.generate.mutationOptions({
             onSuccess: (data) => {
                 console.log('Generate success:', data);
+                setChatId(data.chatId);
             },
             onError: (error) => {
                 console.error('Generate error:', error);
@@ -26,7 +29,7 @@ export default function Page() {
     const subscription = useSubscription(
         trpc.chat.stream.subscriptionOptions(
             {
-                chatId: '684a07d0e4d1230fcaaf67b1',
+                chatId: chatId || '',
             },
             {
                 onData: (data) => {

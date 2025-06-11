@@ -11,6 +11,8 @@ export const chatsStore: Map<string, CachedChat> = new Map();
 export type CachedChatEventsMap = {
     'message:delta': [TextStreamPart<ToolSet> & { type: 'text-delta' }];
     'message:created': [Message];
+    'message:completed': [{ completed: boolean }];
+    'message:error': [{ error: string }];
 };
 
 export type SendMessage = {
@@ -29,6 +31,7 @@ export class CachedChat {
     user: TUser;
     messages: Message[] = [];
     emitter = new IterableEventEmitter<CachedChatEventsMap>();
+    isGenerating = false;
 
     constructor(id: string, user: TUser, messages: Message[] = []) {
         this.id = id;
@@ -41,6 +44,10 @@ export class CachedChat {
     }
 
     public async sendMessage({ model, content }: SendMessage) {
+        if (this.isGenerating) {
+            throw new Error('Chat is already generating a response');
+        }
+
         const newMessage: Message = {
             role: 'user',
             content,
@@ -58,9 +65,29 @@ export class CachedChat {
             messages: this.messages,
         });
 
-        for await (const part of response.fullStream) {
-            // console.log(part);
-            this.handlePart(part);
+        // Set generating flag and don't await - let this run in the background so the mutation can return immediately
+        this.isGenerating = true;
+        this.processStream(response.fullStream);
+    }
+
+    private async processStream(stream: AsyncIterable<TextStreamPart<ToolSet>>) {
+        try {
+            for await (const part of stream) {
+                // console.log(part);
+                this.handlePart(part);
+            }
+
+            // Emit a completion event when streaming is done
+            this.emitter.emit('message:completed', { completed: true });
+
+            // Final sync to database
+            await this.syncToDatabase();
+        } catch (error) {
+            console.error(`Error processing stream for chat ${this.id}:`, error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            this.emitter.emit('message:error', { error: errorMessage });
+        } finally {
+            this.isGenerating = false;
         }
     }
 
@@ -113,6 +140,15 @@ export class CachedChat {
         });
         this.emitter.on('message:delta', (delta) => {
             console.log(`[message:delta] New delta received in chat ${this.id}`, delta);
+        });
+        this.emitter.on('message:completed', (completion) => {
+            console.log(
+                `[message:completed] Message generation completed in chat ${this.id}`,
+                completion
+            );
+        });
+        this.emitter.on('message:error', (error) => {
+            console.log(`[message:error] Error in chat ${this.id}`, error);
         });
     }
 }
