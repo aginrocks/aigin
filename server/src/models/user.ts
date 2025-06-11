@@ -7,15 +7,6 @@ const modelProvider = z.object({
     apiKey: z.string().nullable().default(null),
 });
 
-export const POSSIBLE_PROVIDERS = [
-    'google',
-    'openai',
-    'openrouter',
-    'groq',
-    'github',
-    'anthropic',
-] as const;
-
 export const userSchema = z.object({
     subject: z.string().min(1),
     name: z.string().min(1, 'Name is required'),

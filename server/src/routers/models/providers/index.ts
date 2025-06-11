@@ -1,14 +1,15 @@
 import { protectedProcedure, router } from '@/trpc';
 import { setEnabled } from './setEnabled';
+import { PROVIDERS } from '@constants/providers';
 
 export const get = protectedProcedure.query(({ ctx }) => {
-    const providersResponse: Record<string, { enabled: boolean }> = {};
+    const response = PROVIDERS.map((p) => ({
+        ...p,
+        enabled: ctx.user.providers[p.id].enabled ?? false,
+        apiKeySet: !!ctx.user.providers[p.id].apiKey,
+    }));
 
-    for (const [key, provider] of Object.entries(ctx.user.providers)) {
-        providersResponse[key] = { enabled: provider.enabled };
-    }
-
-    return providersResponse;
+    return response;
 });
 
 export const providersRouter = router({

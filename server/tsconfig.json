@@ -12,6 +12,8 @@
     "paths": {
       "@models/*": ["./models/*"],
       "@routers/*": ["./routers/*"],
+      "@ai/*": ["./ai/*"],
+      "@constants/*": ["./constants/*"],
       "@/*": ["./*"]
     },
   },

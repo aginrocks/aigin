@@ -1,11 +1,12 @@
 import { protectedProcedure } from '@/trpc';
-import { POSSIBLE_PROVIDERS, TUser, User } from '@models/user';
+import { PROVIDER_IDS } from '@constants/providers';
+import { TUser, User } from '@models/user';
 import { z } from 'zod';
 
 export const setEnabled = protectedProcedure
     .input(
         z.object({
-            provider: z.enum(POSSIBLE_PROVIDERS),
+            provider: z.enum(PROVIDER_IDS),
             enabled: z.boolean(),
             apiKey: z.string().optional(),
         })

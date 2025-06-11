@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ai-sdk/anthropic':
+        specifier: ^1.2.12
+        version: 1.2.12(zod@3.25.57)
       '@hono/node-server':
         specifier: ^1.14.4
         version: 1.14.4(hono@4.7.11)
@@ -56,6 +59,12 @@ importers:
         version: 5.8.3
 
 packages:
+
+  '@ai-sdk/anthropic@1.2.12':
+    resolution: {integrity: sha512-YSzjlko7JvuiyQFmI9RN1tNZdEiZxc+6xld/0tq/VkJaHpEzGAb1yiNxxvmYVcjvfu/PcvCxAAYXmTYQQ63IHQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ai-sdk/provider-utils@2.2.8':
     resolution: {integrity: sha512-fqhG+4sCVv8x7nFzYnFo19ryhAa3w096Kmc3hWxMQfW/TubPOmt3A6tYZhl4mUfQWWQMsuSkLrtjlWuXBVSGQA==}
@@ -480,6 +489,12 @@ packages:
     resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
 
 snapshots:
+
+  '@ai-sdk/anthropic@1.2.12(zod@3.25.57)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.3
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.57)
+      zod: 3.25.57
 
   '@ai-sdk/provider-utils@2.2.8(zod@3.25.57)':
     dependencies:
