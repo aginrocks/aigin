@@ -24,7 +24,7 @@ export default function Page() {
             <Button
                 onClick={() =>
                     generate.mutate({
-                        prompt: 'Hello world',
+                        prompt: 'Write a very long story',
                         model: 'google:gemini-2.5-flash-preview-05-20',
                     })
                 }

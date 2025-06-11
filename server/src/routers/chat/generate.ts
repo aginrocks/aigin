@@ -19,5 +19,9 @@ export const generate = protectedProcedure
             prompt: input.prompt,
         });
 
+        for await (const part of response.fullStream) {
+            console.log(part);
+        }
+
         return { response };
     });

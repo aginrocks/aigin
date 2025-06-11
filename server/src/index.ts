@@ -81,15 +81,7 @@ const server = serve(
     }
 );
 
-const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
-    server as HttpServer,
-    {
-        serveClient: false,
-    }
-);
-
-bindServer(io);
-
+bindServer(server);
 enableDestroy(server);
 
 // graceful shutdown
