@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { TRPCClientProvider } from '@/lib/providers/query-client';
 import { ThemeProvider } from '@/components/theme-provider';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -33,7 +35,15 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <TRPCClientProvider>{children}</TRPCClientProvider>
+                    <TRPCClientProvider>
+                        <SidebarProvider>
+                            <AppSidebar />
+                            <div className="w-screen h-screen p-3">
+                                <SidebarTrigger />
+                                {children}
+                            </div>
+                        </SidebarProvider>
+                    </TRPCClientProvider>
                 </ThemeProvider>
             </body>
         </html>
