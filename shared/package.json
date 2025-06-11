@@ -1,0 +1,31 @@
+{
+    "name": "@aigin/shared",
+    "version": "1.0.0",
+    "description": "Shared types and utilities for aigin project",
+    "main": "types/index.ts",
+    "types": "types/index.ts",
+    "exports": {
+        ".": {
+            "types": "./types/index.ts",
+            "import": "./types/index.ts",
+            "default": "./types/index.ts"
+        },
+        "./types": {
+            "types": "./types/index.ts", 
+            "import": "./types/index.ts",
+            "default": "./types/index.ts"
+        },
+        "./types/*": {
+            "types": "./types/*.ts",
+            "import": "./types/*.ts", 
+            "default": "./types/*.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsc",
+        "type-check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "typescript": "^5.0.0"
+    }
+}

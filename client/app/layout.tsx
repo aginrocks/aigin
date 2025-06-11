@@ -5,6 +5,7 @@ import { TRPCClientProvider } from '@/lib/providers/query-client';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
+import {} from '@aigin/shared';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',

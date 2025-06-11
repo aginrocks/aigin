@@ -11,6 +11,7 @@ import { getAuth, oidcAuthMiddleware, processOAuthCallback, revokeSession } from
 import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
+import { chatRouter } from '@routers/chat';
 
 dotenv.config();
 extendZod(z);
@@ -24,6 +25,7 @@ initDatabase().then(() => {
 const appRouter = router({
     auth: authRouter,
     models: modelsRouter,
+    chat: chatRouter,
     test: publicProcedure.query(async ({ ctx }) => {
         const user = await ctx.getAuth();
         return {
