@@ -12,7 +12,6 @@ import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
 import { chatRouter } from '@routers/chat';
-import { bindServer } from './socketio';
 import enableDestroy from 'server-destroy';
 
 dotenv.config();
@@ -73,7 +72,6 @@ const server = serve(
     }
 );
 
-bindServer(server);
 enableDestroy(server);
 
 // graceful shutdown

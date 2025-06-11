@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { z } from 'zod';
 import zodSchema from '@zodyac/zod-mongoose';
 import { PROVIDER_IDS } from '@constants/providers';
@@ -21,7 +21,9 @@ export const userSchema = z.object({
     ),
 });
 
-export type TUser = z.infer<typeof userSchema>;
+export type TUser = z.infer<typeof userSchema> & {
+    _id: Types.ObjectId;
+};
 
 const schema = zodSchema(userSchema, { versionKey: false });
 export const User = mongoose.model('User', schema);

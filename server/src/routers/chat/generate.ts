@@ -1,7 +1,7 @@
 import { protectedProcedure } from '@/trpc';
-import { getUserRegistry } from '@ai/registry';
-import { streamText } from 'ai';
+import { loadContext } from '@ai/generation-manager';
 import z from 'zod';
+
 export const generate = protectedProcedure
     .input(
         z.object({
@@ -9,19 +9,29 @@ export const generate = protectedProcedure
             model: z.string().refine((val) => /^.+:.+$/.test(val), {
                 message: 'Model must be in the format "provider:model"',
             }),
+            /**
+             * Optional chat ID to load an existing chat context.
+             * If not provided, a new chat will be created.
+             */
+            chatId: z.string().optional(),
         })
     )
     .mutation(async ({ ctx, input }) => {
-        const registry = getUserRegistry(ctx.user);
+        // const registry = getUserRegistry(ctx.user);
+        // const response = streamText({
+        //     model: registry.languageModel(input.model as `${string}:${string}`),
+        //     prompt: input.prompt,
+        // });
+        // for await (const part of response.fullStream) {
+        //     console.log('Part:', part);
+        // }
+        // return { response };
+        const chat = await loadContext(ctx.user, input.chatId);
 
-        const response = streamText({
-            model: registry.languageModel(input.model as `${string}:${string}`),
-            prompt: input.prompt,
+        await chat.sendMessage({
+            model: input.model as `${string}:${string}`,
+            content: input.prompt,
         });
 
-        for await (const part of response.fullStream) {
-            console.log(part);
-        }
-
-        return { response };
+        return { chatId: chat.id, status: 'Message sent successfully' };
     });
