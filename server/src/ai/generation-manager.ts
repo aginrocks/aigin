@@ -4,6 +4,7 @@ import { Message, streamText, StreamTextResult, TextStreamPart, ToolSet } from '
 import EventEmitter from 'node:events';
 import { getUserRegistry } from './registry';
 import { Document } from 'mongoose';
+import { IterableEventEmitter } from '@/iterables';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
 
@@ -27,7 +28,7 @@ export class CachedChat {
     id: string;
     user: TUser;
     messages: Message[] = [];
-    emitter = new EventEmitter<CachedChatEventsMap>();
+    emitter = new IterableEventEmitter<CachedChatEventsMap>();
 
     constructor(id: string, user: TUser, messages: Message[] = []) {
         this.id = id;
