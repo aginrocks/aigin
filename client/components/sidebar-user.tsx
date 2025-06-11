@@ -1,6 +1,14 @@
 'use client';
 
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from 'lucide-react';
+import {
+    BadgeCheck,
+    Bell,
+    ChevronsUpDown,
+    CreditCard,
+    LogOut,
+    Settings,
+    Sparkles,
+} from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -18,6 +26,7 @@ import {
     SidebarMenuItem,
     useSidebar,
 } from '@/components/ui/sidebar';
+import { useModals } from '@lib/modals/ModalsManager';
 
 export function SidebarUser({
     user,
@@ -29,6 +38,7 @@ export function SidebarUser({
     };
 }) {
     const { isMobile } = useSidebar();
+    const modals = useModals();
 
     return (
         <SidebarMenu>
@@ -71,23 +81,16 @@ export function SidebarUser({
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
                                 <BadgeCheck />
                                 Account
                             </DropdownMenuItem>
                             <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
                                 <Bell />
                                 Notifications
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => modals.show('Settings')}>
+                                <Settings />
+                                Setting
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

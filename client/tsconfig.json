@@ -21,7 +21,9 @@
     "baseUrl": ".",
     "paths": {
       "@lib/*": ["./lib/*"],
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@components/*": ["./components/*"]
+
     }
   },
   "references": [
