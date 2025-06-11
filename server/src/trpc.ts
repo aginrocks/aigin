@@ -27,12 +27,12 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
     const user = (
         await User.findOneAndUpdate(
             {
-                email: auth.email,
-                name: auth.given_name,
-                username: auth.preferred_username,
                 subject: auth.sub,
             },
             {
+                email: auth.email,
+                name: auth.given_name,
+                username: auth.preferred_username,
                 subject: auth.sub,
             },
             {

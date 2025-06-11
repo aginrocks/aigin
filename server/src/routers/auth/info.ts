@@ -1,5 +1,7 @@
 import { protectedProcedure } from '@/trpc';
 
 export const info = protectedProcedure.query(async ({ ctx }) => {
-    return ctx.user;
+    const { providers, ...userResponse } = ctx.user;
+
+    return userResponse;
 });

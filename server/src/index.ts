@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import { getAuth, oidcAuthMiddleware, processOAuthCallback, revokeSession } from '@hono/oidc-auth';
 import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
+import { modelsRouter } from '@routers/models';
 
 dotenv.config();
 extendZod(z);
@@ -22,6 +23,7 @@ initDatabase().then(() => {
 
 const appRouter = router({
     auth: authRouter,
+    models: modelsRouter,
     test: publicProcedure.query(async ({ ctx }) => {
         const user = await ctx.getAuth();
         return {
