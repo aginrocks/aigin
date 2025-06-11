@@ -12,6 +12,16 @@ import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
 import { chatRouter } from '@routers/chat';
+import { Server } from 'socket.io';
+import { Server as HttpServer } from 'http';
+import { bindServer } from './socketio';
+import {
+    ClientToServerEvents,
+    InterServerEvents,
+    ServerToClientEvents,
+    SocketData,
+} from './socketio/types';
+import enableDestroy from 'server-destroy';
 
 dotenv.config();
 extendZod(z);
@@ -61,18 +71,34 @@ app.get('/api/login', oidcAuthMiddleware(), async (c) => {
     return c.redirect('/');
 });
 
-const server = serve({
-    fetch: app.fetch,
-    port: 3001,
-});
+const server = serve(
+    {
+        fetch: app.fetch,
+        port: 3001,
+    },
+    (info) => {
+        console.log(`Server is running: http://${info.address}:${info.port}`);
+    }
+);
+
+const io = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
+    server as HttpServer,
+    {
+        serveClient: false,
+    }
+);
+
+bindServer(io);
+
+enableDestroy(server);
 
 // graceful shutdown
 process.on('SIGINT', () => {
-    server.close();
+    server.destroy();
     process.exit(0);
 });
 process.on('SIGTERM', () => {
-    server.close((err) => {
+    server.destroy((err) => {
         if (err) {
             console.error(err);
             process.exit(1);
