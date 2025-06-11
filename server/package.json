@@ -29,8 +29,10 @@
     "@zodyac/zod-mongoose": "^4.1.0",
     "ai": "^4.3.16",
     "bcryptjs": "^3.0.2",
+    "cookie": "^1.0.2",
     "dotenv": "^16.5.0",
     "hono": "^4.7.11",
+    "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "mongoose": "^8.15.1",
     "server-destroy": "^1.0.1",
@@ -38,6 +40,7 @@
     "zod": "^3.25.57"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^24.0.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"

@@ -1,6 +1,11 @@
-export interface ServerToClientEvents {}
+export interface ServerToClientEvents {
+    'chat.chunk': (chatId: string, chunk: string) => void;
+}
 
-export interface ClientToServerEvents {}
+export interface ClientToServerEvents {
+    'chat.subscribe': (chatId: string) => void;
+    'chat.unsubscribe': (chatId: string) => void;
+}
 
 export interface InterServerEvents {}
 

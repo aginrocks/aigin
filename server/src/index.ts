@@ -12,15 +12,7 @@ import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
 import { chatRouter } from '@routers/chat';
-import { Server } from 'socket.io';
-import { Server as HttpServer } from 'http';
 import { bindServer } from './socketio';
-import {
-    ClientToServerEvents,
-    InterServerEvents,
-    ServerToClientEvents,
-    SocketData,
-} from './socketio/types';
 import enableDestroy from 'server-destroy';
 
 dotenv.config();

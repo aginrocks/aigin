@@ -6,9 +6,10 @@ import { createProviderRegistry, streamText } from 'ai';
 import { TUser } from '@models/user';
 import { ProviderV1 } from '@ai-sdk/provider';
 import { PROVIDER_IDS } from '@constants/providers';
+import { createOpenAI } from '@ai-sdk/openai';
 
 export const getUserRegistry = (user: TUser) => {
-    const { anthropic, google, groq, azure, xai, deepseek } = user.providers;
+    const { anthropic, google, groq, azure, xai, deepseek, openai } = user.providers;
 
     const providers: Record<(typeof PROVIDER_IDS)[number] | string, ProviderV1> = {};
 
@@ -40,6 +41,12 @@ export const getUserRegistry = (user: TUser) => {
     if (deepseek.enabled && deepseek.apiKey) {
         providers.deepseek = createXai({
             apiKey: deepseek.apiKey,
+        });
+    }
+    if (openai.enabled && openai.apiKey) {
+        providers.openai = createOpenAI({
+            apiKey: openai.apiKey,
+            compatibility: 'strict',
         });
     }
 

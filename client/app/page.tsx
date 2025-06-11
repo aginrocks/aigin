@@ -25,7 +25,8 @@ export default function Page() {
                 onClick={() =>
                     generate.mutate({
                         prompt: 'Write a very long story',
-                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        // model: 'google:gemini-2.5-flash-preview-05-20',
+                        model: 'openai:gpt-4o-mini',
                     })
                 }
             >
