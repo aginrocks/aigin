@@ -43,5 +43,5 @@ export type TUser = z.infer<typeof userSchema> & {
     _id: Types.ObjectId;
 };
 
-const schema = zodSchema(userSchema, { versionKey: false });
+const schema = zodSchema(userSchema);
 export const User = mongoose.model('User', schema);
