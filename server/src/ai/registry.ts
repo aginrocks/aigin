@@ -9,7 +9,7 @@ import { PROVIDER_IDS } from '@constants/providers';
 import { createOpenAI } from '@ai-sdk/openai';
 
 export const getUserRegistry = (user: TUser) => {
-    const { anthropic, google, groq, azure, xai, deepseek, openai } = user.providers;
+    const { anthropic, google, groq, azure, xai, deepseek, openai, openrouter } = user.providers;
 
     const providers: Record<(typeof PROVIDER_IDS)[number] | string, ProviderV1> = {};
 
@@ -47,6 +47,12 @@ export const getUserRegistry = (user: TUser) => {
         providers.openai = createOpenAI({
             apiKey: openai.apiKey,
             compatibility: 'strict',
+        });
+    }
+    if (openrouter.enabled && openrouter.apiKey) {
+        providers.openrouter = createOpenAI({
+            apiKey: openrouter.apiKey,
+            baseURL: 'https://openrouter.ai/api/v1',
         });
     }
 

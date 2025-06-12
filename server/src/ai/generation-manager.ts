@@ -7,12 +7,68 @@ import { IterableEventEmitter } from '@/iterables';
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
 
+export const perUserEmitters: Map<string, IterableEventEmitter<ChatsEventMap>> = new Map();
+
+export function getUserEmitter(userId: string) {
+    if (!perUserEmitters.has(userId)) {
+        perUserEmitters.set(userId, new IterableEventEmitter<ChatsEventMap>());
+    }
+    return perUserEmitters.get(userId)!;
+}
+
+/**
+ * Emit a chat event globally and for a specific user.
+ * @param userId The ID of the user to emit the event for.
+ * @param event The event to emit.
+ * @param args The arguments to pass to the event.
+ */
+export function emitGlobalChatEvent<K extends keyof ChatsEventMap>(
+    userId: string,
+    event: K,
+    ...args: ChatsEventMap[K]
+) {
+    chatsEmitter.emit(event, ...(args as any));
+    const userEmitter = getUserEmitter(userId);
+    userEmitter.emit(event, ...(args as any));
+}
+
 export type ChatsEventMap = {
     /**
      * Emitted when a chat is generating a response.
      * The first string is the chat ID, the second boolean indicates if it's generating.
      */
     'chat:generating': [string, boolean];
+
+    /**
+     * Emitted when a chat is created.
+     * The first string is the chat ID.
+     */
+    'chat:created': [string];
+
+    /**
+     * Emitted when a chat is renamed.
+     * The first string is the chat ID.
+     */
+    'chat:renamed': [string];
+
+    /**
+     * Emitted when a chat is deleted.
+     * The first string is the chat ID.
+     */
+    'chat:deleted': [string];
+
+    /**
+     * Emitted when a chat is pinned or unpinned.
+     * The first string is the chat ID, the second boolean indicates if it's pinned.
+     */
+    'chat:pinned': [string, boolean];
+
+    /**
+     * Emitted when any of the other events occur.
+     * This is a catch-all event for any chat-related changes.
+     * The first string is the chat ID.
+     */
+    'chat:changed': [string];
 };
 
 export type CachedChatEventsMap = {
@@ -52,7 +108,7 @@ export class CachedChat {
 
     public setGenerating(generating: boolean) {
         this.isGenerating = generating;
-        chatsEmitter.emit('chat:generating', this.id, generating);
+        this.emitGlobalEvent('chat:generating', this.id, generating);
     }
 
     public async sendMessage({ model, content }: SendMessage) {
@@ -136,6 +192,10 @@ export class CachedChat {
         }
 
         this.emitter.emit('message:delta', part);
+    }
+
+    private emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {
+        emitGlobalChatEvent(this.user._id.toString(), event, ...args);
     }
 
     async syncToDatabase() {

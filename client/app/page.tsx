@@ -49,7 +49,9 @@ export default function Page() {
                 onClick={() =>
                     generate.mutate({
                         prompt: 'write me a poem',
-                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        // model: 'google:gemini-2.5-flash-preview-05-20',
+                        // model: 'openrouter:openai/gpt-4.1-nano',
+                        model: 'groq:deepseek-r1-distill-llama-70b',
                         // chatId: '684a07d0e4d1230fcaaf67b1',
                         // model: 'openai:gpt-4o-mini',
                     })

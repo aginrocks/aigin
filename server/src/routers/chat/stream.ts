@@ -24,6 +24,14 @@ export const stream = protectedProcedure
             });
         }
 
+        if (chat.user._id.toString() !== ctx.user._id.toString()) {
+            console.log(`User ${ctx.user._id} is not authorized to access chat ${input.chatId}`);
+            throw new TRPCError({
+                code: 'UNAUTHORIZED',
+                message: 'You do not have permission to access this chat',
+            });
+        }
+
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
 
         const iterable = chat.emitter.toIterable('message:delta', {
