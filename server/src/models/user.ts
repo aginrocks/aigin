@@ -22,7 +22,7 @@ export const settingsSchema = z.object({
     /**
      * Displays token information in the chat UI.
      */
-    statsForNerds: z.boolean().default(false),
+    statsForNerds: z.boolean().default(false).optional(),
 });
 
 export const userSchema = z.object({
