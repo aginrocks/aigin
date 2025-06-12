@@ -7,6 +7,15 @@ import { Document } from 'mongoose';
 import { IterableEventEmitter } from '@/iterables';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
+export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
+
+export type ChatsEventMap = {
+    /**
+     * Emitted when a chat is generating a response.
+     * The first string is the chat ID, the second boolean indicates if it's generating.
+     */
+    'chat:generating': [string, boolean];
+};
 
 export type CachedChatEventsMap = {
     'message:delta': [TextStreamPart<ToolSet> & { type: 'text-delta' }];
@@ -43,6 +52,11 @@ export class CachedChat {
         return this.messages;
     }
 
+    public setGenerating(generating: boolean) {
+        this.isGenerating = generating;
+        chatsEmitter.emit('chat:generating', this.id, generating);
+    }
+
     public async sendMessage({ model, content }: SendMessage) {
         if (this.isGenerating) {
             throw new Error('Chat is already generating a response');
@@ -66,7 +80,7 @@ export class CachedChat {
         });
 
         // Set generating flag and don't await - let this run in the background so the mutation can return immediately
-        this.isGenerating = true;
+        this.setGenerating(true);
         this.processStream(response.fullStream);
     }
 
@@ -87,11 +101,11 @@ export class CachedChat {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.emitter.emit('message:error', { error: errorMessage });
         } finally {
-            this.isGenerating = false;
+            this.setGenerating(false);
         }
     }
 
-    handlePart(part: TextStreamPart<ToolSet>) {
+    private handlePart(part: TextStreamPart<ToolSet>) {
         // Ensuring that we have a last message to append the part to.
         let lastMessage = this.messages[this.messages.length - 1];
         if (!lastMessage || lastMessage.role !== 'assistant') {
