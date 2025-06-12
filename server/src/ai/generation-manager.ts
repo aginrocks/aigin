@@ -173,6 +173,12 @@ export class CachedChat {
 export async function loadContext(user: TUser, chatId?: string) {
     let chatDetails;
     let messages: Message[] = [];
+
+    if (chatId) {
+        const alreadyCached = chatsStore.get(chatId);
+        if (alreadyCached) return alreadyCached;
+    }
+
     if (chatId) {
         chatDetails = await Chat.findById(chatId);
         if (!chatDetails) {
