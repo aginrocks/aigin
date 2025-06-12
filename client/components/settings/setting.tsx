@@ -10,6 +10,8 @@ import { ThemedIcon, ThemedIconProps } from '@components/ui/themed-icon';
 import { cn } from '@lib/utils';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
+import { FormControl, FormField, FormItem } from '../ui/form';
+import { Control } from 'react-hook-form';
 
 export type SettingPosition = 'start' | 'middle' | 'end';
 
@@ -25,7 +27,25 @@ export type SettingProps = {
     rightSection?: ReactNode;
     icon?: ThemedIconProps;
     children?: ReactNode;
-} & ({ type: 'select'; options: SettingOption[] } | { type: 'switch' | 'custom'; options?: never });
+    formControl?: Control;
+} & (
+    | {
+          type: 'select';
+          options: SettingOption[];
+          onValueChange?: (value: SettingOption['value']) => void;
+          defaultValue?: SettingOption['value'];
+          value?: SettingOption['value'];
+          props?: React.ComponentProps<typeof Select>;
+      }
+    | {
+          type: 'switch' | 'custom';
+          options?: never;
+          onValueChange?: (value: boolean) => void;
+          defaultValue?: boolean;
+          props?: React.ComponentProps<typeof Switch>;
+          value?: boolean;
+      }
+);
 
 const settingVariants = cva('rounded-md', {
     variants: {
@@ -46,6 +66,11 @@ export function Setting({
     rightSection,
     icon,
     children,
+    onValueChange,
+    defaultValue,
+    props,
+    value,
+    formControl,
 }: SettingProps) {
     return (
         <div
@@ -66,7 +91,12 @@ export function Setting({
                 </div>
                 <div>
                     {type === 'select' && (
-                        <Select>
+                        <Select
+                            onValueChange={(value) => onValueChange?.(value)}
+                            defaultValue={defaultValue}
+                            value={value}
+                            {...props}
+                        >
                             <SelectTrigger className="w-[180px] rounded-sm">
                                 <SelectValue placeholder={title} />
                             </SelectTrigger>
@@ -79,7 +109,14 @@ export function Setting({
                             </SelectContent>
                         </Select>
                     )}
-                    {type === 'switch' && <Switch />}
+                    {type === 'switch' && (
+                        <Switch
+                            checked={value}
+                            defaultChecked={defaultValue}
+                            onCheckedChange={(value) => onValueChange?.(value)}
+                            {...props}
+                        />
+                    )}
                     {rightSection}
                 </div>
             </div>

@@ -9,11 +9,15 @@ import {
     IconMessage,
     IconUsers,
 } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Appearance } from './Appearance';
 import { SettingsSidebar, SidebarTab, SidebarTabProps } from '@/components/settings';
 import { SettingsPage } from '@/components/settings/settings-page';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { FormProvider, useForm } from 'react-hook-form';
+import { AppRouter } from '../../../../server/src';
+import { useTRPC } from '@lib/trpc';
+import { useQuery } from '@tanstack/react-query';
 
 export type SettingsTabName =
     | 'account'
@@ -58,30 +62,44 @@ const tabs: SettingsTab[] = [
     },
 ];
 
+export type Settings = Awaited<ReturnType<AppRouter['settings']['getUserSettings']>>;
+
 export function Settings({
     payload,
     ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root> & ModalProps<'Settings'>) {
     const [tab, setTab] = useState<SettingsTabName>(payload?.initialTab || 'account');
 
+    const trpc = useTRPC();
+    const settingsData = useQuery(trpc.settings.getUserSettings.queryOptions());
+
+    const settingForm = useForm<Settings>({
+        values: settingsData.data,
+    });
+
+    const nerd = settingForm.watch('statsForNerds');
+
     return (
-        <Dialog {...props}>
-            <DialogContent className="sm:max-w-3xl h-150 p-0 bg overflow-hidden">
-                <DialogTitle className="sr-only">Settings</DialogTitle>
-                <div className="flex w-full h-full">
-                    <SettingsSidebar title="Settings">
-                        {tabs.map((t) => (
-                            <SidebarTab
-                                key={t.id}
-                                {...t}
-                                active={t.id === tab}
-                                onClick={() => setTab(t.id as SettingsTabName)}
-                            />
-                        ))}
-                    </SettingsSidebar>
-                    <SettingsPage>{tab === 'appearance' && <Appearance />}</SettingsPage>
-                </div>
-            </DialogContent>
-        </Dialog>
+        <FormProvider {...settingForm}>
+            <Dialog {...props}>
+                <DialogContent className="sm:max-w-3xl h-150 p-0 bg overflow-hidden">
+                    <DialogTitle className="sr-only">Settings</DialogTitle>
+                    <div className="flex w-full h-full">
+                        {nerd && 'nerd'}
+                        <SettingsSidebar title="Settings">
+                            {tabs.map((t) => (
+                                <SidebarTab
+                                    key={t.id}
+                                    {...t}
+                                    active={t.id === tab}
+                                    onClick={() => setTab(t.id as SettingsTabName)}
+                                />
+                            ))}
+                        </SettingsSidebar>
+                        <SettingsPage>{tab === 'appearance' && <Appearance />}</SettingsPage>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </FormProvider>
     );
 }
