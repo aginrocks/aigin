@@ -1,5 +1,5 @@
 import { protectedProcedure } from '@/trpc';
-import { chatsStore, getUserEmitter, isChatGenerating } from '@ai/generation-manager';
+import { getUserEmitter, isChatGenerating } from '@ai/generation-manager';
 import { Chat } from '@models/chat';
 import { Types } from 'mongoose';
 
