@@ -17,15 +17,6 @@ export const generate = protectedProcedure
         })
     )
     .mutation(async ({ ctx, input }) => {
-        // const registry = getUserRegistry(ctx.user);
-        // const response = streamText({
-        //     model: registry.languageModel(input.model as `${string}:${string}`),
-        //     prompt: input.prompt,
-        // });
-        // for await (const part of response.fullStream) {
-        //     console.log('Part:', part);
-        // }
-        // return { response };
         const chat = await loadContext(ctx.user, input.chatId);
 
         await chat.sendMessage({

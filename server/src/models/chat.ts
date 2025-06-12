@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { z } from 'zod';
 import zodSchema, { zId } from '@zodyac/zod-mongoose';
-import { Message, TextPart } from 'ai';
+import { Message } from 'ai';
 
 export const toolInvocationSchema = z.object({
     args: z.any(),
@@ -52,7 +52,9 @@ export const chatSchema = z.object({
     messages: z.array(messageSchema).default([]),
 });
 
-export type TChat = z.infer<typeof chatSchema>;
+export type TChat = z.infer<typeof chatSchema> & {
+    _id: Types.ObjectId;
+};
 
 const schema = zodSchema(chatSchema);
 export const Chat = mongoose.model('Chat', schema);

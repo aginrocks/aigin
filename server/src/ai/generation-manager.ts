@@ -1,9 +1,7 @@
 import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
 import { TUser } from '@models/user';
-import { Message, streamText, StreamTextResult, TextStreamPart, ToolSet } from 'ai';
-import EventEmitter from 'node:events';
+import { Message, streamText, TextStreamPart, ToolSet } from 'ai';
 import { getUserRegistry } from './registry';
-import { Document } from 'mongoose';
 import { IterableEventEmitter } from '@/iterables';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
