@@ -13,6 +13,7 @@ import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
 import { chatRouter } from '@routers/chat';
 import enableDestroy from 'server-destroy';
+import { settingsRouter } from '@routers/settings';
 
 dotenv.config();
 extendZod(z);
@@ -27,17 +28,7 @@ const appRouter = router({
     auth: authRouter,
     models: modelsRouter,
     chat: chatRouter,
-    test: publicProcedure.query(async ({ ctx }) => {
-        const user = await ctx.getAuth();
-        return {
-            email: user?.email,
-        };
-    }),
-    test2: protectedProcedure.query(async ({ ctx }) => {
-        return {
-            user: ctx.auth.given_name,
-        };
-    }),
+    settings: settingsRouter,
 });
 
 // Export type router type signature,

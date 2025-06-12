@@ -8,6 +8,23 @@ const modelProvider = z.object({
     apiKey: z.string().nullable().default(null),
 });
 
+export const settingsSchema = z.object({
+    /**
+     * The name that will be used to call the user in chat.
+     */
+    callName: z.string().optional(),
+
+    /**
+     * The user's profession or role, used to provide context in conversations.
+     */
+    profession: z.string().optional(),
+
+    /**
+     * Displays token information in the chat UI.
+     */
+    statsForNerds: z.boolean().default(false),
+});
+
 export const userSchema = z.object({
     subject: z.string().min(1),
     name: z.string().min(1, 'Name is required'),
@@ -19,6 +36,7 @@ export const userSchema = z.object({
             return acc;
         }, {} as Record<(typeof PROVIDER_IDS)[number], typeof modelProvider>)
     ),
+    settings: settingsSchema.default({}),
 });
 
 export type TUser = z.infer<typeof userSchema> & {
