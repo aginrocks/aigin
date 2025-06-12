@@ -11,6 +11,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { SidebarUser } from './sidebar-user';
 import { Header } from './ui/header';
@@ -45,6 +46,29 @@ const items = [
     },
 ];
 
+const chats = [
+    {
+        title: 'Template chat',
+        id: 'asdfgafgadfgg',
+    },
+    {
+        title: 'Template chat',
+        id: 'asdfgafgadfgg',
+    },
+    {
+        title: 'Template chat',
+        id: 'asdfgafgadfgg',
+    },
+    {
+        title: 'Template chat',
+        id: 'asdfgafgadfgg',
+    },
+    {
+        title: 'Template chat',
+        id: 'asdfgafgadfgg',
+    },
+];
+
 export function AppSidebar() {
     return (
         <Sidebar>
@@ -54,20 +78,20 @@ export function AppSidebar() {
                         title="Chats"
                         className="pr-1.5"
                         rightSection={
-                            <Button variant="ghost" size="icon">
-                                <IconPlus />
-                            </Button>
+                            <>
+                                <Button variant="ghost" size="icon">
+                                    <IconPlus />
+                                </Button>
+                                <SidebarTrigger />
+                            </>
                         }
                     />
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {items.map((item) => (
-                                <SidebarMenuItem key={item.title}>
+                            {chats.map((chat) => (
+                                <SidebarMenuItem key={chat.title}>
                                     <SidebarMenuButton asChild>
-                                        <a href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </a>
+                                        <span>{chat.title}</span>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

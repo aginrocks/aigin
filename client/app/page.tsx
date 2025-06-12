@@ -50,7 +50,7 @@ export default function Page() {
                     generate.mutate({
                         prompt: 'write me a poem',
                         model: 'google:gemini-2.5-flash-preview-05-20',
-                        chatId: '684a07d0e4d1230fcaaf67b1',
+                        // chatId: '684a07d0e4d1230fcaaf67b1',
                         // model: 'openai:gpt-4o-mini',
                     })
                 }

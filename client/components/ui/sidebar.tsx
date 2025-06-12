@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { IconLayoutSidebar } from '@tabler/icons-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -245,25 +246,32 @@ function Sidebar({
     );
 }
 
-function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar } = useSidebar();
+interface SidebarTriggerProps extends React.ComponentProps<typeof Button> {
+    hideOnOpen?: boolean;
+}
+
+function SidebarTrigger({ className, onClick, hideOnOpen, ...props }: SidebarTriggerProps) {
+    const { toggleSidebar, open } = useSidebar();
 
     return (
-        <Button
-            data-sidebar="trigger"
-            data-slot="sidebar-trigger"
-            variant="ghost"
-            size="icon"
-            className={cn('size-9', className)}
-            onClick={(event) => {
-                onClick?.(event);
-                toggleSidebar();
-            }}
-            {...props}
-        >
-            <PanelLeftIcon className={'size-5'} />
-            <span className="sr-only">Toggle Sidebar</span>
-        </Button>
+        <>
+            {(!hideOnOpen || !open) && (
+                <Button
+                    data-sidebar="trigger"
+                    data-slot="sidebar-trigger"
+                    variant="ghost"
+                    size="icon"
+                    onClick={(event) => {
+                        onClick?.(event);
+                        toggleSidebar();
+                    }}
+                    {...props}
+                >
+                    <IconLayoutSidebar />
+                    <span className="sr-only">Toggle Sidebar</span>
+                </Button>
+            )}
+        </>
     );
 }
 
@@ -435,7 +443,7 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
         <ul
             data-slot="sidebar-menu"
             data-sidebar="menu"
-            className={cn('flex w-full min-w-0 flex-col gap-1', className)}
+            className={cn('flex w-full min-w-0 flex-col gap-1 pt-2', className)}
             {...props}
         />
     );
