@@ -251,11 +251,11 @@ interface SidebarTriggerProps extends React.ComponentProps<typeof Button> {
 }
 
 function SidebarTrigger({ className, onClick, hideOnOpen, ...props }: SidebarTriggerProps) {
-    const { toggleSidebar, open } = useSidebar();
+    const { toggleSidebar, open, openMobile, state, isMobile, setOpenMobile } = useSidebar();
 
     return (
         <>
-            {(!hideOnOpen || !open) && (
+            {!(hideOnOpen && (isMobile ? openMobile : open)) && (
                 <Button
                     data-sidebar="trigger"
                     data-slot="sidebar-trigger"

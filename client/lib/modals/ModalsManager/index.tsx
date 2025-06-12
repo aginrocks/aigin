@@ -42,37 +42,39 @@ export function ModalsManagerProvider({ children }: ModalsManagerProps) {
         [modals]
     );
 
-    const hide = useCallback(
-        <T extends ModalName>(modalName: T, payload?: ModalReturnValue<T>) => {
-            try {
-                setModals((m) => {
-                    const newModals = { ...m };
-                    if (newModals[modalName]) {
-                        if (newModals[modalName].state === 'closing') {
-                            throw new Error('Modal is already closing');
-                        }
-                        newModals[modalName].state = 'closing';
+    const hide = useCallback(<T extends ModalName>(modalName: T, payload?: ModalReturnValue<T>) => {
+        setModals((currentModals) => {
+            const modalToHide = currentModals[modalName];
+
+            if (!modalToHide || modalToHide.state === 'closing') {
+                return currentModals;
+            }
+            const updatedModals = {
+                ...currentModals,
+                [modalName]: {
+                    ...modalToHide,
+                    state: 'closing',
+                },
+            };
+
+            requestAnimationFrame(() => {
+                (modalToHide.resolve as (value: ModalReturnValue<T> | undefined) => void)(payload);
+            });
+
+            setTimeout(() => {
+                setModals((latestModals) => {
+                    if (latestModals[modalName]?.state === 'closing') {
+                        const newModalsAfterRemoval = { ...latestModals };
+                        delete newModalsAfterRemoval[modalName];
+                        return newModalsAfterRemoval;
                     }
-                    requestAnimationFrame(() => {
-                        (
-                            newModals[modalName]?.resolve as (
-                                value: ModalReturnValue<T> | undefined
-                            ) => void
-                        )(payload);
-                    });
-                    return newModals;
+                    return latestModals;
                 });
-                setTimeout(() => {
-                    setModals((m) => {
-                        const newModals = { ...m };
-                        delete newModals[modalName];
-                        return newModals;
-                    });
-                }, CLOSE_DURATION_MS);
-            } catch (error) {}
-        },
-        [modals]
-    );
+            }, CLOSE_DURATION_MS);
+
+            return updatedModals;
+        });
+    }, []);
 
     return (
         <ModalsContext.Provider value={{ show, hide }}>

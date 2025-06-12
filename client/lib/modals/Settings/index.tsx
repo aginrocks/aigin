@@ -2,38 +2,34 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { ModalProps } from '../ModalsManager';
 import {
-    IconBell,
+    IconApps,
     IconBrush,
-    IconDevices,
     IconHelp,
     IconKey,
-    IconKeyboard,
-    IconMicrophone,
+    IconMessage,
     IconUsers,
 } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Appearance } from './Appearance';
 import { SettingsSidebar, SidebarTab, SidebarTabProps } from '@/components/settings';
 import { SettingsPage } from '@/components/settings/settings-page';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 export type SettingsTabName =
-    | 'accounts'
+    | 'account'
     | 'appearance'
-    | 'devices'
-    | 'encryption'
-    | 'notifications'
-    | 'voice-video'
-    | 'keybinds'
+    | 'models'
+    | 'api-keys'
+    | 'applications'
     | 'about';
 
 type SettingsTab = Omit<SidebarTabProps, 'active'>;
 
 const tabs: SettingsTab[] = [
     {
-        id: 'accounts',
+        id: 'account',
         icon: IconUsers,
-        label: 'Accounts',
+        label: 'Account',
     },
     {
         id: 'appearance',
@@ -41,29 +37,19 @@ const tabs: SettingsTab[] = [
         label: 'Appearance',
     },
     {
-        id: 'devices',
-        icon: IconDevices,
-        label: 'Devices',
+        id: 'models',
+        icon: IconMessage,
+        label: 'Models',
     },
     {
-        id: 'encryption',
+        id: 'api-keys',
         icon: IconKey,
-        label: 'Encryption',
+        label: 'Api Keys',
     },
     {
-        id: 'notifications',
-        icon: IconBell,
-        label: 'Notifications',
-    },
-    {
-        id: 'voice-video',
-        icon: IconMicrophone,
-        label: 'Voice & Video',
-    },
-    {
-        id: 'keybinds',
-        icon: IconKeyboard,
-        label: 'Keybinds',
+        id: 'applications',
+        icon: IconApps,
+        label: 'Applications',
     },
     {
         id: 'about',
@@ -76,11 +62,12 @@ export function Settings({
     payload,
     ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root> & ModalProps<'Settings'>) {
-    const [tab, setTab] = useState<SettingsTabName>(payload?.initialTab || 'accounts');
+    const [tab, setTab] = useState<SettingsTabName>(payload?.initialTab || 'account');
 
     return (
         <Dialog {...props}>
-            <DialogContent className="w-4xl h-150 p-0 bg overflow-hidden">
+            <DialogContent className="sm:max-w-3xl h-150 p-0 bg overflow-hidden">
+                <DialogTitle className="sr-only">Settings</DialogTitle>
                 <div className="flex w-full h-full">
                     <SettingsSidebar title="Settings">
                         {tabs.map((t) => (
