@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { IconLayoutSidebar } from '@tabler/icons-react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -245,25 +246,32 @@ function Sidebar({
     );
 }
 
-function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
-    const { toggleSidebar } = useSidebar();
+interface SidebarTriggerProps extends React.ComponentProps<typeof Button> {
+    hideOnOpen?: boolean;
+}
+
+function SidebarTrigger({ className, onClick, hideOnOpen, ...props }: SidebarTriggerProps) {
+    const { toggleSidebar, open, openMobile, state, isMobile, setOpenMobile } = useSidebar();
 
     return (
-        <Button
-            data-sidebar="trigger"
-            data-slot="sidebar-trigger"
-            variant="ghost"
-            size="icon"
-            className={cn('size-9', className)}
-            onClick={(event) => {
-                onClick?.(event);
-                toggleSidebar();
-            }}
-            {...props}
-        >
-            <PanelLeftIcon className={'size-5'} />
-            <span className="sr-only">Toggle Sidebar</span>
-        </Button>
+        <>
+            {!(hideOnOpen && (isMobile ? openMobile : open)) && (
+                <Button
+                    data-sidebar="trigger"
+                    data-slot="sidebar-trigger"
+                    variant="ghost"
+                    size="icon"
+                    onClick={(event) => {
+                        onClick?.(event);
+                        toggleSidebar();
+                    }}
+                    {...props}
+                >
+                    <IconLayoutSidebar />
+                    <span className="sr-only">Toggle Sidebar</span>
+                </Button>
+            )}
+        </>
     );
 }
 
@@ -435,7 +443,7 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
         <ul
             data-slot="sidebar-menu"
             data-sidebar="menu"
-            className={cn('flex w-full min-w-0 flex-col gap-1', className)}
+            className={cn('flex w-full min-w-0 flex-col gap-1 pt-2', className)}
             {...props}
         />
     );
@@ -446,14 +454,22 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
         <li
             data-slot="sidebar-menu-item"
             data-sidebar="menu-item"
-            className={cn('group/menu-item relative', className)}
+            className={cn('group/menu-item relative cursor-pointer', className)}
             {...props}
         />
     );
 }
 
+function SidebarLabel({ className, children, ...props }: React.ComponentProps<'div'>) {
+    return (
+        <div className={cn('px-2 font-semibold mb-1 mt-2', className)} {...props}>
+            {children}
+        </div>
+    );
+}
+
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+    'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-0 px-4 text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
     {
         variants: {
             variant: {
@@ -693,4 +709,5 @@ export {
     SidebarSeparator,
     SidebarTrigger,
     useSidebar,
+    SidebarLabel,
 };
