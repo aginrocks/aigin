@@ -8,6 +8,7 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -50,22 +51,37 @@ const chats = [
     {
         title: 'Template chat',
         id: 'asdfgafgadfgg',
+        date: new Date('2023-10-01T12:00:00Z'),
     },
     {
         title: 'Template chat',
-        id: 'asdfgafgadfgg',
+        id: 'asdfgafgsdfadfgg',
+        date: new Date('2024-10-01T12:00:00Z'),
     },
     {
         title: 'Template chat',
-        id: 'asdfgafgadfgg',
+        id: 'asdasdfgafgadfgg',
+        date: new Date('2023-111T12:00:00Z'),
     },
     {
         title: 'Template chat',
-        id: 'asdfgafgadfgg',
+        id: 'asdfga345fgadfgg',
+        date: new Date('2025-01-01T12:00:00Z'),
     },
     {
         title: 'Template chat',
-        id: 'asdfgafgadfgg',
+        id: 'as234dfgafgadfgg',
+        date: new Date('2021-10-01T12:00:00Z'),
+    },
+    {
+        title: 'Template chat',
+        id: 'as234dfgafg4213adfgg',
+        date: new Date('2025-06-12T12:00:00Z'),
+    },
+    {
+        title: 'Template chat',
+        id: 'as234dfgaasdfgadfgg',
+        date: new Date('2025-06-11T12:00:00Z'),
     },
 ];
 
@@ -88,13 +104,46 @@ export function AppSidebar() {
                     />
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {chats.map((chat) => (
-                                <SidebarMenuItem key={chat.title}>
-                                    <SidebarMenuButton asChild>
-                                        <span>{chat.title}</span>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                            <SidebarLabel>Today</SidebarLabel>
+                            {chats
+                                .filter(
+                                    (chat) => chat.date.toDateString() === new Date().toDateString()
+                                )
+                                .map((chat) => (
+                                    <SidebarMenuItem key={chat.id}>
+                                        <SidebarMenuButton asChild>
+                                            <span>{chat.title}</span>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            <SidebarLabel>Yesterday</SidebarLabel>
+                            {chats
+                                .filter(
+                                    (chat) =>
+                                        chat.date.toDateString() ===
+                                        new Date(Date.now() - 86400000).toDateString()
+                                )
+                                .map((chat) => (
+                                    <SidebarMenuItem key={chat.id}>
+                                        <SidebarMenuButton asChild>
+                                            <span>{chat.title}</span>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            <SidebarLabel>Older</SidebarLabel>
+                            {chats
+                                .filter(
+                                    (chat) =>
+                                        chat.date.toDateString() <
+                                        new Date(Date.now() - 86400000).toDateString()
+                                )
+                                .map((chat) => (
+                                    <SidebarMenuItem key={chat.id}>
+                                        <SidebarMenuButton asChild>
+                                            <span>{chat.title}</span>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
