@@ -3,32 +3,18 @@ import { loadContext } from '@ai/generation-manager';
 import { Chat, deserializeMessages } from '@models/chat';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { withValidChatId } from './middlewares';
 
-export const get = protectedProcedure
+export const get = withValidChatId
     .input(
         z.object({
             chatId: z.string(),
         })
     )
     .subscription(async function* ({ ctx, input, signal }) {
-        const chat = await Chat.findById(input.chatId);
-        if (!chat) {
-            throw new TRPCError({
-                code: 'NOT_FOUND',
-                message: 'Chat not found',
-            });
-        }
-
-        if (chat.user.toString() !== ctx.user._id.toString()) {
-            throw new TRPCError({
-                code: 'FORBIDDEN',
-                message: 'You do not have permission to access this chat',
-            });
-        }
-
         const chatObject = {
-            ...chat.toObject(),
-            messages: deserializeMessages(chat.messages),
+            ...ctx.chat.toObject(),
+            messages: deserializeMessages(ctx.chat.messages),
         };
 
         const cachedChat = await loadContext(ctx.user, input.chatId);

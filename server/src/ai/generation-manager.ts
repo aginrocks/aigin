@@ -3,11 +3,18 @@ import { TUser } from '@models/user';
 import { Message, streamText, TextStreamPart, ToolSet } from 'ai';
 import { getUserRegistry } from './registry';
 import { IterableEventEmitter } from '@/iterables';
+import { TRPCError } from '@trpc/server';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
 
 export const perUserEmitters: Map<string, IterableEventEmitter<ChatsEventMap>> = new Map();
+
+export function isChatGenerating(chatId: string) {
+    const chat = chatsStore.get(chatId);
+    if (!chat) return false;
+    return chat.isGenerating;
+}
 
 export function getUserEmitter(userId: string) {
     if (!perUserEmitters.has(userId)) {
@@ -49,7 +56,7 @@ export type ChatsEventMap = {
      * Emitted when a chat is renamed.
      * The first string is the chat ID.
      */
-    'chat:renamed': [string];
+    'chat:renamed': [string, string | null, string];
 
     /**
      * Emitted when a chat is deleted.
@@ -109,6 +116,8 @@ export class CachedChat {
     public setGenerating(generating: boolean) {
         this.isGenerating = generating;
         this.emitGlobalEvent('chat:generating', this.id, generating);
+        // TODO: Optimize the event system to avoid unnecessary queries to the database
+        this.emitGlobalEvent('chat:changed', this.id);
     }
 
     public async sendMessage({ model, content }: SendMessage) {
@@ -242,7 +251,17 @@ export async function loadContext(user: TUser, chatId?: string) {
     if (chatId) {
         chatDetails = await Chat.findById(chatId);
         if (!chatDetails) {
-            throw new Error(`Chat with ID ${chatId} not found`);
+            throw new TRPCError({
+                code: 'NOT_FOUND',
+                message: 'Chat not found',
+            });
+        }
+
+        if (chatDetails.user.toString() !== user._id.toString()) {
+            throw new TRPCError({
+                code: 'FORBIDDEN',
+                message: 'You do not have permission to access this chat',
+            });
         }
 
         messages = deserializeMessages(chatDetails.messages);
