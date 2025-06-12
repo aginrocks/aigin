@@ -1,4 +1,4 @@
-import { protectedProcedure, publicProcedure, router } from './trpc';
+import { router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
 import { initDatabase } from './db';

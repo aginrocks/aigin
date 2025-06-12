@@ -31,7 +31,7 @@ export const getAll = protectedProcedure.subscription(async function* ({ ctx, si
         signal,
     });
 
-    for await (const [chatId] of iterable) {
+    for await (const _ of iterable) {
         // TODO: Optimize the event system to avoid unnecessary queries to the database
         yield await fetchChats(ctx.user._id);
     }

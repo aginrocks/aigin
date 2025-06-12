@@ -1,7 +1,5 @@
-import { protectedProcedure } from '@/trpc';
 import { loadContext } from '@ai/generation-manager';
-import { Chat, deserializeMessages } from '@models/chat';
-import { TRPCError } from '@trpc/server';
+import { deserializeMessages } from '@models/chat';
 import { z } from 'zod';
 import { withValidChatId } from './middlewares';
 
