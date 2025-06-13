@@ -3,6 +3,8 @@
  * Based on: https://openrouter.ai/docs/overview/models
  */
 
+import { ModelCapability, TModel } from '@models/model';
+
 // Supported input/output modalities
 export type InputModality = 'file' | 'image' | 'text';
 export type OutputModality = 'text';
@@ -112,14 +114,10 @@ export interface ModelsApiResponse {
 /**
  * Fetches available models from OpenRouter API
  */
-export async function fetchModels(apiKey?: string): Promise<ModelsApiResponse> {
+export async function fetchModels(): Promise<ModelsApiResponse> {
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
     };
-
-    if (apiKey) {
-        headers['Authorization'] = `Bearer ${apiKey}`;
-    }
 
     const response = await fetch('https://openrouter.ai/api/v1/models', {
         method: 'GET',
@@ -133,56 +131,38 @@ export async function fetchModels(apiKey?: string): Promise<ModelsApiResponse> {
     return response.json() as Promise<ModelsApiResponse>;
 }
 
-/**
- * Filters models by supported parameters
- */
-export function filterModelsByParameters(
-    models: Model[],
-    requiredParameters: SupportedParameter[]
-): Model[] {
-    return models.filter((model) =>
-        requiredParameters.every((param) => model.supported_parameters.includes(param))
-    );
-}
+export async function fetchAndParseModels(): Promise<Omit<TModel, '_id'>[]> {
+    try {
+        const response = await fetchModels();
 
-/**
- * Filters models by input modalities
- */
-export function filterModelsByInputModality(
-    models: Model[],
-    requiredModalities: InputModality[]
-): Model[] {
-    return models.filter((model) =>
-        requiredModalities.every((modality) =>
-            model.architecture.input_modalities.includes(modality)
-        )
-    );
-}
+        const models = response.data.map((model): Omit<TModel, '_id'> => {
+            const capabilities: ModelCapability[] = model.architecture.input_modalities
+                .map((modality) => {
+                    if (modality === 'file') return 'file';
+                    if (modality === 'image') return 'vision';
+                })
+                .filter((x) => !!x);
 
-/**
- * Sorts models by cost (prompt + completion tokens)
- */
-export function sortModelsByCost(models: Model[], ascending = true): Model[] {
-    return [...models].sort((a, b) => {
-        const aCost = parseFloat(a.pricing.prompt) + parseFloat(a.pricing.completion);
-        const bCost = parseFloat(b.pricing.prompt) + parseFloat(b.pricing.completion);
-        return ascending ? aCost - bCost : bCost - aCost;
-    });
-}
+            if (model.supported_parameters.includes('reasoning')) capabilities.push('reasoning');
+            if (model.supported_parameters.includes('tools')) capabilities.push('tools');
 
-/**
- * Finds models by context length range
- */
-export function filterModelsByContextLength(
-    models: Model[],
-    minContextLength: number,
-    maxContextLength?: number
-): Model[] {
-    return models.filter((model) => {
-        const contextLength = model.context_length;
-        return (
-            contextLength >= minContextLength &&
-            (maxContextLength === undefined || contextLength <= maxContextLength)
-        );
-    });
+            return {
+                slug: model.canonical_slug,
+                name: model.name.includes(':') ? model.name.split(':')[1].trim() : model.name,
+                description: model.description.split('.')[0].trim() + '.',
+                capabilities,
+                providers: [
+                    {
+                        provider: 'openrouter',
+                        modelId: model.canonical_slug,
+                    },
+                ],
+            };
+        });
+
+        return models;
+    } catch (error) {
+        console.error('Error fetching models:', error);
+        throw error;
+    }
 }

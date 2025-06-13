@@ -7,10 +7,11 @@ export const MODEL_CAPABILITIES = [
     'fast',
     'vision',
     'search',
-    'pdf',
+    'file',
     'reasoning',
     'effort-control',
     'image-generation',
+    'tools',
 ] as const;
 export type ModelCapability = (typeof MODEL_CAPABILITIES)[number];
 
