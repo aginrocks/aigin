@@ -19,7 +19,7 @@ import { Header } from './ui/header';
 import { Button } from './ui/button';
 import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useAvatar } from '@lib/hooks';
 
 // Menu items.
 const items = [
@@ -92,23 +92,7 @@ export function AppSidebar() {
     const trpc = useTRPC();
     const { data: userData } = useQuery(trpc.auth.info.queryOptions());
 
-    const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
-
-    useEffect(() => {
-        (async () => {
-            if (userData) {
-                const encoder = new TextEncoder();
-                const data = encoder.encode(userData.email?.toLowerCase().trim() || '');
-                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const gravatarHash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-                setAvatarUrl(`https://www.gravatar.com/avatar/${gravatarHash}?d=identicon`);
-                console.log(
-                    `Avatar URL: https://www.gravatar.com/avatar/${gravatarHash}?d=identicon`
-                );
-            }
-        })();
-    }, [userData]);
+    const avatarUrl = useAvatar(userData?.email);
 
     return (
         <Sidebar>
