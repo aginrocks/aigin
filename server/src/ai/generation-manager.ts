@@ -5,6 +5,7 @@ import { getUserRegistry } from './registry';
 import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
+import { ModelId } from '@constants/providers';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
@@ -205,16 +206,17 @@ export class CachedChat {
         this.emitter.emit('message:delta', part);
     }
 
-    private async attemptTitleGeneration(model: `${string}:${string}`) {
-        const { user, system } = getGenerationPrompt(this.messages[0]?.content);
+    private async attemptTitleGeneration(model: ModelId) {
+        console.log(`Attempting to generate title with model: ${model}`);
+        const { user, system } = getGenerationPrompt(model, this.messages[0]?.content);
 
         const registry = getUserRegistry(this.user);
 
         const response = await generateText({
             model: registry.languageModel(model),
             messages: [
-                { role: 'system', content: system },
-                { role: 'user', content: user },
+                ...(system ? [{ role: 'system' as const, content: system }] : []),
+                { role: 'user' as const, content: user },
             ],
         });
 
@@ -230,6 +232,8 @@ export class CachedChat {
             return 'New Chat';
         }
 
+        console.log({ avaliableModels });
+
         for (const model of avaliableModels) {
             try {
                 const title = await this.attemptTitleGeneration(model);
@@ -243,6 +247,7 @@ export class CachedChat {
     }
 
     public async generateTitle() {
+        const before = Date.now();
         const title = await this._generateTitle();
         const oldChat = await Chat.findByIdAndUpdate(
             this.id,
@@ -254,6 +259,7 @@ export class CachedChat {
             }
         );
         this.emitGlobalEvent('chat:renamed', this.id, oldChat?.name || null, title);
+        console.log(`Chat title generated in ${Date.now() - before}ms: ${title}`);
     }
 
     private emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {

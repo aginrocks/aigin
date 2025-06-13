@@ -15,6 +15,9 @@ export type Provider = {
     logo: string;
 };
 
+export type ProviderId = (typeof PROVIDER_IDS)[number];
+export type ModelId = `${ProviderId}:${string}`;
+
 export const PROVIDERS: Provider[] = [
     {
         id: 'google',

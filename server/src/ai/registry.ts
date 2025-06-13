@@ -2,11 +2,12 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAzure } from '@ai-sdk/azure';
 import { createXai } from '@ai-sdk/xai';
-import { createProviderRegistry, streamText } from 'ai';
+import { createProviderRegistry } from 'ai';
 import { TUser } from '@models/user';
 import { ProviderV1 } from '@ai-sdk/provider';
 import { PROVIDER_IDS } from '@constants/providers';
 import { createOpenAI } from '@ai-sdk/openai';
+import { createGroq } from '@ai-sdk/groq';
 
 export const getUserRegistry = (user: TUser) => {
     const { anthropic, google, groq, azure, xai, deepseek, openai, openrouter } = user.providers;
@@ -24,7 +25,7 @@ export const getUserRegistry = (user: TUser) => {
         });
     }
     if (groq.enabled && groq.apiKey) {
-        providers.groq = createGoogleGenerativeAI({
+        providers.groq = createGroq({
             apiKey: groq.apiKey,
         });
     }
