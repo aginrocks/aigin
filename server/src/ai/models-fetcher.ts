@@ -147,6 +147,7 @@ export async function fetchAndParseModels(): Promise<Omit<TModel, '_id'>[]> {
             if (model.supported_parameters.includes('tools')) capabilities.push('tools');
 
             return {
+                category: 'other',
                 slug: model.canonical_slug,
                 name: model.name.includes(':') ? model.name.split(':')[1].trim() : model.name,
                 description: model.description.split('.')[0].trim() + '.',
@@ -157,6 +158,7 @@ export async function fetchAndParseModels(): Promise<Omit<TModel, '_id'>[]> {
                         modelId: model.canonical_slug,
                     },
                 ],
+                family: 'other',
             };
         });
 
