@@ -61,7 +61,7 @@ const chats = [
     {
         title: 'Template chat',
         id: 'asdasdfgafgadfgg',
-        date: new Date('2023-111T12:00:00Z'),
+        date: new Date('2023-11-01T12:00:00Z'),
     },
     {
         title: 'Template chat',
@@ -81,7 +81,7 @@ const chats = [
     {
         title: 'Template chat',
         id: 'as234dfgaasdfgadfgg',
-        date: new Date('2025-06-11T12:00:00Z'),
+        date: new Date('2025-06-11T18:00:00Z'),
     },
 ];
 
@@ -104,45 +104,47 @@ export function AppSidebar() {
                     />
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            <SidebarLabel>Today</SidebarLabel>
                             {chats
                                 .filter(
                                     (chat) => chat.date.toDateString() === new Date().toDateString()
                                 )
-                                .map((chat) => (
-                                    <SidebarMenuItem key={chat.id}>
-                                        <SidebarMenuButton asChild>
-                                            <span>{chat.title}</span>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
+                                .map((chat, i) => (
+                                    <>
+                                        {i == 0 && <SidebarLabel>Today</SidebarLabel>}
+                                        <SidebarMenuItem key={chat.id}>
+                                            <SidebarMenuButton asChild>
+                                                <span>{chat.title}</span>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    </>
                                 ))}
-                            <SidebarLabel>Yesterday</SidebarLabel>
                             {chats
                                 .filter(
                                     (chat) =>
                                         chat.date.toDateString() ===
                                         new Date(Date.now() - 86400000).toDateString()
                                 )
-                                .map((chat) => (
-                                    <SidebarMenuItem key={chat.id}>
-                                        <SidebarMenuButton asChild>
-                                            <span>{chat.title}</span>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
+                                .map((chat, i) => (
+                                    <>
+                                        {i == 0 && <SidebarLabel>Yesterday</SidebarLabel>}
+                                        <SidebarMenuItem key={chat.id}>
+                                            <SidebarMenuButton asChild>
+                                                <span>{chat.date.toDateString()}</span>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    </>
                                 ))}
-                            <SidebarLabel>Older</SidebarLabel>
                             {chats
-                                .filter(
-                                    (chat) =>
-                                        chat.date.toDateString() <
-                                        new Date(Date.now() - 86400000).toDateString()
-                                )
-                                .map((chat) => (
-                                    <SidebarMenuItem key={chat.id}>
-                                        <SidebarMenuButton asChild>
-                                            <span>{chat.title}</span>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
+                                .filter((chat) => chat.date < new Date(Date.now() - 86400000))
+                                .map((chat, i) => (
+                                    <>
+                                        {i == 0 && <SidebarLabel>Older</SidebarLabel>}
+                                        <SidebarMenuItem key={chat.id}>
+                                            <SidebarMenuButton asChild>
+                                                <span>{chat.date.toDateString()}</span>
+                                            </SidebarMenuButton>
+                                        </SidebarMenuItem>
+                                    </>
                                 ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
