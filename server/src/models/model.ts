@@ -38,7 +38,7 @@ export const modelSchema = z.object({
      * The 'other' category exists to allow users to interact with any OpenRouter model
      */
     category: z.enum(['flagship', 'other']),
-    slug: z.string().unique(),
+    slug: z.string(),
     name: z.string(),
     description: z.string(),
     capabilities: z.array(z.enum(MODEL_CAPABILITIES)),

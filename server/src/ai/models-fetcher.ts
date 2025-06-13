@@ -3,7 +3,8 @@
  * Based on: https://openrouter.ai/docs/overview/models
  */
 
-import { ModelCapability, TModel } from '@models/model';
+import { FLAGSHIP_MODELS } from '@constants/flagship-models';
+import { Model, ModelCapability, TModel } from '@models/model';
 
 // Supported input/output modalities
 export type InputModality = 'file' | 'image' | 'text';
@@ -167,4 +168,33 @@ export async function fetchAndParseModels(): Promise<Omit<TModel, '_id'>[]> {
         console.error('Error fetching models:', error);
         throw error;
     }
+}
+
+export async function updateAllModels() {
+    const openRouterModels = await fetchAndParseModels();
+
+    const notFlagshipModels = openRouterModels.filter(
+        (m) =>
+            FLAGSHIP_MODELS.find(
+                (f) =>
+                    f.providers.find((p) => p.provider === 'openrouter')?.modelId ===
+                    m.providers[0].modelId
+            ) === undefined
+    );
+
+    const allModels = [...FLAGSHIP_MODELS, ...notFlagshipModels];
+
+    const operations = allModels.map((model) => ({
+        updateOne: {
+            filter: { slug: model.slug },
+            update: {
+                $set: model,
+            },
+            upsert: true,
+        },
+    }));
+
+    await Model.bulkWrite(operations, { ordered: false });
+
+    console.log(`Updated ${allModels.length} models in the database.`);
 }

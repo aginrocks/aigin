@@ -14,6 +14,7 @@ import { modelsRouter } from '@routers/models';
 import { chatRouter } from '@routers/chat';
 import enableDestroy from 'server-destroy';
 import { settingsRouter } from '@routers/settings';
+import { updateAllModels } from '@ai/models-fetcher';
 
 dotenv.config();
 extendZod(z);
@@ -79,3 +80,5 @@ process.on('SIGTERM', () => {
         process.exit(0);
     });
 });
+
+updateAllModels();
