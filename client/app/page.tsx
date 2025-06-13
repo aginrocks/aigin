@@ -24,6 +24,14 @@ export default function Page() {
         })
     );
 
+    const share = useMutation(
+        trpc.chat.share.mutationOptions({
+            onSuccess: (data) => {
+                console.log('Share success:', data);
+            },
+        })
+    );
+
     const [msg, setMsg] = useState('');
 
     const subscription = useSubscription(
@@ -45,6 +53,15 @@ export default function Page() {
 
     return (
         <div>
+            <Button
+                onClick={() =>
+                    share.mutate({
+                        chatId: '684ca6cc15ea4a1b1032395b',
+                    })
+                }
+            >
+                share
+            </Button>
             <Button
                 onClick={() =>
                     generate.mutate({
