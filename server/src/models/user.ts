@@ -45,3 +45,13 @@ export type TUser = z.infer<typeof userSchema> & {
 
 const schema = zodSchema(userSchema);
 export const User = mongoose.model('User', schema);
+
+export function getUserProviders(user: TUser): (typeof PROVIDER_IDS)[number][] {
+    const availableProviders: (typeof PROVIDER_IDS)[number][] = PROVIDER_IDS.filter(
+        (providerId) => {
+            const provider = user.providers[providerId];
+            return provider && provider.enabled && provider.apiKey;
+        }
+    );
+    return availableProviders;
+}

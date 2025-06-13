@@ -1,9 +1,10 @@
 import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
-import { TUser } from '@models/user';
-import { Message, streamText, TextStreamPart, ToolSet } from 'ai';
+import { getUserProviders, TUser } from '@models/user';
+import { generateText, Message, streamText, TextStreamPart, ToolSet } from 'ai';
 import { getUserRegistry } from './registry';
 import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
+import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
@@ -145,6 +146,7 @@ export class CachedChat {
         // Set generating flag and don't await - let this run in the background so the mutation can return immediately
         this.setGenerating(true);
         this.processStream(response.fullStream);
+        this.generateTitle();
     }
 
     private async processStream(stream: AsyncIterable<TextStreamPart<ToolSet>>) {
@@ -201,6 +203,57 @@ export class CachedChat {
         }
 
         this.emitter.emit('message:delta', part);
+    }
+
+    private async attemptTitleGeneration(model: `${string}:${string}`) {
+        const { user, system } = getGenerationPrompt(this.messages[0]?.content);
+
+        const registry = getUserRegistry(this.user);
+
+        const response = await generateText({
+            model: registry.languageModel(model),
+            messages: [
+                { role: 'system', content: system },
+                { role: 'user', content: user },
+            ],
+        });
+
+        const title = response.text.replaceAll(/[*_~`#]/g, '').trim();
+
+        return title;
+    }
+
+    private async _generateTitle() {
+        const avaliableProviders = getUserProviders(this.user);
+        const avaliableModels = getTitleGenerationModels(avaliableProviders);
+        if (avaliableModels.length === 0) {
+            return 'New Chat';
+        }
+
+        for (const model of avaliableModels) {
+            try {
+                const title = await this.attemptTitleGeneration(model);
+                if (title) return title;
+            } catch (error) {
+                console.error(`Error generating title with model ${model}:`, error);
+            }
+        }
+
+        return 'New Chat';
+    }
+
+    public async generateTitle() {
+        const title = await this._generateTitle();
+        const oldChat = await Chat.findByIdAndUpdate(
+            this.id,
+            {
+                name: title,
+            },
+            {
+                returnDocument: 'before',
+            }
+        );
+        this.emitGlobalEvent('chat:renamed', this.id, oldChat?.name || null, title);
     }
 
     private emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {
