@@ -53,9 +53,10 @@ export default function Page() {
                         // model: 'openrouter:openai/gpt-4.1-nano',
                         // model: 'anthropic:claude-3-5-sonnet-20241022',
                         // model: 'groq:deepseek-r1-distill-llama-70b',
-                        model: 'groq:meta-llama/llama-4-scout-17b-16e-instruct',
+                        // model: 'groq:meta-llama/llama-4-scout-17b-16e-instruct',
                         // chatId: '684a07d0e4d1230fcaaf67b1',
                         // model: 'openai:gpt-4o-mini',
+                        model: 'azure:meta/Llama-4-Scout-17B-16E-Instruct',
                     })
                 }
             >

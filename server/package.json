@@ -24,6 +24,7 @@
     "@hono/oidc-auth": "^1.6.1",
     "@hono/trpc-server": "^0.3.4",
     "@openrouter/ai-sdk-provider": "^0.7.1",
+    "@quail-ai/azure-ai-provider": "^1.2.0",
     "@trpc/server": "^11.3.1",
     "@types/server-destroy": "^1.0.4",
     "@zodyac/zod-mongoose": "^4.1.0",

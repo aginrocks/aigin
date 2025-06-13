@@ -1,6 +1,6 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { createAzure } from '@ai-sdk/azure';
+import { createAzure } from '@quail-ai/azure-ai-provider';
 import { createXai } from '@ai-sdk/xai';
 import { createProviderRegistry } from 'ai';
 import { TUser } from '@models/user';
@@ -32,6 +32,7 @@ export const getUserRegistry = (user: TUser) => {
     if (azure.enabled && azure.apiKey) {
         providers.azure = createAzure({
             apiKey: azure.apiKey,
+            endpoint: 'https://models.github.ai/inference',
         });
     }
     if (xai.enabled && xai.apiKey) {
