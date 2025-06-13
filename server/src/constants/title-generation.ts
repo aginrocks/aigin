@@ -40,7 +40,7 @@ Focus on the main topic or purpose of the conversation
 Use clear, specific language that helps users identify the chat later
 Try to make the title as short as possible
 Make the title descriptive and neutral (don't mention the user)
-Avoid generic words like "chat", "conversation", "discussion" unless necessary
+Avoid generic words like "chat", "conversation", "discussion", "request" unless necessary
 Prioritize the most important or unique aspect of the conversation
 Use title case (capitalize major words)
 Never use quotes, special characters, or punctuation except hyphens
@@ -63,7 +63,8 @@ Examples of poor titles:
 "Quick question about something" (not descriptive)
 "Chat about various topics" (too generic)
 "User asks about Python and then JavaScript" (too long)
-"Poem Request for You" (mentions user)`,
+"Poem Request for You" (mentions user)
+"Request for help" (too generic, mentions request)`,
         user: `Based on this conversation, create a 2-4 word title that would help the user easily identify this chat later. Focus on the specific topic, task, or question being discussed:
 ${firstMessage}`,
     };

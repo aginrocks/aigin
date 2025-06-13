@@ -237,8 +237,8 @@ export class CachedChat {
         for (const model of avaliableModels) {
             try {
                 const title = await this.attemptTitleGeneration(model);
-                // if (title) return title;
                 console.log(`Generated title with model ${model}:`, title);
+                if (title) return title;
             } catch (error) {
                 console.error(`Error generating title with model ${model}:`, error);
             }
