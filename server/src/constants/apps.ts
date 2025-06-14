@@ -29,6 +29,7 @@ export const appSchema = z.object({
     environment: z.array(envSchema),
     image: z.string(),
     runCommand: z.string(),
+    runArgs: z.array(z.string()).optional(),
     headers: z.array(headerSchema).optional(),
     url: z.string().optional(),
 });

@@ -56,7 +56,9 @@ export async function getServerPod({
  */
 export async function getPodAddress(pod: V1Pod) {
     if (process.env.NODE_ENV === 'production')
-        return pod.status?.podIP ? `http://${pod.status.podIP}:8000/sse` : undefined;
+        return pod.status?.podIP
+            ? `http://${pod.status.podIP}:8000/${pod.metadata?.labels?.mcp_server}/sse`
+            : undefined;
 
     // In development, use kubectl port-forward to access the pod
     const podName = pod.metadata?.name;
@@ -69,5 +71,5 @@ export async function getPodAddress(pod: V1Pod) {
     console.log(command);
     // exec(command);
 
-    return podName ? `http://localhost:${port}/sse` : undefined;
+    return podName ? `http://localhost:${port}/${pod.metadata?.labels?.mcp_server}/sse` : undefined;
 }

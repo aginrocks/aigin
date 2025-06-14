@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mcp-proxy-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-proxy-binary-upload
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-proxy-binary-upload
+  template:
+    metadata:
+      labels:
+        app: mcp-proxy-binary-upload
+    spec:
+      containers:
+      - name: upload-container
+        image: alpine:latest
+        command: ["/bin/sleep", "infinity"]
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        volumeMounts:
+        - name: mcp-proxy-volune
+          mountPath: /uploads
+      volumes:
+      - name: mcp-proxy-volune
+        persistentVolumeClaim:
+          claimName: mcp-proxy-pvc

@@ -1,6 +1,7 @@
 import { k8sApi } from '@/kubernetes';
 import { App } from '@constants/apps';
 import { NAMESPACE } from '@constants/kubernetes';
+import { CoreV1ApiCreateNamespacedConfigMapRequest } from '@kubernetes/client-node';
 import { TAppConfig } from '@models/app-config';
 import Handlebars from 'handlebars';
 
@@ -21,6 +22,59 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
         return { name: env.variable, value: envTemplate(mcpConfigMap) };
     });
 
+    const configMapName = `mcpconfig-${userId}-${app.slug}`;
+
+    const proxyConfig = {
+        mcpProxy: {
+            baseURL: 'http://localhost:33783',
+            addr: ':8000',
+            name: app.name,
+            version: '1.0.0',
+            options: {
+                panicIfInvalid: false,
+                logEnabled: true,
+                authTokens: [],
+            },
+        },
+        mcpServers: {
+            [app.slug]: {
+                command: app.runCommand,
+                args: app.runArgs,
+                env: envMap.reduce((acc, env) => {
+                    acc[env.name] = env.value;
+                    return acc;
+                }, {} as Record<string, string>),
+            },
+        },
+    };
+
+    const configMap: CoreV1ApiCreateNamespacedConfigMapRequest = {
+        namespace: NAMESPACE,
+        body: {
+            apiVersion: 'v1',
+            kind: 'ConfigMap',
+            metadata: {
+                name: configMapName,
+                labels: {
+                    user_id: userId,
+                    mcp_server: app.slug,
+                },
+            },
+            data: {
+                'config.json': JSON.stringify(proxyConfig),
+            },
+        },
+    };
+
+    try {
+        await k8sApi?.replaceNamespacedConfigMap({
+            name: configMapName,
+            ...configMap,
+        });
+    } catch (error) {
+        await k8sApi?.createNamespacedConfigMap(configMap);
+    }
+
     const pod = await k8sApi?.createNamespacedPod({
         namespace: NAMESPACE,
         body: {
@@ -34,33 +88,21 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
                 },
             },
             spec: {
-                initContainers: [
-                    {
-                        name: 'setup-pipes',
-                        image: 'busybox:latest',
-                        command: ['/bin/sh', '-c'],
-                        args: ['mkfifo /pipes/to_worker /pipes/from_worker'],
-                        volumeMounts: [
-                            {
-                                name: 'pipes',
-                                mountPath: '/pipes',
-                            },
-                        ],
-                    },
-                ],
                 containers: [
                     {
                         name: 'mcp-server',
                         image: app.image,
                         env: envMap,
-                        command: ['/bin/sh', '-c'],
-                        args: [
-                            `touch /pipes/worker_ready && exec ${app.runCommand} < /pipes/to_worker > /pipes/from_worker 2>&1`,
-                        ],
+                        command: ['/bin/agin/mcp-proxy'],
+                        args: ['-config', '/etc/mcp-proxy/config.json'],
                         volumeMounts: [
                             {
-                                name: 'pipes',
-                                mountPath: '/pipes',
+                                name: 'mcp-proxy-volume',
+                                mountPath: '/bin/agin',
+                            },
+                            {
+                                name: 'mcp-config-volume',
+                                mountPath: '/etc/mcp-proxy',
                             },
                         ],
                         resources: {
@@ -69,61 +111,20 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
                                 memory: '512Mi',
                                 'ephemeral-storage': '128Mi',
                             },
-                        },
-                        readinessProbe: {
-                            exec: {
-                                command: [
-                                    '/bin/sh',
-                                    '-c',
-                                    'test -p /pipes/from_worker && test -p /pipes/to_worker',
-                                ],
-                            },
-                            initialDelaySeconds: 2,
-                            periodSeconds: 1,
-                        },
-                    },
-                    {
-                        name: 'proxy',
-                        image: 'ghcr.io/sparfenyuk/mcp-proxy:commit-04c92e4@sha256:31f8a7f9e1cbe2223be6ed4c4b12833e0e8e4499e2ff3dfea9c3e7ad9c944bb0',
-                        ports: [{ containerPort: 8000 }],
-                        command: ['/bin/sh', '-c'],
-                        args: [
-                            `while [ ! -f /pipes/worker_ready ]; do
-    sleep 1
-done
-exec mcp-proxy --host=0.0.0.0 --port=8000 -- sh -c 'cat /pipes/from_worker & cat > /pipes/to_worker'`,
-                        ],
-                        volumeMounts: [
-                            {
-                                name: 'pipes',
-                                mountPath: '/pipes',
-                            },
-                        ],
-                        resources: {
-                            limits: {
-                                cpu: '500m',
-                                memory: '512Mi',
-                                'ephemeral-storage': '128Mi',
-                            },
-                        },
-                        readinessProbe: {
-                            exec: {
-                                command: [
-                                    '/bin/sh',
-                                    '-c',
-                                    'test -p /pipes/from_worker && test -p /pipes/to_worker',
-                                ],
-                            },
-                            initialDelaySeconds: 2,
-                            periodSeconds: 1,
                         },
                     },
                 ],
                 volumes: [
                     {
-                        name: 'pipes',
-                        emptyDir: {
-                            medium: 'Memory',
+                        name: 'mcp-proxy-volume',
+                        persistentVolumeClaim: {
+                            claimName: 'mcp-proxy-pvc',
+                        },
+                    },
+                    {
+                        name: 'mcp-config-volume',
+                        configMap: {
+                            name: configMapName,
                         },
                     },
                 ],
