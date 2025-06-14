@@ -1,0 +1,7 @@
+{
+    "servers": {
+        "notion-11b4ef77": {
+            "url": "http://localhost:8000/sse"
+        }
+    }
+}

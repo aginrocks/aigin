@@ -15,9 +15,12 @@ import { chatRouter } from '@routers/chat';
 import enableDestroy from 'server-destroy';
 import { settingsRouter } from '@routers/settings';
 import { updateAllModels } from '@ai/models-fetcher';
-
+import { initKubernetes } from './kubernetes';
+import { initHandlebars } from './handlebars-json';
 dotenv.config();
 extendZod(z);
+initHandlebars();
+initKubernetes();
 
 const app = new Hono();
 
