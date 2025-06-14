@@ -66,6 +66,49 @@ export const APPS: App[] = [
         image: 'mcp/notion:latest',
         runCommand: 'notion-mcp-server',
     },
+    {
+        type: 'container/stdio',
+        slug: 'chess-com',
+        name: 'Chess.com',
+        description: 'A popular online chess platform.',
+        icon: '',
+        configuration: [],
+        environment: [],
+        image: 'pab1it0/chess-mcp:latest',
+        runCommand: '/app/.venv/bin/chess-mcp',
+    },
+    // {
+    //     type: 'container/stdio',
+    //     slug: 'gitea',
+    //     name: 'Gitea',
+    //     description: 'A self-hosted Git service.',
+    //     icon: '',
+    //     configuration: [
+    //         {
+    //             id: 'host',
+    //             name: 'Host',
+    //             description: 'The URL of your Gitea (or Forgejo) instance.',
+    //             exampleValue: 'https://gitea.com',
+    //         },
+    //         {
+    //             id: 'token',
+    //             name: 'Access Token',
+    //             description: 'Personal access token for your instance.',
+    //         },
+    //     ],
+    //     environment: [
+    //         {
+    //             variable: 'GITEA_HOST',
+    //             template: `{{host}}`,
+    //         },
+    //         {
+    //             variable: 'GITEA_ACCESS_TOKEN',
+    //             template: `{{token}}`,
+    //         },
+    //     ],
+    //     image: 'docker.gitea.com/gitea-mcp-server:latest',
+    //     runCommand: '/app/gitea-mcp',
+    // },
     // {
     //     slug: 'slack',
     //     name: 'Slack',
