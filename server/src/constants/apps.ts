@@ -12,7 +12,15 @@ export const envSchema = z.object({
     template: z.string(),
 });
 
+export const headerSchema = z.object({
+    variable: z.string(),
+    template: z.string(),
+});
+
+export const APP_TYPES = ['container/stdio', 'container/sse', 'remote/sse'] as const;
+
 export const appSchema = z.object({
+    type: z.enum(APP_TYPES),
     slug: z.string(),
     name: z.string(),
     description: z.string(),
@@ -21,6 +29,8 @@ export const appSchema = z.object({
     environment: z.array(envSchema),
     image: z.string(),
     runCommand: z.string(),
+    headers: z.array(headerSchema).optional(),
+    url: z.string().optional(),
 });
 
 export type App = z.infer<typeof appSchema>;
@@ -34,6 +44,7 @@ export type StrippedApp = Omit<App, 'environment' | 'image' | 'runCommand' | 'co
 
 export const APPS: App[] = [
     {
+        type: 'container/stdio',
         slug: 'notion',
         name: 'Notion',
         description: 'A note-taking and organization tool.',
@@ -55,4 +66,35 @@ export const APPS: App[] = [
         image: 'mcp/notion:latest',
         runCommand: 'notion-mcp-server',
     },
+    // {
+    //     slug: 'slack',
+    //     name: 'Slack',
+    //     description: 'A messaging platform for teams.',
+    //     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/slack/slack-original.svg',
+    //     configuration: [
+    //         {
+    //             id: 'xoxc_token',
+    //             name: 'Session',
+    //             description:
+    //                 'Session ID (value of JSON.parse(localStorage.localConfig_v2).teams[document.location.pathname.match(/^/client/([A-Z0-9]+)/)[1]].token )',
+    //         },
+    //         {
+    //             id: 'xoxd_token',
+    //             name: 'Session',
+    //             description: 'Session ID (value of cookie named "d")',
+    //         },
+    //     ],
+    //     environment: [
+    //         {
+    //             variable: 'SLACK_MCP_XOXC_TOKEN',
+    //             template: `{{xoxc_token}}`,
+    //         },
+    //         {
+    //             variable: 'SLACK_MCP_XOXD_TOKEN',
+    //             template: `{{xoxd_token}}`,
+    //         },
+    //     ],
+    //     image: 'ghcr.io/korotovsky/slack-mcp-server:latest',
+    //     runCommand: 'mcp-server --transport stdio',
+    // },
 ];

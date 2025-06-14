@@ -78,12 +78,32 @@ export default function Page() {
                     })
                 }
             >
-                configure
+                configure notion
+            </Button>
+            <Button
+                onClick={() =>
+                    configureApp.mutate({
+                        appSlug: 'slack',
+                        enabled: true,
+                        config: [
+                            {
+                                id: 'xoxc_token',
+                                value: 'T0266FRGM',
+                            },
+                            {
+                                id: 'xoxd_token',
+                                value: prompt('XOXD')!,
+                            },
+                        ],
+                    })
+                }
+            >
+                configure slack
             </Button>
             <Button
                 onClick={() =>
                     generate.mutate({
-                        prompt: '@{app:notion} write me a poem',
+                        prompt: '@{app:slack} read #announcments and summarize it in bullet points',
                         model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1-nano',
                         // model: 'anthropic:claude-3-5-sonnet-20241022',

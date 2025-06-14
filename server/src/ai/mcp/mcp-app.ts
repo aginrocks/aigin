@@ -22,6 +22,10 @@ export class McpApp {
 
     async start() {
         console.log(`Starting app: ${this.app.slug} for user: ${this.user.username}`);
+        if (this.app.type === 'remote/sse') {
+            console.log(`App ${this.app.slug} is a remote app, skipping pod creation.`);
+            return this.app.url;
+        }
 
         const { pod, alreadyExisted } = await getServerPod({
             app: this.app,
