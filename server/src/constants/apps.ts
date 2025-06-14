@@ -25,6 +25,13 @@ export const appSchema = z.object({
 
 export type App = z.infer<typeof appSchema>;
 
+export type StrippedApp = Omit<App, 'environment' | 'image' | 'runCommand' | 'configuration'> & {
+    configuration: (App['configuration'][number] & {
+        isConfigured: boolean;
+    })[];
+    isEnabled: boolean;
+};
+
 export const APPS: App[] = [
     {
         slug: 'notion',

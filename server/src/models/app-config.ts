@@ -11,6 +11,7 @@ export const configSchema = z.object({
     user: zId('User'),
     appSlug: z.string(),
     config: z.array(configOptionSchema),
+    enabled: z.boolean(),
 });
 
 export type TAppConfig = z.infer<typeof configSchema> & {
