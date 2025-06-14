@@ -1,1 +1,1 @@
-export * from './parse-app-mentions';
+export * from './apps';
