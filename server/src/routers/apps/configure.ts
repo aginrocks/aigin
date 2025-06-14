@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { withValidAppSlug } from './middlewares';
-import { configOptionSchema } from '@constants/apps';
-import { AppConfig } from '@models/app-config';
+import { AppConfig, configOptionSchema } from '@models/app-config';
 
 export const configure = withValidAppSlug
     .input(

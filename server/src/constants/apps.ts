@@ -49,7 +49,7 @@ export const APPS: App[] = [
         environment: [
             {
                 variable: 'OPENAPI_MCP_HEADERS',
-                template: `{"Authorization": "Bearer {{jsonString api_key}}"}`,
+                template: `{"Authorization": "Bearer {{jsonString api_key}}", "Notion-Version": "2022-06-28"}`,
             },
         ],
         image: 'mcp/notion:latest',

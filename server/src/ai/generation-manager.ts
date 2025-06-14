@@ -6,6 +6,10 @@ import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
+import { parseAppMentions, validateAppsRequest } from '@lib/util';
+import { McpApp } from './mcp/mcp-app';
+import { APPS } from '@constants/apps';
+import { TAppConfig } from '@models/app-config';
 
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
@@ -104,6 +108,7 @@ export class CachedChat {
     messages: Message[] = [];
     emitter = new IterableEventEmitter<CachedChatEventsMap>();
     isGenerating = false;
+    apps: McpApp[] = [];
 
     constructor(id: string, user: TUser, messages: Message[] = []) {
         this.id = id;
@@ -127,6 +132,18 @@ export class CachedChat {
             throw new Error('Chat is already generating a response');
         }
 
+        const mentions = parseAppMentions(content);
+        const checkResult = await validateAppsRequest({
+            requestedApps: mentions.mentions,
+            userId: this.user._id.toString(),
+        });
+
+        if (!checkResult.possible)
+            throw new TRPCError({
+                code: 'UNPROCESSABLE_CONTENT',
+                message: checkResult.errorMessage || 'Invalid app request',
+            });
+
         const newMessage: Message = {
             role: 'user',
             content,
@@ -136,6 +153,10 @@ export class CachedChat {
         await this.syncToDatabase();
 
         this.emitter.emit('message:created', newMessage);
+
+        if (mentions.mentions.length > 0 && checkResult.configs) {
+            await this.loadApps(mentions.mentions, checkResult.configs);
+        }
 
         const registry = getUserRegistry(this.user);
 
@@ -148,6 +169,25 @@ export class CachedChat {
         this.setGenerating(true);
         this.processStream(response.fullStream);
         this.generateTitle();
+    }
+
+    /**
+     * Loads the apps specified by their IDs.
+     * Assumes that the app IDs are valid and that the apps are configured by the user.
+     * @param appIds An array of **valid** app IDs to load.
+     */
+    private async loadApps(appIds: string[], configs: TAppConfig[]) {
+        const apps = appIds.map(
+            (appId) =>
+                new McpApp({
+                    app: APPS.find((a) => a.slug === appId)!,
+                    user: this.user,
+                    config: configs.find((c) => c.appSlug === appId)!,
+                })
+        );
+
+        const results = await Promise.all(apps.map((app) => app.start()));
+        console.log(`Loaded apps for chat ${this.id}:`, results);
     }
 
     private async processStream(stream: AsyncIterable<TextStreamPart<ToolSet>>) {

@@ -32,6 +32,8 @@ export default function Page() {
         })
     );
 
+    const configureApp = useMutation(trpc.apps.configure.mutationOptions());
+
     const [msg, setMsg] = useState('');
 
     const subscription = useSubscription(
@@ -64,8 +66,24 @@ export default function Page() {
             </Button>
             <Button
                 onClick={() =>
+                    configureApp.mutate({
+                        appSlug: 'notion',
+                        enabled: true,
+                        config: [
+                            {
+                                id: 'api_key',
+                                value: prompt('API Key')!,
+                            },
+                        ],
+                    })
+                }
+            >
+                configure
+            </Button>
+            <Button
+                onClick={() =>
                     generate.mutate({
-                        prompt: 'write me a poem',
+                        prompt: '@{app:notion} write me a poem',
                         model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1-nano',
                         // model: 'anthropic:claude-3-5-sonnet-20241022',

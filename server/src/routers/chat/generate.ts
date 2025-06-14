@@ -1,5 +1,7 @@
 import { protectedProcedure } from '@/trpc';
 import { loadContext } from '@ai/generation-manager';
+import { parseAppMentions, validateAppsRequest } from '@lib/util';
+import { TRPCError } from '@trpc/server';
 import z from 'zod';
 
 export const generate = protectedProcedure
