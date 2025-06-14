@@ -83,6 +83,7 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
             metadata: {
                 name: `mcp-${userId}-${app.slug}`,
                 labels: {
+                    app: 'mcp-server',
                     user_id: userId,
                     mcp_server: app.slug,
                 },

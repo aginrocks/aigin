@@ -1,7 +1,7 @@
 {
     "servers": {
-        "notion": {
-            "url": "http://localhost:33783/notion/sse"
+        "slack": {
+            "url": "http://localhost:33783/slack/sse"
         }
     }
 }

@@ -78,39 +78,40 @@ export const APPS: App[] = [
         image: 'pab1it0/chess-mcp:latest',
         runCommand: '/app/.venv/bin/chess-mcp',
     },
+    {
+        type: 'container/stdio',
+        slug: 'gitea',
+        name: 'Gitea',
+        description: 'A self-hosted Git service.',
+        icon: '',
+        configuration: [
+            {
+                id: 'host',
+                name: 'Host',
+                description: 'The URL of your Gitea (or Forgejo) instance.',
+                exampleValue: 'https://gitea.com',
+            },
+            {
+                id: 'token',
+                name: 'Access Token',
+                description: 'Personal access token for your instance.',
+            },
+        ],
+        environment: [
+            {
+                variable: 'GITEA_HOST',
+                template: `{{host}}`,
+            },
+            {
+                variable: 'GITEA_ACCESS_TOKEN',
+                template: `{{token}}`,
+            },
+        ],
+        image: 'docker.gitea.com/gitea-mcp-server:latest',
+        runCommand: '/app/gitea-mcp',
+    },
     // {
     //     type: 'container/stdio',
-    //     slug: 'gitea',
-    //     name: 'Gitea',
-    //     description: 'A self-hosted Git service.',
-    //     icon: '',
-    //     configuration: [
-    //         {
-    //             id: 'host',
-    //             name: 'Host',
-    //             description: 'The URL of your Gitea (or Forgejo) instance.',
-    //             exampleValue: 'https://gitea.com',
-    //         },
-    //         {
-    //             id: 'token',
-    //             name: 'Access Token',
-    //             description: 'Personal access token for your instance.',
-    //         },
-    //     ],
-    //     environment: [
-    //         {
-    //             variable: 'GITEA_HOST',
-    //             template: `{{host}}`,
-    //         },
-    //         {
-    //             variable: 'GITEA_ACCESS_TOKEN',
-    //             template: `{{token}}`,
-    //         },
-    //     ],
-    //     image: 'docker.gitea.com/gitea-mcp-server:latest',
-    //     runCommand: '/app/gitea-mcp',
-    // },
-    // {
     //     slug: 'slack',
     //     name: 'Slack',
     //     description: 'A messaging platform for teams.',
@@ -118,9 +119,9 @@ export const APPS: App[] = [
     //     configuration: [
     //         {
     //             id: 'xoxc_token',
-    //             name: 'Session',
+    //             name: 'Workspace ID',
     //             description:
-    //                 'Session ID (value of JSON.parse(localStorage.localConfig_v2).teams[document.location.pathname.match(/^/client/([A-Z0-9]+)/)[1]].token )',
+    //                 'Workspace ID from the URL of your Slack workspace (e.g., `T12345678` from `https://app.slack.com/client/T12345678/...`).',
     //         },
     //         {
     //             id: 'xoxd_token',
@@ -139,6 +140,7 @@ export const APPS: App[] = [
     //         },
     //     ],
     //     image: 'ghcr.io/korotovsky/slack-mcp-server:latest',
-    //     runCommand: 'mcp-server --transport stdio',
+    //     runCommand: 'mcp-server',
+    //     runArgs: ['--transport', 'stdio'],
     // },
 ];

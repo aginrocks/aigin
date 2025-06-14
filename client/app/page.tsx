@@ -83,7 +83,7 @@ export default function Page() {
             <Button
                 onClick={() =>
                     generate.mutate({
-                        prompt: '@{app:notion} read #announcments and summarize it in bullet points',
+                        prompt: '@{app:slack} read #announcments and summarize it in bullet points',
                         model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1-nano',
                         // model: 'anthropic:claude-3-5-sonnet-20241022',
