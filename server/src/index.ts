@@ -18,6 +18,7 @@ import { updateAllModels } from '@ai/models-fetcher';
 import { initKubernetes } from './kubernetes';
 import { initHandlebars } from './handlebars-json';
 import { appsRouter } from '@routers/apps';
+
 dotenv.config();
 extendZod(z);
 initHandlebars();

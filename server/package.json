@@ -57,6 +57,7 @@
     "@models": "build/models",
     "@routers": "build/routers",
     "@ai": "build/ai",
-    "@constants": "build/constants"
+    "@constants": "build/constants",
+    "@lib": "build/lib"
   }
 }

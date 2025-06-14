@@ -14,6 +14,7 @@
       "@routers/*": ["./routers/*"],
       "@ai/*": ["./ai/*"],
       "@constants/*": ["./constants/*"],
+      "@lib/*": ["./lib/*"],
       "@/*": ["./*"]
     },
   },

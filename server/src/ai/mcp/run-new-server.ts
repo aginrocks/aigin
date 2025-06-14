@@ -1,5 +1,6 @@
 import { k8sApi } from '@/kubernetes';
 import { App } from '@constants/apps';
+import { NAMESPACE } from '@constants/kubernetes';
 import { TAppConfig } from '@models/app-config';
 import Handlebars from 'handlebars';
 
@@ -9,7 +10,7 @@ export type RunServerProps = {
     userId: string;
 };
 
-export async function runServer({ app, config, userId }: RunServerProps) {
+export async function runNewServer({ app, config, userId }: RunServerProps) {
     const mcpConfigMap: Record<string, string> = app.configuration.reduce((acc, c) => {
         acc[c.id] = config.config.find((option) => option.id === c.id)?.value || '';
         return acc;
@@ -20,8 +21,8 @@ export async function runServer({ app, config, userId }: RunServerProps) {
         return { name: env.variable, value: envTemplate(mcpConfigMap) };
     });
 
-    await k8sApi?.createNamespacedPod({
-        namespace: 'default',
+    const pod = await k8sApi?.createNamespacedPod({
+        namespace: NAMESPACE,
         body: {
             apiVersion: 'v1',
             kind: 'Pod',
@@ -129,6 +130,8 @@ exec mcp-proxy --host=0.0.0.0 --port=8000 -- sh -c 'cat /pipes/from_worker & cat
             },
         },
     });
+
+    return pod;
 
     // console.log(envMap);
 }
