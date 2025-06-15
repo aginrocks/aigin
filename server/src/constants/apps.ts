@@ -354,6 +354,68 @@ export const APPS: App[] = [
         environment: [],
         url: 'https://remote.mcpservers.org/fetch/mcp',
     },
+    {
+        type: 'container/stdio',
+        slug: 'mail',
+        name: 'Mail',
+        description: 'Send and receive emails (ClaudePost).',
+        icon: '',
+        configuration: [
+            {
+                id: 'email_address',
+                name: 'Email Address',
+                description: 'Email address to use for sending and receiving emails.',
+                exampleValue: 'user@example.com',
+            },
+            {
+                id: 'email_password',
+                name: 'Email Password',
+                description: 'Password for the email account (for Gmail an App-Specific Password).',
+            },
+            {
+                id: 'imap_server',
+                name: 'IMAP Server',
+                description: 'IMAP server address for receiving emails.',
+                exampleValue: 'imap.gmail.com',
+            },
+            {
+                id: 'smtp_server',
+                name: 'SMTP Server',
+                description: 'SMTP server address for sending emails.',
+                exampleValue: 'smtp.gmail.com',
+            },
+            {
+                id: 'smtp_port',
+                name: 'SMTP Port',
+                description: 'Port for the SMTP server (usually 587 for TLS).',
+                exampleValue: '587',
+            },
+        ],
+        environment: [
+            {
+                variable: 'EMAIL_ADDRESS',
+                template: `{{email_address}}`,
+            },
+            {
+                variable: 'EMAIL_PASSWORD',
+                template: `{{email_password}}`,
+            },
+            {
+                variable: 'IMAP_SERVER',
+                template: `{{imap_server}}`,
+            },
+            {
+                variable: 'SMTP_SERVER',
+                template: `{{smtp_server}}`,
+            },
+            {
+                variable: 'SMTP_PORT',
+                template: `{{smtp_port}}`,
+            },
+        ],
+        image: 'ghcr.io/tymekv/claude-post:main',
+        runCommand: 'email-client',
+    },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {

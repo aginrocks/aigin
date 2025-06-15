@@ -85,8 +85,9 @@ export default function Page() {
                 onClick={() =>
                     generate.mutate({
                         // prompt: '@{app:outline} write a blog post about AI',
+                        prompt: '@{app:mail} read my latest email',
                         // prompt: '@{app:clickup} create a todo that says: "build an ai chat app" in "Personal" list',
-                        prompt: '@{app:fetch} summarize this article: https://medium.com/@platform.engineers/deploying-a-simple-web-application-on-kubernetes-43bbf724c23d',
+                        // prompt: '@{app:fetch} summarize this article: https://medium.com/@platform.engineers/deploying-a-simple-web-application-on-kubernetes-43bbf724c23d',
                         // prompt: '@{app:context7} explain layout routes in nextjs approuter',
                         // prompt: '@{app:memory} which desktop environment am I using?',
                         // model: 'google:gemini-2.5-flash-preview-05-20',
