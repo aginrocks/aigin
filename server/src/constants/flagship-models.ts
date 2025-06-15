@@ -38,7 +38,7 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'google/gemini-2.0-flash',
+                modelId: 'google/gemini-2.0-flash-001',
             },
             {
                 provider: 'google',
@@ -56,7 +56,7 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'google/gemini-2.0-flash-lite',
+                modelId: 'google/gemini-2.0-flash-lite-001',
             },
             {
                 provider: 'google',
@@ -75,29 +75,11 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'google/gemini-2.5-flash',
+                modelId: 'google/gemini-2.5-flash-preview-05-20',
             },
             {
                 provider: 'google',
-                modelId: 'gemini-2.5-flash',
-            },
-        ],
-    },
-    {
-        category: 'flagship',
-        slug: 'gemini-2-5-flash-thinking',
-        name: 'Gemini 2.5 Flash (Thinking)',
-        family: 'gemini',
-        description: "Google's latest fast model, but now it can think!",
-        capabilities: ['vision', 'file', 'search', 'effort-control'],
-        providers: [
-            {
-                provider: 'openrouter',
-                modelId: 'google/gemini-2.5-flash-thinking',
-            },
-            {
-                provider: 'google',
-                modelId: 'gemini-2.5-flash-thinking',
+                modelId: 'gemini-2.5-flash-preview-05-20',
             },
         ],
     },
@@ -112,29 +94,29 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'google/gemini-2.5-pro',
+                modelId: 'google/gemini-2.5-pro-preview',
             },
             {
                 provider: 'google',
-                modelId: 'gemini-2.5-pro',
+                modelId: 'gemini-2.5-pro-preview-06-05',
             },
         ],
     },
-    {
-        category: 'flagship',
-        slug: 'gpt-imagegen',
-        name: 'GPT ImageGen',
-        family: 'openai',
-        description:
-            "OpenAI's latest and greatest image generation model, using lots of crazy tech like custom tools for text and reflections.",
-        capabilities: ['vision', 'image-generation'],
-        providers: [
-            {
-                provider: 'openai',
-                modelId: 'gpt-imagegen',
-            },
-        ],
-    },
+    // {
+    //     category: 'flagship',
+    //     slug: 'gpt-imagegen',
+    //     name: 'GPT ImageGen',
+    //     family: 'openai',
+    //     description:
+    //         "OpenAI's latest and greatest image generation model, using lots of crazy tech like custom tools for text and reflections.",
+    //     capabilities: ['vision', 'image-generation'],
+    //     providers: [
+    //         {
+    //             provider: 'openai',
+    //             modelId: 'gpt-imagegen',
+    //         },
+    //     ],
+    // },
     {
         category: 'flagship',
         slug: 'gpt-4o-mini',
@@ -149,8 +131,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'gpt-4o-mini',
+                modelId: 'gpt-4o-mini-2024-07-18',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/gpt-4o-mini',
+            }
         ],
     },
     {
@@ -167,8 +153,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'gpt-4o',
+                modelId: 'gpt-4o-2024-08-06',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/gpt-4o',
+            }
         ],
     },
     {
@@ -186,8 +176,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'gpt-4.1',
+                modelId: 'gpt-4.1-2025-04-14',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/gpt-4.1',
+            }
         ],
     },
     {
@@ -205,8 +199,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'gpt-4.1-mini',
+                modelId: 'gpt-4.1-mini-2025-04-14',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/gpt-4.1-mini',
+            }
         ],
     },
     {
@@ -224,8 +222,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'gpt-4.1-nano',
+                modelId: 'gpt-4.1-nano-2025-04-14',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/gpt-4.1-nano',
+            }
         ],
     },
     {
@@ -242,7 +244,7 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'o3-mini',
+                modelId: 'o3-mini-2025-01-31',
             },
         ],
     },
@@ -260,8 +262,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'o4-mini',
+                modelId: 'o4-mini-2025-04-16',
             },
+            {
+                provider: 'azure',
+                modelId: 'openai/o4-mini',
+            }
         ],
     },
     {
@@ -278,7 +284,7 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
             },
             {
                 provider: 'openai',
-                modelId: 'o3',
+                modelId: 'o3-2025-04-16',
             },
         ],
     },
@@ -364,6 +370,11 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
+                modelId: 'meta-llama/llama-3.3-70b-instruct:free',
+                comment: 'Free',
+            },
+            {
+                provider: 'openrouter',
                 modelId: 'meta-llama/llama-3.3-70b-instruct',
             },
             {
@@ -407,21 +418,36 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'meta-llama/llama-4-maverick-17b-instruct',
+                modelId: 'meta-llama/llama-4-maverick',
             },
+            {
+                provider: 'openrouter',
+                modelId: 'meta-llama/llama-4-maverick:free',
+                comment: 'Free',
+            },
+            {
+                provider: 'groq',
+                modelId: 'meta-llama/llama-4-maverick-17b-128e-instruct',
+            },
+
         ],
     },
     {
         category: 'flagship',
-        slug: 'deepseek-v3-fireworks',
-        name: 'DeepSeek v3 (Fireworks)',
+        slug: 'deepseek-v3',
+        name: 'DeepSeek v3',
         family: 'deepseek',
         description: "DeepSeek's groundbreaking direct prediction model.",
         capabilities: [],
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'deepseek/deepseek-v3',
+                modelId: 'deepseek/deepseek-chat-v3:free',
+                comment: 'Free',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'deepseek/deepseek-chat-v3',
             },
         ],
     },
@@ -436,7 +462,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'deepseek/deepseek-v3',
+                modelId: 'deepseek/deepseek-chat-v3-0324',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'deepseek/deepseek-chat-v3-0324:free',
+                comment: 'Free',
             },
         ],
     },
@@ -466,6 +497,11 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
                 provider: 'deepseek',
                 modelId: 'deepseek-r1-0528',
             },
+            {
+                provider: 'deepseek',
+                modelId: 'deepseek-r1-0528:free',
+                comment: 'Free',
+            },
         ],
     },
     {
@@ -478,7 +514,7 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'deepseek/deepseek-r1-llama-distilled',
+                modelId: 'deepseek/deepseek-r1-distill-llama-8b',
             },
         ],
     },
@@ -492,7 +528,12 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'deepseek/deepseek-r1-qwen-distilled',
+                modelId: 'deepseek/deepseek-r1-distill-qwen-32b',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'deepseek/deepseek-r1-distill-qwen-32b:free',
+                comment: 'Free',
             },
         ],
     },
@@ -506,9 +547,17 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         capabilities: [],
         providers: [
             {
+                provider: 'azure',
+                modelId: 'xai/grok-3',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'x-ai/grok-3-beta',
+            },
+            {
                 provider: 'xai',
                 modelId: 'grok-3',
-            },
+            },            
         ],
     },
     {
@@ -519,6 +568,14 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         description: 'A lightweight model that thinks before responding.',
         capabilities: ['reasoning', 'effort-control'],
         providers: [
+            {
+                provider: 'azure',
+                modelId: 'xai/grok-3-mini',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'x-ai/grok-3-mini-beta',
+            },
             {
                 provider: 'xai',
                 modelId: 'grok-3-mini',
@@ -535,7 +592,16 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'qwen/qwq-32b-preview',
+                modelId: 'qwen/qwq-32b',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'qwen/qwq-32b:free',
+                comment: 'Free',
+            },
+            {
+                provider: 'groq',
+                modelId: 'qwen-qwq-32b',
             },
         ],
     },
@@ -549,22 +615,31 @@ export const FLAGSHIP_MODELS: Omit<TModel, '_id'>[] = [
         providers: [
             {
                 provider: 'openrouter',
-                modelId: 'qwen/qwen-2.5-32b-instruct',
+                modelId: 'qwen/qwen2.5-vl-32b-instruct',
             },
         ],
     },
     {
         category: 'flagship',
-        slug: 'gpt-4-5',
-        name: 'GPT-4.5',
-        family: 'openai',
-        description: 'The best model for writing.',
-        capabilities: ['vision'],
+        slug: 'qwen-3-32b',
+        name: 'Qwen 3 32b',
+        family: 'qwen',
+        description: 'The other really good open source model from China.',
+        capabilities: ['fast', 'vision'],
         providers: [
             {
-                provider: 'openai',
-                modelId: 'gpt-4.5',
+                provider: 'openrouter',
+                modelId: 'qwen/qwen3-32b:free',
+                comment: 'Free',
+            },
+            {
+                provider: 'openrouter',
+                modelId: 'qwen/qwen3-32b',
+            },
+            {
+                provider: 'groq',
+                modelId: 'qwen/qwen3-32b',
             },
         ],
-    },
+    }
 ] as const;
