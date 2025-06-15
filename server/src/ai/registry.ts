@@ -2,12 +2,14 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAzure } from '@quail-ai/azure-ai-provider';
 import { createXai } from '@ai-sdk/xai';
-import { createProviderRegistry } from 'ai';
+import { createProviderRegistry, wrapLanguageModel } from 'ai';
 import { TUser } from '@models/user';
 import { ProviderV1 } from '@ai-sdk/provider';
 import { PROVIDER_IDS } from '@constants/providers';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGroq } from '@ai-sdk/groq';
+import { model } from 'mongoose';
+import { fixAnthropicToolCalls } from './sdk-middlewars';
 
 export const getUserRegistry = (user: TUser) => {
     const { anthropic, google, groq, azure, xai, deepseek, openai, openrouter } = user.providers;
@@ -59,4 +61,18 @@ export const getUserRegistry = (user: TUser) => {
     }
 
     return createProviderRegistry(providers);
+};
+
+export const wrapModel = (model: `${string}:${string}`, user: TUser) => {
+    const [provider, modelId] = model.split(':');
+    const registry = getUserRegistry(user);
+
+    if (model.split(':')[0] === 'anthropic') {
+        return wrapLanguageModel({
+            model: registry.languageModel(model),
+            middleware: fixAnthropicToolCalls,
+        });
+    }
+
+    return registry.languageModel(model);
 };

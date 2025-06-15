@@ -1,17 +1,27 @@
 import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
 import { getUserProviders, TUser } from '@models/user';
-import { generateText, Message, streamText, TextStreamPart, Tool, ToolSet } from 'ai';
-import { getUserRegistry } from './registry';
+import {
+    generateText,
+    Message,
+    streamText,
+    TextStreamPart,
+    tool,
+    ToolSet,
+    wrapLanguageModel,
+} from 'ai';
+import { getUserRegistry, wrapModel } from './registry';
 import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
 import { parseAppMentions, validateAppsRequest } from '@lib/util';
-import { McpApp, StartedApp } from './mcp/mcp-app';
+import { McpApp } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
 import util from 'node:util';
+import z from 'zod';
+import { fixAnthropicToolCalls } from './sdk-middlewars';
 util.inspect.defaultOptions.depth = null;
 
 export const chatsStore: Map<string, CachedChat> = new Map();
@@ -174,10 +184,10 @@ export class CachedChat {
             }, {} as ToolSet);
         }
 
-        const registry = getUserRegistry(this.user);
+        console.log('msg', this.messages);
 
         const response = streamText({
-            model: registry.languageModel(model as `${string}:${string}`),
+            model: wrapModel(model as `${string}:${string}`, this.user),
             messages: this.messages,
             tools,
             maxSteps: 100,

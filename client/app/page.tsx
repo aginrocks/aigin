@@ -83,6 +83,7 @@ export default function Page() {
             <Button
                 onClick={() =>
                     generate.mutate({
+                        // prompt: '@{app:outline} write a blog post about AI',
                         prompt: '@{app:outline} write a blog post about AI',
                         // model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1-nano',

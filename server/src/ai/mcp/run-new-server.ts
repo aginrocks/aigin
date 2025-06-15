@@ -71,7 +71,7 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
             name: configMapName,
             ...configMap,
         });
-    } catch (error) {
+    } catch {
         await k8sApi?.createNamespacedConfigMap(configMap);
     }
 
