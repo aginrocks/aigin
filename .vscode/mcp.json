@@ -1,7 +1,7 @@
 {
     "servers": {
-        "outline": {
-            "url": "http://localhost:33783/outline/sse"
+        "mongodb": {
+            "url": "http://localhost:33783/mongodb/sse"
         }
     }
 }

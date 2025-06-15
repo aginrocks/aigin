@@ -181,6 +181,47 @@ export const APPS: App[] = [
         image: 'ghcr.io/tymekv/mcp-outline:main',
         runCommand: 'mcp-outline',
     },
+    {
+        type: 'container/stdio',
+        slug: 'mongodb',
+        name: 'MongoDB',
+        description: 'A NoSQL database for modern applications.',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
+        configuration: [
+            {
+                id: 'connection_string',
+                name: 'Connection String',
+                description: 'MongoDB connection string',
+                exampleValue: 'mongodb+srv://username:password@cluster.mongodb.net/myDatabase',
+            },
+            {
+                id: 'atlas_client_id',
+                name: 'Atlas Client ID',
+                description: 'MongoDB Atlas Client ID',
+            },
+            {
+                id: 'atlas_client_secret',
+                name: 'Atlas Client secret',
+                description: 'MongoDB Atlas Client ID',
+            },
+        ],
+        environment: [
+            {
+                variable: 'MDB_MCP_CONNECTION_STRING',
+                template: `{{connection_string}}`,
+            },
+            {
+                variable: 'MDB_MCP_API_CLIENT_ID',
+                template: `{{atlas_client_id}}`,
+            },
+            {
+                variable: 'MDB_MCP_API_CLIENT_SECRET',
+                template: `{{atlas_client_secret}}`,
+            },
+        ],
+        image: 'mongodb/mongodb-mcp-server:latest',
+        runCommand: 'mongodb-mcp-server',
+    },
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {
     //     type: 'container/stdio',
