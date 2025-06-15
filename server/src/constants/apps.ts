@@ -281,6 +281,29 @@ export const APPS: App[] = [
             },
         ],
     },
+    {
+        type: 'container/stdio',
+        slug: 'pure-md',
+        name: 'pure.md',
+        description: 'Markdown delivery network for LLMs.',
+        icon: '',
+        configuration: [
+            {
+                id: 'api_key',
+                name: 'API Key',
+                description: 'API key for pure.md integration.',
+            },
+        ],
+        environment: [
+            {
+                variable: 'PUREMD_API_KEY',
+                template: `{{api_key}}`,
+            },
+        ],
+        image: 'ghcr.io/tymekv/puremd-mcp:main',
+        runCommand: 'node',
+        runArgs: ['/app/dist/index.js'],
+    },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {

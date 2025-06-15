@@ -86,7 +86,7 @@ export default function Page() {
                     generate.mutate({
                         // prompt: '@{app:outline} write a blog post about AI',
                         // prompt: '@{app:clickup} create a todo that says: "build an ai chat app" in "Personal" list',
-                        prompt: '@{app:github} list my repos',
+                        prompt: '@{app:pure-md} summarize this article: https://medium.com/@platform.engineers/deploying-a-simple-web-application-on-kubernetes-43bbf724c23d',
                         model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1',
                         // model: 'openrouter:anthropic/claude-sonnet-4',
