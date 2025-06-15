@@ -47,18 +47,12 @@ export function Appearance() {
                         setTheme(value);
                     }}
                 />
-                <FormField
-                    control={form.control}
+                <Setting
+                    title="Stats For Nerds"
+                    description="Enable or disable additional info for nerds."
+                    type="switch"
                     name="statsForNerds"
-                    render={({ field }) => (
-                        <Setting
-                            title="Stats For Nerds"
-                            description="Enable or disable additional info for nerds."
-                            type="switch"
-                            value={field.value}
-                            onValueChange={field.onChange}
-                        />
-                    )}
+                    formControl={form.control}
                 />
             </SettingsGroup>
         </>

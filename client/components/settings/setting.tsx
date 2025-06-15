@@ -23,6 +23,7 @@ export type SettingOption = {
 export type SettingProps = {
     title: string;
     description?: string;
+    name?: string;
     position?: SettingPosition;
     rightSection?: ReactNode;
     icon?: ThemedIconProps;
@@ -59,6 +60,7 @@ const settingVariants = cva('rounded-md', {
 
 export function Setting({
     title,
+    name,
     description,
     type,
     position,
@@ -73,54 +75,70 @@ export function Setting({
     formControl,
 }: SettingProps) {
     return (
-        <div
-            className={cn(
-                'p-3 pl-3.5 rounded-md bg-secondary flex flex-col gap-2',
-                settingVariants({ position })
-            )}
-        >
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                    {icon && <ThemedIcon {...icon} />}
-                    <div className="flex flex-col gap-0.5">
-                        <div className="font-semibold text-sm">{title}</div>
-                        {description && (
-                            <div className="text-xs text-muted-foreground">{description}</div>
-                        )}
+        <FormField
+            control={formControl}
+            name="statsForNerds"
+            render={({ field }) => (
+                <div
+                    className={cn(
+                        'p-3 pl-3.5 rounded-md bg-secondary flex flex-col gap-2',
+                        settingVariants({ position })
+                    )}
+                >
+                    <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            {icon && <ThemedIcon {...icon} />}
+                            <div className="flex flex-col gap-0.5">
+                                <div className="font-semibold text-sm">{title}</div>
+                                {description && (
+                                    <div className="text-xs text-muted-foreground">
+                                        {description}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div>
+                            {type === 'select' && (
+                                <Select
+                                    onValueChange={
+                                        formControl
+                                            ? field.onChange
+                                            : (value) => onValueChange?.(value)
+                                    }
+                                    defaultValue={defaultValue}
+                                    value={formControl ? field.value : value}
+                                    {...props}
+                                >
+                                    <SelectTrigger className="w-[180px] rounded-sm">
+                                        <SelectValue placeholder={title} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {options.map((o) => (
+                                            <SelectItem key={o.value} value={o.value}>
+                                                {o.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                            {type === 'switch' && (
+                                <Switch
+                                    checked={formControl ? field.value : value}
+                                    defaultChecked={defaultValue}
+                                    onCheckedChange={
+                                        formControl
+                                            ? field.onChange
+                                            : (value) => onValueChange?.(value)
+                                    }
+                                    {...props}
+                                />
+                            )}
+                            {rightSection}
+                        </div>
                     </div>
+                    {children}
                 </div>
-                <div>
-                    {type === 'select' && (
-                        <Select
-                            onValueChange={(value) => onValueChange?.(value)}
-                            defaultValue={defaultValue}
-                            value={value}
-                            {...props}
-                        >
-                            <SelectTrigger className="w-[180px] rounded-sm">
-                                <SelectValue placeholder={title} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {options.map((o) => (
-                                    <SelectItem key={o.value} value={o.value}>
-                                        {o.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
-                    {type === 'switch' && (
-                        <Switch
-                            checked={value}
-                            defaultChecked={defaultValue}
-                            onCheckedChange={(value) => onValueChange?.(value)}
-                            {...props}
-                        />
-                    )}
-                    {rightSection}
-                </div>
-            </div>
-            {children}
-        </div>
+            )}
+        />
     );
 }
