@@ -344,6 +344,16 @@ export const APPS: App[] = [
         volumeMountPoint: '/data',
         image: 'mcp/memory:latest',
     },
+    {
+        type: 'remote/http',
+        slug: 'fetch',
+        name: 'Fetch',
+        description: 'Fetch data from the web.',
+        icon: '',
+        configuration: [],
+        environment: [],
+        url: 'https://remote.mcpservers.org/fetch/mcp',
+    },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {

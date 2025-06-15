@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  labels:
+    app: busybox
+spec:
+  # Method 1: Using nodeSelector (recommended)
+  nodeSelector:
+    kubernetes.io/hostname: node1
+  
+  # Method 2: Using nodeName (direct assignment)
+  # nodeName: your-node-name
+  
+  containers:
+  - name: busybox
+    image: busybox:latest
+    command: ['/bin/sleep', 'infinity']
+    # Or keep it running interactively:
+    # command: ['sleep', '3600']
+  restartPolicy: Never
