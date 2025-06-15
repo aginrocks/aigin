@@ -20,37 +20,9 @@ import { Button } from './ui/button';
 import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
 import { useAvatar } from '@lib/hooks';
+import { chat, chatFilter, SidebarTile, SidebarTilesSection } from './sidebar-tiles';
 
-// Menu items.
-const items = [
-    {
-        title: 'Home',
-        url: '#',
-        icon: Home,
-    },
-    {
-        title: 'Inbox',
-        url: '#',
-        icon: Inbox,
-    },
-    {
-        title: 'Calendar',
-        url: '#',
-        icon: Calendar,
-    },
-    {
-        title: 'Search',
-        url: '#',
-        icon: Search,
-    },
-    {
-        title: 'Settings',
-        url: '#',
-        icon: Settings,
-    },
-];
-
-const chats = [
+const chats: chat[] = [
     {
         title: 'Template chat',
         id: 'asdfgafgadfgg',
@@ -84,7 +56,26 @@ const chats = [
     {
         title: 'Template chat',
         id: 'as234dfgaasdfgadfgg',
-        date: new Date('2025-06-11T18:00:00Z'),
+        date: new Date('2025-06-15T18:00:00Z'),
+    },
+];
+
+const chatFilters: chatFilter[] = [
+    {
+        func: (chat) => chat.date.toDateString() === new Date().toDateString(),
+        label: 'Today',
+    },
+    {
+        func: (chat) => chat.date.toDateString() === new Date(Date.now() - 86400000).toDateString(),
+        label: 'Yesterday',
+    },
+    {
+        func: (chat) => chat.date.getFullYear() === new Date().getFullYear(),
+        label: 'This Year',
+    },
+    {
+        func: (chat) => chat.date.getFullYear() === new Date().getFullYear() - 1,
+        label: 'Last Year',
     },
 ];
 
@@ -111,50 +102,7 @@ export function AppSidebar() {
                         }
                     />
                     <SidebarGroupContent>
-                        <SidebarMenu>
-                            {chats
-                                .filter(
-                                    (chat) => chat.date.toDateString() === new Date().toDateString()
-                                )
-                                .map((chat, i) => (
-                                    <div key={chat.id}>
-                                        {i == 0 && <SidebarLabel>Today</SidebarLabel>}
-                                        <SidebarMenuItem key={chat.id}>
-                                            <SidebarMenuButton asChild>
-                                                <span>{chat.title}</span>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </div>
-                                ))}
-                            {chats
-                                .filter(
-                                    (chat) =>
-                                        chat.date.toDateString() ===
-                                        new Date(Date.now() - 86400000).toDateString()
-                                )
-                                .map((chat, i) => (
-                                    <div key={chat.id}>
-                                        {i == 0 && <SidebarLabel>Yesterday</SidebarLabel>}
-                                        <SidebarMenuItem key={chat.id}>
-                                            <SidebarMenuButton asChild>
-                                                <span>{chat.date.toDateString()}</span>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </div>
-                                ))}
-                            {chats
-                                .filter((chat) => chat.date < new Date(Date.now() - 86400000))
-                                .map((chat, i) => (
-                                    <div key={chat.id}>
-                                        {i == 0 && <SidebarLabel>Older</SidebarLabel>}
-                                        <SidebarMenuItem>
-                                            <SidebarMenuButton asChild>
-                                                <span>{chat.date.toDateString()}</span>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    </div>
-                                ))}
-                        </SidebarMenu>
+                        <SidebarTilesSection chats={chats} filter={chatFilters} />
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
