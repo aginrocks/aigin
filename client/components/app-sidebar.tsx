@@ -105,7 +105,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar>
-            <SidebarHeader className="pb-0">
+            <SidebarHeader className="pb-0 border-b border-sidebar-border">
                 <Header
                     title="Chats"
                     className="pr-1.5"
@@ -126,7 +126,7 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
+            <SidebarFooter className="border-t border-sidebar-border">
                 <SidebarUser
                     user={{ email: userData?.email, name: userData?.name, avatar: avatarUrl }}
                 />

@@ -41,7 +41,7 @@ export function SidebarUser({
     const modals = useModals();
 
     return (
-        <SidebarMenu>
+        <SidebarMenu className="pt-0">
             <SidebarMenuItem>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

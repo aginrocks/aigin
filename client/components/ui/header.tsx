@@ -9,7 +9,7 @@ export type HeaderProps = VariantProps<typeof headerVariants> &
         rightSection?: ReactNode;
     };
 
-const headerVariants = cva('flex h-12 border-b border-light-border', {
+const headerVariants = cva('flex h-12', {
     variants: {
         custom: {
             false: 'px-4 items-center justify-between',
