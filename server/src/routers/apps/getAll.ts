@@ -13,6 +13,8 @@ export const getAll = protectedProcedure.query(async ({ ctx }): Promise<Stripped
             image: _image,
             runCommand: _runCommand,
             configuration: _configuration,
+            volumeMountPoint: _volumeMountPoint,
+            runArgs: _runArgs,
             ...strippedApp
         } = app;
         return {

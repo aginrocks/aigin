@@ -32,11 +32,22 @@ export const appSchema = z.object({
     runArgs: z.array(z.string()).optional(),
     headers: z.array(headerSchema).optional(),
     url: z.string().optional(),
+    isPersistant: z.boolean().optional(),
+    volumeMountPoint: z.string().optional(),
 });
 
 export type App = z.infer<typeof appSchema>;
 
-export type StrippedApp = Omit<App, 'environment' | 'image' | 'runCommand' | 'configuration'> & {
+export type StrippedApp = Omit<
+    App,
+    | 'environment'
+    | 'image'
+    | 'runCommand'
+    | 'configuration'
+    | 'volumeMountPoint'
+    | 'runCommand'
+    | 'runArgs'
+> & {
     configuration: (App['configuration'][number] & {
         isConfigured: boolean;
     })[];
@@ -313,6 +324,24 @@ export const APPS: App[] = [
         configuration: [],
         environment: [],
         url: 'https://mcp.context7.com/mcp',
+    },
+    {
+        type: 'container/stdio',
+        slug: 'memory',
+        name: 'Memory',
+        description: 'Let your AI assistant remember things.',
+        icon: '',
+        configuration: [],
+        environment: [
+            {
+                variable: 'MEMORY_FILE_PATH',
+                template: '/data/memory.json',
+            },
+        ],
+        runCommand: 'node',
+        runArgs: ['/app/dist/index.js'],
+        isPersistant: true,
+        volumeMountPoint: '/data',
     },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp

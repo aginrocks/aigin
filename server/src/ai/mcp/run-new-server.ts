@@ -1,7 +1,10 @@
 import { k8sApi } from '@/kubernetes';
 import { App } from '@constants/apps';
 import { NAMESPACE } from '@constants/kubernetes';
-import { CoreV1ApiCreateNamespacedConfigMapRequest } from '@kubernetes/client-node';
+import {
+    CoreV1ApiCreateNamespacedConfigMapRequest,
+    V1PersistentVolumeClaim,
+} from '@kubernetes/client-node';
 import { TAppConfig } from '@models/app-config';
 import Handlebars from 'handlebars';
 
@@ -72,6 +75,11 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
         await k8sApi?.createNamespacedConfigMap(configMap);
     }
 
+    let pvcName: string | undefined;
+    if (app.isPersistant) {
+        pvcName = await ensurePVCExists({ app, userId });
+    }
+
     const pod = await k8sApi?.createNamespacedPod({
         namespace: NAMESPACE,
         body: {
@@ -130,6 +138,16 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
                             name: configMapName,
                         },
                     },
+                    ...(app.isPersistant && app.volumeMountPoint && pvcName
+                        ? [
+                              {
+                                  name: 'mcp-data-volume',
+                                  persistentVolumeClaim: {
+                                      claimName: pvcName,
+                                  },
+                              },
+                          ]
+                        : []),
                 ],
             },
         },
@@ -138,6 +156,51 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
     return pod;
 
     // console.log(envMap);
+}
+
+async function ensurePVCExists({ app, userId }: Omit<RunServerProps, 'config'>) {
+    const pvcName = `mcppvc-${userId}-${app.slug}`;
+
+    try {
+        await k8sApi?.readNamespacedPersistentVolumeClaim({
+            name: pvcName,
+            namespace: NAMESPACE,
+        });
+        return; // PVC already exists, no need to create
+    } catch {
+        // PVC doesn't exist, proceed with creation
+    }
+    const pvc: V1PersistentVolumeClaim = {
+        apiVersion: 'v1',
+        kind: 'PersistentVolumeClaim',
+        metadata: {
+            name: pvcName,
+            labels: {
+                app: 'mcp-server',
+                user_id: userId,
+                mcp_server: app.slug,
+            },
+        },
+        spec: {
+            accessModes: ['ReadWriteOnce'],
+            resources: {
+                requests: {
+                    storage: '1Mi',
+                },
+                limits: {
+                    storage: '128Mi',
+                },
+            },
+        },
+    };
+
+    await k8sApi?.replaceNamespacedPersistentVolumeClaim({
+        name: pvcName,
+        namespace: NAMESPACE,
+        body: pvc,
+    });
+
+    return pvcName;
 }
 
 function generateMcpConfigMap(app: App, config: TAppConfig): Record<string, string> {
