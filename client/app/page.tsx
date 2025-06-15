@@ -85,11 +85,11 @@ export default function Page() {
                 onClick={() =>
                     generate.mutate({
                         // prompt: '@{app:outline} write a blog post about AI',
-                        prompt: '@{app:outline} write a blog post about AI and add it to the "welcome" colection in outline.',
-                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        prompt: '@{app:clickup} create a todo that says: "build an ai chat app" in "Personal" list',
+                        // model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1',
                         // model: 'openrouter:anthropic/claude-sonnet-4',
-                        // model: 'anthropic:claude-3-5-sonnet-20241022',
+                        model: 'anthropic:claude-3-5-sonnet-20241022',
                         // model: 'groq:deepseek-r1-distill-llama-70b',
                         // model: 'groq:meta-llama/llama-4-scout-17b-16e-instruct',
                         // chatId: '684a07d0e4d1230fcaaf67b1',

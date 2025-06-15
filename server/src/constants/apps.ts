@@ -222,6 +222,44 @@ export const APPS: App[] = [
         image: 'mongodb/mongodb-mcp-server:latest',
         runCommand: 'mongodb-mcp-server',
     },
+    // TODO: Fix middlewares so this app will work with google
+    {
+        type: 'container/stdio',
+        slug: 'clickup',
+        name: 'ClickUp',
+        description: 'A productivity platform for teams.',
+        icon: '',
+        configuration: [
+            {
+                id: 'api_key',
+                name: 'API Key',
+                description: 'API key for ClickUp integration.',
+            },
+            {
+                id: 'team_id',
+                name: 'Team ID',
+                description: 'ID of the ClickUp team you want to access.',
+            },
+        ],
+        environment: [
+            {
+                variable: 'CLICKUP_API_KEY',
+                template: `{{api_key}}`,
+            },
+            {
+                variable: 'CLICKUP_TEAM_ID',
+                template: `{{team_id}}`,
+            },
+            {
+                variable: 'DOCUMENT_SUPPORT',
+                template: 'true',
+            },
+        ],
+        image: 'ghcr.io/tymekv/clickup-mcp-server:main',
+        runCommand: 'node',
+        runArgs: ['/app/build/index.js'],
+    },
+    // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {
     //     type: 'container/stdio',
