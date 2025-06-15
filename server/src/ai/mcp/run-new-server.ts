@@ -12,10 +12,7 @@ export type RunServerProps = {
 };
 
 export async function runNewServer({ app, config, userId }: RunServerProps) {
-    const mcpConfigMap: Record<string, string> = app.configuration.reduce((acc, c) => {
-        acc[c.id] = config.config.find((option) => option.id === c.id)?.value || '';
-        return acc;
-    }, {} as Record<string, string>);
+    const mcpConfigMap = generateMcpConfigMap(app, config);
 
     const envMap = app.environment.map((env) => {
         const envTemplate = Handlebars.compile(env.template);
@@ -141,4 +138,27 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
     return pod;
 
     // console.log(envMap);
+}
+
+function generateMcpConfigMap(app: App, config: TAppConfig): Record<string, string> {
+    return app.configuration.reduce((acc, c) => {
+        acc[c.id] = config.config.find((option) => option.id === c.id)?.value || '';
+        return acc;
+    }, {} as Record<string, string>);
+}
+
+export type CreateHeadersProps = {
+    app: App;
+    config: TAppConfig;
+};
+
+export function createRemoteHeaders({ app, config }: CreateHeadersProps) {
+    const configMap = generateMcpConfigMap(app, config);
+    const headers: Record<string, string> = {};
+    app.headers?.forEach((env) => {
+        const envTemplate = Handlebars.compile(env.template);
+        headers[env.header] = envTemplate(configMap);
+    });
+
+    return headers;
 }

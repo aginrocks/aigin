@@ -13,11 +13,11 @@ export const envSchema = z.object({
 });
 
 export const headerSchema = z.object({
-    variable: z.string(),
+    header: z.string(),
     template: z.string(),
 });
 
-export const APP_TYPES = ['container/stdio', 'container/sse', 'remote/sse'] as const;
+export const APP_TYPES = ['container/stdio', 'container/sse', 'remote/sse', 'remote/http'] as const;
 
 export const appSchema = z.object({
     type: z.enum(APP_TYPES),
@@ -27,8 +27,8 @@ export const appSchema = z.object({
     icon: z.string(),
     configuration: z.array(configOptionSchema),
     environment: z.array(envSchema),
-    image: z.string(),
-    runCommand: z.string(),
+    image: z.string().optional(),
+    runCommand: z.string().optional(),
     runArgs: z.array(z.string()).optional(),
     headers: z.array(headerSchema).optional(),
     url: z.string().optional(),
@@ -258,6 +258,28 @@ export const APPS: App[] = [
         image: 'ghcr.io/tymekv/clickup-mcp-server:main',
         runCommand: 'node',
         runArgs: ['/app/build/index.js'],
+    },
+    {
+        type: 'remote/http',
+        slug: 'github',
+        name: 'GitHub',
+        description: 'A platform for version control and collaboration.',
+        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
+        configuration: [
+            {
+                id: 'pat',
+                name: 'Personal Access Token',
+                description: 'GitHub Personal Access Token.',
+            },
+        ],
+        environment: [],
+        url: 'https://api.githubcopilot.com/mcp/',
+        headers: [
+            {
+                header: 'Authorization',
+                template: 'Bearer {{pat}}',
+            },
+        ],
     },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp

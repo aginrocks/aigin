@@ -1,7 +1,18 @@
 {
     "servers": {
-        "mongodb": {
-            "url": "http://localhost:33783/mongodb/sse"
+        "github": {
+            "url": "https://api.githubcopilot.com/mcp/",
+            "headers": {
+        "Authorization": "Bearer ${input:github_mcp_pat}",
+      }
         }
+    },
+    "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_mcp_pat",
+      "description": "GitHub Personal Access Token",
+      "password": true
     }
+  ]
 }

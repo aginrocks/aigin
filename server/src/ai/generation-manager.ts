@@ -181,7 +181,7 @@ export class CachedChat {
             model: wrapModel(model as `${string}:${string}`, this.user),
             messages: this.messages,
             tools,
-            maxSteps: 100,
+            maxSteps: 9999999,
             // toolCallStreaming: true,
         });
 
