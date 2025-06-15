@@ -8,6 +8,7 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
+    SidebarHeader,
     SidebarLabel,
     SidebarMenu,
     SidebarMenuButton,
@@ -104,20 +105,22 @@ export function AppSidebar() {
 
     return (
         <Sidebar>
+            <SidebarHeader className="pb-0">
+                <Header
+                    title="Chats"
+                    className="pr-1.5"
+                    rightSection={
+                        <>
+                            <Button variant="ghost" size="icon">
+                                <IconPlus />
+                            </Button>
+                            <SidebarTrigger />
+                        </>
+                    }
+                />
+            </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <Header
-                        title="Chats"
-                        className="pr-1.5"
-                        rightSection={
-                            <>
-                                <Button variant="ghost" size="icon">
-                                    <IconPlus />
-                                </Button>
-                                <SidebarTrigger />
-                            </>
-                        }
-                    />
                     <SidebarGroupContent>
                         {chatsHistory.data && <SidebarTilesSection chats={chatsHistory.data} />}
                     </SidebarGroupContent>

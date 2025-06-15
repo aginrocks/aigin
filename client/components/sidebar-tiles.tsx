@@ -29,7 +29,9 @@ function SidebarTile({ title }: SidebarTileProps) {
     return (
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
-                <span>{title}</span>
+                <div className="pr-1">
+                    <span className="truncate">{title}</span>
+                </div>
             </SidebarMenuButton>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -80,7 +82,7 @@ type SidebarTilesSectionProps = {
 
 function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
     return (
-        <SidebarMenu>
+        <SidebarMenu className="pt-1">
             {filter
                 ? filter.map((f, i) => {
                       const elements = chats.filter(f.func);
