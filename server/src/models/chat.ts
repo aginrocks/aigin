@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
-import { z } from 'zod';
-import zodSchema, { zId } from '@zodyac/zod-mongoose';
+import { Schema, z } from 'zod';
+import zodSchema, { zId, zodSchemaRaw } from '@zodyac/zod-mongoose';
 import { Message } from 'ai';
 
 export const toolInvocationSchema = z.object({
@@ -56,8 +56,8 @@ export type TChat = z.infer<typeof chatSchema> & {
     _id: Types.ObjectId;
 };
 
-const schema = zodSchema(chatSchema);
-export const Chat = mongoose.model('Chat', schema);
+const schema = zodSchemaRaw(chatSchema);
+export const Chat = mongoose.model('Chat', new mongoose.Schema(schema, { timestamps: true }));
 
 /**
  * Deserializes an array of messages from the database format to the application format.
