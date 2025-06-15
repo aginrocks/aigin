@@ -1,14 +1,6 @@
 import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
 import { getUserProviders, TUser } from '@models/user';
-import {
-    generateText,
-    Message,
-    streamText,
-    TextStreamPart,
-    tool,
-    ToolSet,
-    wrapLanguageModel,
-} from 'ai';
+import { generateText, Message, streamText, TextStreamPart, ToolSet } from 'ai';
 import { getUserRegistry, wrapModel } from './registry';
 import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
@@ -20,8 +12,6 @@ import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
 import util from 'node:util';
-import z from 'zod';
-import { fixAnthropicToolCalls } from './sdk-middlewars';
 util.inspect.defaultOptions.depth = null;
 
 export const chatsStore: Map<string, CachedChat> = new Map();
@@ -186,6 +176,7 @@ export class CachedChat {
 
         console.log('msg', this.messages);
 
+        // TODO: Fix MCP on anthropic models via openrouter
         const response = streamText({
             model: wrapModel(model as `${string}:${string}`, this.user),
             messages: this.messages,

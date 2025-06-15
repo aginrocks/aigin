@@ -8,8 +8,7 @@ import { ProviderV1 } from '@ai-sdk/provider';
 import { PROVIDER_IDS } from '@constants/providers';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createGroq } from '@ai-sdk/groq';
-import { model } from 'mongoose';
-import { fixAnthropicToolCalls } from './sdk-middlewars';
+import { fixEmptyParts, fixOpenAIToolCalls } from './sdk-middlewars';
 
 export const getUserRegistry = (user: TUser) => {
     const { anthropic, google, groq, azure, xai, deepseek, openai, openrouter } = user.providers;
@@ -64,13 +63,21 @@ export const getUserRegistry = (user: TUser) => {
 };
 
 export const wrapModel = (model: `${string}:${string}`, user: TUser) => {
-    const [provider, modelId] = model.split(':');
+    const [provider, modelName] = model.split(':');
     const registry = getUserRegistry(user);
 
-    if (model.split(':')[0] === 'anthropic') {
+    if (provider === 'anthropic' || provider === 'google') {
         return wrapLanguageModel({
             model: registry.languageModel(model),
-            middleware: fixAnthropicToolCalls,
+            middleware: fixEmptyParts,
+        });
+    } else if (
+        provider === 'openai' ||
+        (provider === 'openrouter' && modelName.startsWith('openai/'))
+    ) {
+        return wrapLanguageModel({
+            model: registry.languageModel(model),
+            middleware: fixOpenAIToolCalls,
         });
     }
 
