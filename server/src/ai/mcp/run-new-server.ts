@@ -113,7 +113,7 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
                                 'ephemeral-storage': '128Mi',
                             },
                             requests: {
-                                cpu: '100m',
+                                cpu: '50m',
                                 memory: '64Mi',
                                 'ephemeral-storage': '32Mi',
                             },
