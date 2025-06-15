@@ -1,4 +1,5 @@
 import { IconDots, IconFolder, IconPin, IconShare3, IconTrash } from '@tabler/icons-react';
+
 import {
     SidebarLabel,
     SidebarMenu,
@@ -14,6 +15,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { AppRouter } from '../../server/src';
+import { inferOutput } from '@trpc/tanstack-react-query';
+import { Outputs, useTRPC } from '@lib/trpc';
 
 type SidebarTileProps = {
     title: string;
@@ -61,11 +65,16 @@ function SidebarTile({ title }: SidebarTileProps) {
     );
 }
 
-export type chat = { id: string; title: string; date: Date };
-export type chatFilter = { func: (chat: chat) => boolean; label: string };
+export type chat = Outputs['chat']['getAll'];
+
+type AsyncIterableData<T> = T extends AsyncIterable<infer U> ? U : never;
+
+export type chatSubscriptionData = AsyncIterableData<Outputs['chat']['getAll']>[0];
+
+export type chatFilter = { func: (chat: chatSubscriptionData) => boolean; label: string };
 
 type SidebarTilesSectionProps = {
-    chats: chat[];
+    chats: chatSubscriptionData[];
     filter?: chatFilter[];
 };
 
@@ -80,12 +89,12 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                               <div key={i}>
                                   <SidebarLabel>{f.label}</SidebarLabel>
                                   {elements.map((chat) => (
-                                      <SidebarTile key={chat.id} title={chat.title} />
+                                      <SidebarTile key={chat._id} title={chat.name} />
                                   ))}
                               </div>
                           );
                   })
-                : chats.map((chat) => <SidebarTile key={chat.id} title={chat.title} />)}
+                : chats.map((chat) => <SidebarTile key={chat._id} title={chat.name} />)}
         </SidebarMenu>
     );
 }

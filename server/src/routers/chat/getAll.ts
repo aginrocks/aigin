@@ -18,6 +18,9 @@ async function fetchChats(userId: Types.ObjectId) {
         {
             name: 1,
             pinned: 1,
+        },
+        {
+            sort: { updatedAt: -1 },
         }
     );
 
