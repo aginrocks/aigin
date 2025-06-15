@@ -80,6 +80,8 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
         pvcName = await ensurePVCExists({ app, userId });
     }
 
+    console.log({ pvcName });
+
     const pod = await k8sApi?.createNamespacedPod({
         namespace: NAMESPACE,
         body: {
@@ -105,11 +107,20 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
                             {
                                 name: 'mcp-proxy-volume',
                                 mountPath: '/bin/agin',
+                                readOnly: true,
                             },
                             {
                                 name: 'mcp-config-volume',
                                 mountPath: '/etc/mcp-proxy',
                             },
+                            ...(app.isPersistant && app.volumeMountPoint && pvcName
+                                ? [
+                                      {
+                                          name: 'mcp-data-volume',
+                                          mountPath: app.volumeMountPoint,
+                                      },
+                                  ]
+                                : []),
                         ],
                         resources: {
                             limits: {
@@ -166,7 +177,7 @@ async function ensurePVCExists({ app, userId }: Omit<RunServerProps, 'config'>) 
             name: pvcName,
             namespace: NAMESPACE,
         });
-        return; // PVC already exists, no need to create
+        return pvcName; // PVC already exists, no need to create
     } catch {
         // PVC doesn't exist, proceed with creation
     }
@@ -194,8 +205,7 @@ async function ensurePVCExists({ app, userId }: Omit<RunServerProps, 'config'>) 
         },
     };
 
-    await k8sApi?.replaceNamespacedPersistentVolumeClaim({
-        name: pvcName,
+    await k8sApi?.createNamespacedPersistentVolumeClaim({
         namespace: NAMESPACE,
         body: pvc,
     });

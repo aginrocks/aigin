@@ -342,6 +342,7 @@ export const APPS: App[] = [
         runArgs: ['/app/dist/index.js'],
         isPersistant: true,
         volumeMountPoint: '/data',
+        image: 'mcp/memory:latest',
     },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
