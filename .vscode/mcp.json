@@ -1,7 +1,7 @@
 {
     "servers": {
-        "slack": {
-            "url": "http://localhost:33783/slack/sse"
+        "furryos": {
+            "url": "http://localhost:33783/furryos/sse"
         }
     }
 }

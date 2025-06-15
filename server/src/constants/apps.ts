@@ -110,6 +110,42 @@ export const APPS: App[] = [
         image: 'docker.gitea.com/gitea-mcp-server:latest',
         runCommand: '/app/gitea-mcp',
     },
+    {
+        type: 'container/stdio',
+        slug: 'tmdb',
+        name: 'TMDB',
+        description: 'Discover movies, TV shows, and celebrities.',
+        icon: '',
+        configuration: [
+            {
+                id: 'api_key',
+                name: 'API Key',
+                description: 'API key for TMDB integration.',
+            },
+        ],
+        environment: [
+            {
+                variable: 'TMDB_API_KEY',
+                template: `{{api_key}}`,
+            },
+        ],
+        image: 'ghcr.io/tymekv/mcp-server-tmdb:main',
+        runCommand: 'node',
+        runArgs: ['/usr/src/app/dist/index.js'],
+    },
+    {
+        type: 'container/stdio',
+        slug: 'furryos',
+        name: 'FurryOS',
+        description: "Because Your AI Assistant Shouldn't Hallucinate About Packages",
+        icon: '',
+        configuration: [],
+        environment: [],
+        image: 'ghcr.io/tymekv/mcp-nixos:main',
+        runCommand: 'python',
+        runArgs: ['-m', 'mcp_nixos'],
+    },
+    // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {
     //     type: 'container/stdio',
     //     slug: 'slack',
