@@ -1,15 +1,62 @@
-import { SidebarLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './ui/sidebar';
+import { IconDots, IconFolder, IconPin, IconShare3, IconTrash } from '@tabler/icons-react';
+import {
+    SidebarLabel,
+    SidebarMenu,
+    SidebarMenuAction,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    useSidebar,
+} from './ui/sidebar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 
 type SidebarTileProps = {
     title: string;
 };
 
 function SidebarTile({ title }: SidebarTileProps) {
+    const { isMobile } = useSidebar();
+
     return (
         <SidebarMenuItem>
             <SidebarMenuButton asChild>
                 <span>{title}</span>
             </SidebarMenuButton>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <SidebarMenuAction
+                        showOnHover
+                        className="data-[state=open]:bg-accent rounded-sm"
+                    >
+                        <IconDots />
+                        <span className="sr-only">More</span>
+                    </SidebarMenuAction>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    className="w-24 rounded-lg"
+                    side={isMobile ? 'bottom' : 'right'}
+                    align={isMobile ? 'end' : 'start'}
+                >
+                    <DropdownMenuItem>
+                        <IconPin />
+                        <span>Pin</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                        <IconShare3 />
+                        <span>Share</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem variant="destructive">
+                        <IconTrash />
+                        <span>Delete</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </SidebarMenuItem>
     );
 }
