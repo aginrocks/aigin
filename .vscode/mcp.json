@@ -1,7 +1,7 @@
 {
     "servers": {
-        "furryos": {
-            "url": "http://localhost:33783/furryos/sse"
+        "outline": {
+            "url": "http://localhost:33783/outline/sse"
         }
     }
 }

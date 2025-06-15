@@ -145,6 +145,42 @@ export const APPS: App[] = [
         runCommand: 'python',
         runArgs: ['-m', 'mcp_nixos'],
     },
+    {
+        type: 'container/stdio',
+        slug: 'outline',
+        name: 'Outline',
+        description: 'A modern team knowledge base and wiki.',
+        icon: '',
+        configuration: [
+            {
+                id: 'host',
+                name: 'Host',
+                description: 'The URL of your Outline instance.',
+                exampleValue: 'https://app.getoutline.com/api',
+            },
+            {
+                id: 'api_key',
+                name: 'API Key',
+                description: 'API key for Outline integration.',
+            },
+        ],
+        environment: [
+            {
+                variable: 'OUTLINE_API_URL',
+                template: `{{host}}`,
+            },
+            {
+                variable: 'OUTLINE_API_KEY',
+                template: `{{api_key}}`,
+            },
+            {
+                variable: 'DOCKER_CONTAINER',
+                template: 'true',
+            },
+        ],
+        image: 'ghcr.io/tymekv/mcp-outline:main',
+        runCommand: 'mcp-outline',
+    },
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {
     //     type: 'container/stdio',
