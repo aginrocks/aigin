@@ -3,6 +3,15 @@ import { getUserEmitter, isChatGenerating } from '@ai/generation-manager';
 import { Chat } from '@models/chat';
 import { Types } from 'mongoose';
 
+type GetAllChatsChat = {
+    name: string;
+    pinned: boolean;
+    _id: string;
+    isGenerating: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+};
+
 async function fetchChats(userId: Types.ObjectId) {
     const chats = await Chat.find(
         { user: userId },
@@ -12,10 +21,13 @@ async function fetchChats(userId: Types.ObjectId) {
         }
     );
 
-    const mappedChats = chats.map((c) => ({
-        ...c,
-        isGenerating: isChatGenerating(c._id.toString()),
-    }));
+    const mappedChats = chats.map(
+        // @ts-expect-error mongoose types
+        (c): GetAllChatsChat => ({
+            ...c.toJSON(),
+            isGenerating: isChatGenerating(c._id.toString()),
+        })
+    );
 
     return mappedChats;
 }
