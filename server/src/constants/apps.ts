@@ -304,6 +304,16 @@ export const APPS: App[] = [
         runCommand: 'node',
         runArgs: ['/app/dist/index.js'],
     },
+    {
+        type: 'remote/http',
+        slug: 'context7',
+        name: 'Context7',
+        description: 'Up-to-date documentation for LLMs and AI code editors.',
+        icon: '',
+        configuration: [],
+        environment: [],
+        url: 'https://mcp.context7.com/mcp',
+    },
     // TODO: Add surrealdb
     // TODO: Add https://github.com/taylorwilsdon/google_workspace_mcp
     // {
