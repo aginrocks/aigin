@@ -9,7 +9,7 @@ import {
     IconMessage,
     IconUsers,
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Appearance } from './Appearance';
 import { SettingsSidebar, SidebarTab, SidebarTabProps } from '@/components/settings';
 import { SettingsPage } from '@/components/settings/settings-page';
@@ -18,6 +18,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { AppRouter } from '../../../../server/src';
 import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
+import { ModalsContext } from '../ModalsManager/contexts';
+import { useSetSettings } from '@lib/hooks';
 
 export type SettingsTabName =
     | 'account'
@@ -66,26 +68,42 @@ export type Settings = Awaited<ReturnType<AppRouter['settings']['getUserSettings
 
 export function Settings({
     payload,
+    modalName,
     ...props
 }: React.ComponentProps<typeof DialogPrimitive.Root> & ModalProps<'Settings'>) {
     const [tab, setTab] = useState<SettingsTabName>(payload?.initialTab || 'account');
+    const { hide } = useContext(ModalsContext);
 
     const trpc = useTRPC();
     const settingsData = useQuery(trpc.settings.getUserSettings.queryOptions());
+    const setSettings = useSetSettings();
 
     const settingForm = useForm<Settings>({
         values: settingsData.data,
     });
 
-    const nerd = settingForm.watch('statsForNerds');
+    const onOpenChange = (open: boolean) => {
+        if (!open) {
+            hide(modalName);
+            // console.log(settingForm.getValues());
+            setSettings.mutate(settingForm.getValues(), {
+                onSuccess: () => {
+                    console.log('Settings saved successfully');
+                },
+                onError: (error) => {
+                    console.error('Error saving settings:', error);
+                },
+            });
+            console.log('closing settings modal');
+        }
+    };
 
     return (
         <FormProvider {...settingForm}>
-            <Dialog {...props}>
+            <Dialog {...props} onOpenChange={onOpenChange}>
                 <DialogContent className="sm:max-w-3xl h-150 p-0 bg overflow-hidden">
                     <DialogTitle className="sr-only">Settings</DialogTitle>
                     <div className="flex w-full h-full">
-                        {nerd && 'nerd'}
                         <SettingsSidebar title="Settings">
                             {tabs.map((t) => (
                                 <SidebarTab

@@ -3,12 +3,13 @@ import { Button } from '@/components/ui/button';
 import { useTRPC } from '@lib/trpc';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSubscription } from '@trpc/tanstack-react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
     const trpc = useTRPC();
 
     const test = useQuery(trpc.auth.info.queryOptions());
+    const settings = useQuery(trpc.settings.getUserSettings.queryOptions());
 
     const [chatId, setChatId] = useState<string | null>(null);
 
@@ -99,6 +100,7 @@ export default function Page() {
             >
                 b
             </Button>
+            {settings.data && <div>{JSON.stringify(settings.data)}</div>}
             {test.data && <div>{JSON.stringify(test.data)}</div>}
             {msg}
         </div>
