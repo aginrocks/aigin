@@ -1,13 +1,13 @@
 import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
 import { getUserProviders, TUser } from '@models/user';
-import { generateText, Message, streamText, TextStreamPart, ToolSet } from 'ai';
+import { generateText, Message, streamText, TextStreamPart, Tool, ToolSet } from 'ai';
 import { getUserRegistry } from './registry';
 import { IterableEventEmitter } from '@/iterables';
 import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
 import { parseAppMentions, validateAppsRequest } from '@lib/util';
-import { McpApp } from './mcp/mcp-app';
+import { McpApp, StartedApp } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
@@ -154,8 +154,21 @@ export class CachedChat {
 
         this.emitter.emit('message:created', newMessage);
 
+        let tools: ToolSet = {};
         if (mentions.mentions.length > 0 && checkResult.configs) {
-            await this.loadApps(mentions.mentions, checkResult.configs);
+            const loadedApps = await this.loadApps(mentions.mentions, checkResult.configs);
+            const apps = loadedApps.filter((a) => !!a);
+
+            const allTools = await Promise.all(
+                apps.map(async (app) => {
+                    await app.createClient();
+                    return await app.client!.tools();
+                })
+            );
+
+            tools = allTools.reduce((acc, toolSet) => {
+                return { ...acc, ...toolSet };
+            }, {} as ToolSet);
         }
 
         const registry = getUserRegistry(this.user);
@@ -163,6 +176,8 @@ export class CachedChat {
         const response = streamText({
             model: registry.languageModel(model as `${string}:${string}`),
             messages: this.messages,
+            tools,
+            // toolCallStreaming: true,
         });
 
         // Set generating flag and don't await - let this run in the background so the mutation can return immediately
@@ -188,6 +203,8 @@ export class CachedChat {
 
         const results = await Promise.all(apps.map((app) => app.start()));
         console.log(`Loaded apps for chat ${this.id}:`, results);
+
+        return apps;
     }
 
     private async processStream(stream: AsyncIterable<TextStreamPart<ToolSet>>) {

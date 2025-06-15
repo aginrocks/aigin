@@ -1,9 +1,10 @@
-import { k8sApi } from '@/kubernetes';
+import { k8sApi, kc } from '@/kubernetes';
 import { runNewServer, RunServerProps } from './run-new-server';
 import { NAMESPACE } from '@constants/kubernetes';
 import { V1Pod } from '@kubernetes/client-node';
-import { exec } from 'child_process';
 import crypto from 'node:crypto';
+import * as k8s from '@kubernetes/client-node';
+import { exec } from 'node:child_process';
 
 export type GetServerPodResult =
     | {
@@ -69,7 +70,53 @@ export async function getPodAddress(pod: V1Pod) {
     // TODO: Secure this command execution
     const command = `kubectl port-forward pod/${podName} ${port}:8000 -n ${namespace}`;
     console.log(command);
-    // exec(command);
+    exec(command);
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     return podName ? `http://localhost:${port}/${pod.metadata?.labels?.mcp_server}/sse` : undefined;
+}
+
+export async function waitUntilReady(pod: V1Pod): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (!kc) return reject();
+
+        const timeout = setTimeout(async () => {
+            (await abort).abort();
+            reject(new Error(`Timeout waiting for pod ${pod.metadata?.name} to be ready`));
+        }, 60_000);
+
+        const originalResolve = resolve;
+        const originalReject = reject;
+        resolve = (...args) => {
+            clearTimeout(timeout);
+            originalResolve(...args);
+        };
+        reject = (...args) => {
+            clearTimeout(timeout);
+            originalReject(...args);
+        };
+
+        const watch = new k8s.Watch(kc);
+
+        const abort = watch.watch(
+            `/api/v1/pods`,
+            {},
+            async (type, obj) => {
+                if (obj?.metadata?.name !== pod.metadata?.name) return;
+
+                if (obj?.status?.phase === 'Running') {
+                    (await abort).abort();
+                    resolve();
+                } else if (obj?.status?.phase === 'Failed') {
+                    (await abort).abort();
+                    reject(new Error(`Pod ${pod.metadata?.name} failed to start`));
+                }
+            },
+            async (err) => {
+                (await abort).abort();
+                reject(err);
+            }
+        );
+    });
 }

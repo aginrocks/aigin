@@ -26,7 +26,7 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
 
     const proxyConfig = {
         mcpProxy: {
-            baseURL: 'http://localhost:33783',
+            // baseURL: 'http://localhost:33783',
             addr: ':8000',
             name: app.name,
             version: '1.0.0',
