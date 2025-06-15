@@ -11,6 +11,9 @@ import { McpApp, StartedApp } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
+import util from 'node:util';
+util.inspect.defaultOptions.depth = null;
+
 export const chatsStore: Map<string, CachedChat> = new Map();
 export const chatsEmitter = new IterableEventEmitter<ChatsEventMap>();
 
@@ -177,6 +180,7 @@ export class CachedChat {
             model: registry.languageModel(model as `${string}:${string}`),
             messages: this.messages,
             tools,
+            maxSteps: 100,
             // toolCallStreaming: true,
         });
 
@@ -210,7 +214,7 @@ export class CachedChat {
     private async processStream(stream: AsyncIterable<TextStreamPart<ToolSet>>) {
         try {
             for await (const part of stream) {
-                // console.log(part);
+                console.log(part);
                 this.handlePart(part);
             }
 

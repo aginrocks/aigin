@@ -83,10 +83,10 @@ export default function Page() {
             <Button
                 onClick={() =>
                     generate.mutate({
-                        prompt: '@{app:mongodb} read #announcments and summarize it in bullet points',
-                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        prompt: '@{app:outline} write a blog post about AI',
+                        // model: 'google:gemini-2.5-flash-preview-05-20',
                         // model: 'openrouter:openai/gpt-4.1-nano',
-                        // model: 'anthropic:claude-3-5-sonnet-20241022',
+                        model: 'anthropic:claude-3-5-sonnet-20241022',
                         // model: 'groq:deepseek-r1-distill-llama-70b',
                         // model: 'groq:meta-llama/llama-4-scout-17b-16e-instruct',
                         // chatId: '684a07d0e4d1230fcaaf67b1',
