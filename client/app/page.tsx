@@ -1,4 +1,5 @@
 'use client';
+import { MessageInput } from '@/components/chat/message-input';
 import { Button } from '@/components/ui/button';
 import { useTRPC } from '@lib/trpc';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -110,6 +111,7 @@ export default function Page() {
             {settings.data && <div>{JSON.stringify(settings.data)}</div>}
             {test.data && <div>{JSON.stringify(test.data)}</div>}
             {msg}
+            <MessageInput />
         </div>
     );
 }
