@@ -49,7 +49,7 @@ export const CodeHighlighter = React.memo(
 
                     const html = await codeToHtml(code, {
                         lang: language,
-                        theme: 'github-dark-default',
+                        theme: 'rose-pine-moon',
                     });
 
                     // Double-check we're still the latest request
@@ -73,6 +73,11 @@ export const CodeHighlighter = React.memo(
             highlight();
         }, [code, language, mounted, cacheKey]);
 
-        return <div dangerouslySetInnerHTML={{ __html: highlighted }} className="text-sm" />;
+        return (
+            <div
+                dangerouslySetInnerHTML={{ __html: highlighted }}
+                className="text-sm [&>pre]:px-4 [&>pre]:py-3"
+            />
+        );
     }
 );

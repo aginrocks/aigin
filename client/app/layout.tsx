@@ -40,7 +40,7 @@ export default function RootLayout({
                         <ModalsManagerProvider>
                             <SidebarProvider>
                                 <AppSidebar />
-                                <div className="w-screen h-screen p-3">
+                                <div className="w-screen h-screen">
                                     <SidebarTrigger hideOnOpen />
                                     {children}
                                 </div>

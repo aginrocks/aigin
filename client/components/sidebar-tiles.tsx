@@ -97,7 +97,7 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                       const elements = chats.filter(f.func);
                       if (elements.length > 0)
                           return (
-                              <div key={i}>
+                              <div key={i} className="space-y-0.5">
                                   <SidebarLabel>{f.label}</SidebarLabel>
                                   {elements.map((chat) => (
                                       <SidebarTile

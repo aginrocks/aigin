@@ -28,7 +28,7 @@ export default function ChatWrapper({ children, chatId }: ChatWrapperProps) {
 
     return (
         <div className="w-full h-full relative">
-            <div className="h-full w-full overflow-auto">{children}</div>
+            <div className="h-full w-full overflow-auto p-3">{children}</div>
             <MessageInput
                 onSubmit={(d) => generate.mutate({ model: d.model, prompt: d.prompt, chatId })}
             />
