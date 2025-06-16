@@ -343,7 +343,12 @@ export class CachedChat {
         ...args: CachedChatEventsMap[K]
     ) {
         this.emitter.emit(event, ...(args as any));
-        this.emitGlobalEvent('chat:changed', this.id);
+        if (event !== 'message:changed') {
+            this.emitter.emit('message:changed', {
+                type: event as Exclude<K, 'message:changed'>,
+                data: args as any,
+            } as CachedChatEventsMap['message:changed'][0]);
+        }
     }
 
     async syncToDatabase() {
