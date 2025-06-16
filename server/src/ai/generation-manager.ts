@@ -327,6 +327,8 @@ export class CachedChat {
 
     private emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {
         emitGlobalChatEvent(this.user._id.toString(), event, ...args);
+        if (event !== 'chat:changed')
+            emitGlobalChatEvent(this.user._id.toString(), 'chat:changed', args[0]);
     }
 
     async syncToDatabase() {
