@@ -1,5 +1,6 @@
 'use client';
 import ChatWrapper from '@/components/chat/chat-wrapper';
+import CodeHighlighter from '@/components/code-highlighter';
 import { useTRPC } from '@lib/trpc';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
@@ -35,26 +36,36 @@ export default function ChatPage() {
 
     return (
         <ChatWrapper>
-            <div className="max-w-4xl mx-auto  p-7 pb-40">
+            <div className="max-w-4xl mx-auto p-7 pb-40">
                 <Markdown
                     remarkPlugins={[remarkGfm, remarkMath]}
                     rehypePlugins={[rehypeKatex]}
                     components={{
                         ul: ({ children, ...props }) => (
-                            <ul className="list-disc" {...props}>
+                            <ul className="list-disc leading-8" {...props}>
                                 {children}
                             </ul>
                         ),
                         code: ({ children, className, node, ...props }) => {
                             const match = /language-(\w+)/.exec(className || '');
-                            const lang = match ? match[1] : 'text';
+                            const lang = match?.[1];
+
+                            if (!lang) {
+                                return (
+                                    <span className="rounded-sm px-1 py-0.5 font-mono bg-accent text-sm">
+                                        {children}
+                                    </span>
+                                );
+                            }
+
                             return (
-                                <code
-                                    className="max-w-full overflow-x-auto block whitespace-pre-wrap break-words"
-                                    {...props}
-                                >
-                                    {children}
-                                </code>
+                                // <code
+                                //     className="max-w-full overflow-x-auto block whitespace-pre-wrap break-words"
+                                //     {...props}
+                                // >
+                                //     {children}
+                                // </code>
+                                <CodeHighlighter code={children as string} language={lang} />
                             );
                         },
                     }}
