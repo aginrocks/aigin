@@ -34,14 +34,14 @@ export const stream = protectedProcedure
 
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
 
-        const iterable = chat.emitter.toIterable('message:delta', {
-            signal,
-        });
+        const events = ['message:delta', 'message:completed', 'message:created'] as const;
+        const iterables = events.map((event) => chat.emitter.toIterable(event, { signal }));
 
         try {
-            for await (const [part] of iterable) {
-                console.log(`Streaming part for chat ${input.chatId}:`, part);
-                yield part;
+            for await (const [eventData, eventIndex] of race(iterables)) {
+                const eventType = events[eventIndex];
+                console.log(`Streaming ${eventType} for chat ${input.chatId}:`, eventData);
+                yield { type: eventType, data: eventData };
             }
         } catch (error) {
             console.error(`Stream error for chat ${input.chatId}:`, error);
@@ -50,3 +50,33 @@ export const stream = protectedProcedure
 
         console.log(`Stream ended for chat ${input.chatId}`);
     });
+
+async function* race<T>(iterables: AsyncIterable<T>[]): AsyncGenerator<[T, number]> {
+    const promises = iterables.map(async (iterable, index) => {
+        const iterator = iterable[Symbol.asyncIterator]();
+        const result = await iterator.next();
+        return { value: result.value, done: result.done, index };
+    });
+
+    while (promises.length > 0) {
+        const { value, done, index } = await Promise.race(promises);
+
+        if (done) {
+            promises.splice(
+                promises.findIndex((p) => p === promises[index]),
+                1
+            );
+            continue;
+        }
+
+        yield [value, index];
+
+        // Replace the resolved promise with a new one for the same iterator
+        const iterable = iterables[index];
+        const iterator = iterable[Symbol.asyncIterator]();
+        promises[index] = (async () => {
+            const result = await iterator.next();
+            return { value: result.value, done: result.done, index };
+        })();
+    }
+}
