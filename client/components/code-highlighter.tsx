@@ -57,7 +57,7 @@ export const CodeHighlighter = React.memo(
                         // Cache the result
                         highlightCache.set(cacheKey, html);
                         lastGeneration = html;
-                        console.log(highlightCache);
+                        // console.log(highlightCache);
                         setHighlighted(html);
                     }
                 } catch (error) {

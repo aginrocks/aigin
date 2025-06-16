@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
+import { log } from 'console';
 
 export type Chat = AsyncIterableData<Outputs['chat']['get']>;
 
@@ -34,7 +35,8 @@ export default function ChatPage() {
     );
 
     function handleData(part: ChatStream) {
-        const lastMessage = msg[msg.length - 1];
+        const assistantMessages = msg.filter((message) => message.role === 'assistant');
+        const lastMessage = assistantMessages[assistantMessages.length - 1];
 
         const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
         if (lastPart && lastPart.type === 'text') {
@@ -46,6 +48,7 @@ export default function ChatPage() {
             ];
         }
 
+        console.log('Updated message:', lastMessage);
         setMsg([...msg.slice(0, -1), lastMessage]);
     }
 
@@ -69,15 +72,18 @@ export default function ChatPage() {
         <ChatWrapper chatId={chatId?.toString()}>
             <div className="max-w-4xl mx-auto p-7 pb-40">
                 {msg.map((message) => {
-                    if (!message.parts || message.parts.length === 0) {
-                        return message.content;
+                    let parts = message.parts;
+
+                    if (!parts || parts.length === 0) {
+                        parts = [];
+                        parts.push({ text: message.content, type: 'text' });
                     }
 
-                    const messageParts = message.parts.map((part, index) => {
+                    const messageParts = parts.map((part, index) => {
                         if (part.type === 'text') {
                             if (message.role === 'user') {
                                 return (
-                                    <div key={index} className="text-gray-800">
+                                    <div key={index} className="text-red-600 ">
                                         {part.text}
                                     </div>
                                 );
