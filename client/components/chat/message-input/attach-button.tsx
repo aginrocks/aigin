@@ -10,6 +10,7 @@ import {
     IconChartBar,
     IconCirclePlus,
     IconFilePlus,
+    IconPaperclip,
     IconPhoto,
     IconSlash,
 } from '@tabler/icons-react';
@@ -17,12 +18,12 @@ import {
 export function AttachButton() {
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>
-                <Button variant="ghost" size="icon" className="dark:hover:bg-secondary-hover-2">
-                    <IconCirclePlus />
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="md-icon" className="dark:hover:bg-secondary-hover-2">
+                    <IconPaperclip />
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent sideOffset={8}>
+            <DropdownMenuContent>
                 <DropdownMenuItem>
                     <IconFilePlus />
                     Upload a File
