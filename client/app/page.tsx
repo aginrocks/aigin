@@ -82,6 +82,7 @@ export default function Page() {
                 configure notion
             </Button>
             <Button
+                variant="secondary"
                 onClick={() =>
                     generate.mutate({
                         // prompt: '@{app:outline} write a blog post about AI',

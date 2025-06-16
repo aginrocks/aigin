@@ -82,7 +82,7 @@ type SidebarTilesSectionProps = {
 
 function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
     return (
-        <SidebarMenu className="pt-1">
+        <SidebarMenu className="pt-0">
             {filter
                 ? filter.map((f, i) => {
                       const elements = chats.filter(f.func);

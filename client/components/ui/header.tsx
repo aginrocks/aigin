@@ -7,6 +7,7 @@ export type HeaderProps = VariantProps<typeof headerVariants> &
         children?: ReactNode;
         title?: string;
         rightSection?: ReactNode;
+        logo?: boolean;
     };
 
 const headerVariants = cva('flex h-12', {
@@ -26,6 +27,7 @@ export function Header({
     rightSection,
     custom = false,
     className,
+    logo,
     ...props
 }: HeaderProps) {
     return (
@@ -36,6 +38,7 @@ export function Header({
                 <>
                     <div className="flex items-center gap-2">
                         {title && <div className="font-semibold">{title}</div>}
+                        {logo && <img src="/logo-dark.svg" />}
                         {children}
                     </div>
                     <div className="flex items-center">{rightSection}</div>

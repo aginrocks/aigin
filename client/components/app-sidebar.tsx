@@ -1,6 +1,6 @@
 'use client';
 import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
-import { IconPlus } from '@tabler/icons-react';
+import { IconPlus, IconSearch } from '@tabler/icons-react';
 
 import {
     Sidebar,
@@ -30,6 +30,7 @@ import {
 } from './sidebar-tiles';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useEffect } from 'react';
+import { SidebarGradient } from './ui/sidebar-gradient';
 
 // const chats: chatSubscriptionData[] = [
 //     {
@@ -105,10 +106,10 @@ export function AppSidebar() {
 
     return (
         <Sidebar>
-            <SidebarHeader className="pb-0 border-b border-sidebar-border">
+            <SidebarHeader className="pb-0 relative">
                 <Header
-                    title="Chats"
-                    className="pr-1.5"
+                    logo
+                    className="pr-1.5 h-11 pt-1"
                     rightSection={
                         <>
                             <Button variant="ghost" size="icon">
@@ -118,15 +119,21 @@ export function AppSidebar() {
                         </>
                     }
                 />
+                <Button variant="outline" className="text-muted-foreground text-xs justify-start">
+                    <IconSearch />
+                    Search Chats
+                </Button>
+                <SidebarGradient position="top" />
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
+                <SidebarGroup className="py-3">
                     <SidebarGroupContent>
                         {chatsHistory.data && <SidebarTilesSection chats={chatsHistory.data} />}
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t border-sidebar-border">
+            <SidebarFooter className="relative">
+                <SidebarGradient position="bottom" />
                 <SidebarUser
                     user={{ email: userData?.email, name: userData?.name, avatar: avatarUrl }}
                 />
