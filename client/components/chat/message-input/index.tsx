@@ -26,14 +26,14 @@ export function MessageInput() {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <AttachButton />
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="ghost">
                             <span>Claude 3.5</span>
                             <IconChevronDown />
                         </Button>
                     </div>
                     <div className="flex items-center gap-2 ">
                         <Button size="sm" variant="ghost">
-                            <IconSend2 className="h-4 w-4" />
+                            <IconSend2 className="rotate-270 h-4 w-4" />
                         </Button>
                     </div>
                 </div>
