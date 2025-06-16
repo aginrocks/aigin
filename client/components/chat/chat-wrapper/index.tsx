@@ -26,11 +26,18 @@ export default function ChatWrapper({ children, chatId }: ChatWrapperProps) {
         })
     );
 
+    // TODO: Change hardcoded model to user selected model
     return (
         <div className="w-full h-full relative">
             <div className="h-full w-full overflow-auto p-3">{children}</div>
             <MessageInput
-                onSubmit={(d) => generate.mutate({ model: d.model, prompt: d.prompt, chatId })}
+                onSubmit={(d) =>
+                    generate.mutate({
+                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        prompt: d.prompt,
+                        chatId,
+                    })
+                }
             />
         </div>
     );

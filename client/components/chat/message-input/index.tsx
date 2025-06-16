@@ -34,7 +34,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
         if (!models || models.length === 0) {
             return;
         }
-        messageForm.setValue('model', models[0].slug);
+        messageForm.setValue('model', models[1].slug);
         console.log('Models loaded:', models);
     }, [models]);
 
