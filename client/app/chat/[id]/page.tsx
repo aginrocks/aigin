@@ -1,7 +1,6 @@
 'use client';
 import ChatWrapper from '@/components/chat/chat-wrapper';
 import { Outputs, useTRPC } from '@lib/trpc';
-import CodeHighlighter from '@/components/code-highlighter';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';

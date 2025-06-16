@@ -1,4 +1,4 @@
-import CodeHighlighter from '@/components/code-highlighter';
+import { CodeBlock } from '@/components/codeblock';
 import Markdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -30,7 +30,7 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                         );
                     }
 
-                    return <CodeHighlighter code={children as string} language={lang} />;
+                    return <CodeBlock code={children as string} language={lang} />;
                 },
             }}
         >
