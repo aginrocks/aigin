@@ -161,7 +161,7 @@ export class CachedChat {
         this.messages.push(newMessage);
         await this.syncToDatabase();
 
-        // this.emitEvent('message:created', newMessage);
+        this.emitEvent('message:created', newMessage);
 
         let tools: ToolSet = {};
         if (mentions.mentions.length > 0 && checkResult.configs) {

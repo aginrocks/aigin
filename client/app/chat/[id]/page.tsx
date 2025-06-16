@@ -3,12 +3,13 @@ import ChatWrapper from '@/components/chat/chat-wrapper';
 import { Outputs, useTRPC } from '@lib/trpc';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
 import UserMessage from '@/components/chat/user-message';
+import { useQuery } from '@tanstack/react-query';
 
-export type Chat = AsyncIterableData<Outputs['chat']['get']>;
+export type Chat = Outputs['chat']['get'];
 
 export type ChatStream = AsyncIterableData<Outputs['chat']['stream']>;
 
@@ -72,20 +73,12 @@ export default function ChatPage() {
     }
 
     //data fetching
-    useSubscription(
-        trpc.chat.get.subscriptionOptions(
-            { chatId: chatId?.toString() || '' },
-            {
-                onData: (data) => {
-                    console.log('Subscription data:', data);
-                    setMsg(data.messages);
-                },
-                onError: (error) => {
-                    console.error('Subscription error:', error);
-                },
-            }
-        )
-    );
+    const data = useQuery(trpc.chat.get.queryOptions({ chatId: chatId?.toString() || '' }));
+
+    useEffect(() => {
+        if (!data.data) return;
+        setMsg(data.data.messages || []);
+    }, [data.data]);
 
     return (
         <ChatWrapper chatId={chatId?.toString()}>

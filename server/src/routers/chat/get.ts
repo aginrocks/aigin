@@ -9,24 +9,24 @@ export const get = withValidChatId
             chatId: z.string(),
         })
     )
-    .subscription(async function* ({ ctx, input, signal }) {
+    .query(async function ({ ctx }) {
         const chatObject = {
             ...ctx.chat.toObject(),
             messages: deserializeMessages(ctx.chat.messages),
         };
 
-        const cachedChat = await loadContext(ctx.user, input.chatId);
+        // const cachedChat = await loadContext(ctx.user, input.chatId);
 
-        yield chatObject;
+        return chatObject;
 
-        const iterable = cachedChat.emitter.toIterable('message:created', {
-            signal,
-        });
+        // const iterable = cachedChat.emitter.toIterable('message:created', {
+        //     signal,
+        // });
 
-        for await (const [message] of iterable) {
-            yield {
-                ...chatObject,
-                messages: [...chatObject.messages, message],
-            };
-        }
+        // for await (const [message] of iterable) {
+        //     yield {
+        //         ...chatObject,
+        //         messages: [...chatObject.messages, message],
+        //     };
+        // }
     });
