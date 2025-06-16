@@ -5,6 +5,10 @@ import { useTRPC } from '@lib/trpc';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useEffect, useState } from 'react';
+import Markdown from 'react-markdown';
+import rehypeKatex from 'rehype-katex';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 
 export default function Page() {
     const trpc = useTRPC();
@@ -56,8 +60,39 @@ export default function Page() {
     );
 
     return (
-        <div>
-            <Button
+        <div className="w-full h-full relative">
+            <div className="h-full w-full overflow-auto">
+                <div className="max-w-4xl mx-auto  p-7 pb-40">
+                    s
+                    <Markdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                        components={{
+                            ul: ({ children, ...props }) => (
+                                <ul className="list-disc" {...props}>
+                                    {children}
+                                </ul>
+                            ),
+                            code: ({ children, className, node, ...props }) => {
+                                const match = /language-(\w+)/.exec(className || '');
+                                const lang = match ? match[1] : 'text';
+                                return (
+                                    <code
+                                        className="max-w-full overflow-x-auto block whitespace-pre-wrap break-words"
+                                        {...props}
+                                    >
+                                        {children}
+                                    </code>
+                                );
+                            },
+                        }}
+                    >
+                        {msg}
+                    </Markdown>
+                </div>
+            </div>
+            <MessageInput onSubmit={(d) => generate.mutate({ model: d.model, prompt: d.prompt })} />
+            {/* <Button
                 onClick={() =>
                     share.mutate({
                         chatId: '684ca6cc15ea4a1b1032395b',
@@ -110,8 +145,7 @@ export default function Page() {
             </Button>
             {settings.data && <div>{JSON.stringify(settings.data)}</div>}
             {test.data && <div>{JSON.stringify(test.data)}</div>}
-            {msg}
-            <MessageInput />
+            {msg} */}
         </div>
     );
 }
