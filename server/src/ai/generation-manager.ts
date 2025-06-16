@@ -342,7 +342,7 @@ export class CachedChat {
         event: K,
         ...args: CachedChatEventsMap[K]
     ) {
-        this.emitEvent(event, ...(args as any));
+        this.emitter.emit(event, ...(args as any));
         this.emitGlobalEvent('chat:changed', this.id);
     }
 
