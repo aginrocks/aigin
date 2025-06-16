@@ -1,4 +1,13 @@
 import { CodeBlock } from '@/components/codeblock';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { cn } from '@lib/utils';
 import Markdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -51,6 +60,32 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                             {children}
                         </h3>
                     ),
+                    a: ({ children, ...props }) => (
+                        <a
+                            className="text-primary-text-light hover:underline"
+                            {...props}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            {children}
+                        </a>
+                    ),
+                    table: ({ children, className, ...props }) => (
+                        <Table
+                            className={cn(
+                                'border rounded-md max-w-full overflow-hidden',
+                                className
+                            )}
+                            {...props}
+                        >
+                            {children}
+                        </Table>
+                    ),
+                    thead: ({ children, ...props }) => <TableHeader>{children}</TableHeader>,
+                    tbody: ({ children, ...props }) => <TableBody>{children}</TableBody>,
+                    th: ({ children, ...props }) => <TableHead>{children}</TableHead>,
+                    tr: ({ children, ...props }) => <TableRow>{children}</TableRow>,
+                    td: ({ children, ...props }) => <TableCell>{children}</TableCell>,
                 }}
             >
                 {children}
