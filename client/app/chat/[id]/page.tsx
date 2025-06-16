@@ -10,6 +10,7 @@ import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
+import MarkdownRenderer from '@/components/chat/markdown';
 
 export type Chat = AsyncIterableData<Outputs['chat']['get']>;
 
@@ -18,32 +19,18 @@ export default function ChatPage() {
 
     const { id: chatId } = useParams();
 
-    const [msg, setMsg] = useState<Chat['messages']>([]);
+    // const [msg, setMsg] = useState<Chat['messages']>([]);
+    const [msg, setMsg] = useState('');
 
-    // const subscription = useSubscription(
-    //     trpc.chat.stream.subscriptionOptions(
-    //         {
-    //             chatId: chatId?.toString() || '',
-    //         },
-    //         {
-    //             onData: (data) => {
-    //                 console.log('Subscription data:', data);
-    //                 setMsg((m) => `${m}${data.textDelta}`);
-    //             },
-    //             onError: (error) => {
-    //                 console.error('Subscription error:', error);
-    //             },
-    //         }
-    //     )
-    // );
-
-    useSubscription(
-        trpc.chat.get.subscriptionOptions(
-            { chatId: chatId?.toString() || '' },
+    const subscription = useSubscription(
+        trpc.chat.stream.subscriptionOptions(
+            {
+                chatId: chatId?.toString() || '',
+            },
             {
                 onData: (data) => {
                     console.log('Subscription data:', data);
-                    setMsg(data.messages);
+                    setMsg((m) => `${m}${data.textDelta}`);
                 },
                 onError: (error) => {
                     console.error('Subscription error:', error);
@@ -52,42 +39,25 @@ export default function ChatPage() {
         )
     );
 
+    // useSubscription(
+    //     trpc.chat.get.subscriptionOptions(
+    //         { chatId: chatId?.toString() || '' },
+    //         {
+    //             onData: (data) => {
+    //                 console.log('Subscription data:', data);
+    //                 setMsg(data.messages);
+    //             },
+    //             onError: (error) => {
+    //                 console.error('Subscription error:', error);
+    //             },
+    //         }
+    //     )
+    // );
+
     return (
         <ChatWrapper>
             <div className="max-w-4xl mx-auto p-7 pb-40">
-                <Markdown
-                    remarkPlugins={[remarkGfm, remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                        ul: ({ children, ...props }) => (
-                            <ul className="list-disc leading-8" {...props}>
-                                {children}
-                            </ul>
-                        ),
-                        code: ({ children, className, node, ...props }) => {
-                            const match = /language-(\w+)/.exec(className || '');
-                            const lang = match?.[1];
-
-                            if (!lang) {
-                                return (
-                                    <code className="rounded-sm px-1 py-0.5 font-mono bg-accent text-sm">
-                                        {children}
-                                    </code>
-                                );
-                            }
-
-                            return (
-                                // <code
-                                //     className="max-w-full overflow-x-auto block whitespace-pre-wrap break-words"
-                                //     {...props}
-                                // >
-                                //     {children}
-                                // </code>
-                                <CodeHighlighter code={children as string} language={lang} />
-                            );
-                        },
-                    }}
-                ></Markdown>
+                <MarkdownRenderer>{msg || 'Loading...'}</MarkdownRenderer>
             </div>
 
             {/* <Button
