@@ -38,7 +38,12 @@ export function Header({
                 <>
                     <div className="flex items-center gap-2">
                         {title && <div className="font-semibold">{title}</div>}
-                        {logo && <img src="/logo-dark.svg" />}
+                        {logo && (
+                            <>
+                                <img src="/logo-dark.svg" className="not-dark:hidden" />
+                                <img src="/logo-light.svg" className="dark:hidden" />
+                            </>
+                        )}
                         {children}
                     </div>
                     <div className="flex items-center">{rightSection}</div>
