@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
-import { log } from 'console';
+import UserMessage from '@/components/chat/user-message';
 
 export type Chat = AsyncIterableData<Outputs['chat']['get']>;
 
@@ -37,6 +37,18 @@ export default function ChatPage() {
     function handleData(part: ChatStream) {
         const assistantMessages = msg.filter((message) => message.role === 'assistant');
         const lastMessage = assistantMessages[assistantMessages.length - 1];
+
+        if (!lastMessage) {
+            setMsg((prev) => [
+                ...prev,
+                {
+                    id: Date.now().toString(),
+                    role: 'assistant',
+                    content: part.textDelta,
+                    parts: [{ type: 'text', text: part.textDelta }],
+                },
+            ]);
+        }
 
         const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
         if (lastPart && lastPart.type === 'text') {
@@ -70,7 +82,7 @@ export default function ChatPage() {
 
     return (
         <ChatWrapper chatId={chatId?.toString()}>
-            <div className="max-w-4xl mx-auto p-7 pb-40">
+            <div className="max-w-4xl mx-auto p-7 pb-40 flex flex-col gap-5">
                 {msg.map((message) => {
                     let parts = message.parts;
 
@@ -82,13 +94,9 @@ export default function ChatPage() {
                     const messageParts = parts.map((part, index) => {
                         if (part.type === 'text') {
                             if (message.role === 'user') {
-                                return (
-                                    <div key={index} className="text-red-600 ">
-                                        {part.text}
-                                    </div>
-                                );
+                                return <UserMessage key={index}>{part.text}</UserMessage>;
                             } else if (message.role === 'assistant') {
-                                return <MarkdownRenderer>{part.text}</MarkdownRenderer>;
+                                return <MarkdownRenderer key={index}>{part.text}</MarkdownRenderer>;
                             }
                         }
                     });
