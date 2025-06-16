@@ -24,7 +24,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
     useEffect(() => ref.current?.focus(), []);
 
     const messageForm = useForm<generateProps>({
-        defaultValues: { model: 'google:gemini-2.5-flash-preview-05-20' },
+        defaultValues: { model: 'openrouter:openai/gpt-4.1' },
         mode: 'onSubmit',
     });
     const { ref: inputRef, ...inputProps } = messageForm.register('prompt');
