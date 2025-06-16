@@ -1,36 +1,62 @@
 'use client';
 import ChatWrapper from '@/components/chat/chat-wrapper';
 import { Outputs, useTRPC } from '@lib/trpc';
-import CodeHighlighter from '@/components/code-highlighter';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import Markdown from 'react-markdown';
-import rehypeKatex from 'rehype-katex';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
 
 export type Chat = AsyncIterableData<Outputs['chat']['get']>;
+
+export type ChatStream = AsyncIterableData<Outputs['chat']['stream']>;
 
 export default function ChatPage() {
     const trpc = useTRPC();
 
     const { id: chatId } = useParams();
 
-    // const [msg, setMsg] = useState<Chat['messages']>([]);
-    const [msg, setMsg] = useState('');
+    const [msg, setMsg] = useState<Chat['messages']>([]);
 
-    const subscription = useSubscription(
+    //data streaming
+    useSubscription(
         trpc.chat.stream.subscriptionOptions(
             {
                 chatId: chatId?.toString() || '',
             },
             {
+                onData: handleData,
+                onError: (error) => {
+                    console.error('Subscription error:', error);
+                },
+            }
+        )
+    );
+
+    function handleData(part: ChatStream) {
+        const lastMessage = msg[msg.length - 1];
+
+        const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
+        if (lastPart && lastPart.type === 'text') {
+            lastPart.text += part.textDelta;
+        } else {
+            lastMessage.parts = [
+                ...(lastMessage.parts || []),
+                { type: 'text', text: part.textDelta },
+            ];
+        }
+
+        setMsg([...msg.slice(0, -1), lastMessage]);
+    }
+
+    //data fetching
+    useSubscription(
+        trpc.chat.get.subscriptionOptions(
+            { chatId: chatId?.toString() || '' },
+            {
                 onData: (data) => {
                     console.log('Subscription data:', data);
-                    setMsg((m) => `${m}${data.textDelta}`);
+                    setMsg(data.messages);
                 },
                 onError: (error) => {
                     console.error('Subscription error:', error);
@@ -39,25 +65,30 @@ export default function ChatPage() {
         )
     );
 
-    // useSubscription(
-    //     trpc.chat.get.subscriptionOptions(
-    //         { chatId: chatId?.toString() || '' },
-    //         {
-    //             onData: (data) => {
-    //                 console.log('Subscription data:', data);
-    //                 setMsg(data.messages);
-    //             },
-    //             onError: (error) => {
-    //                 console.error('Subscription error:', error);
-    //             },
-    //         }
-    //     )
-    // );
-
     return (
         <ChatWrapper>
             <div className="max-w-4xl mx-auto p-7 pb-40">
-                <MarkdownRenderer>{msg || 'Loading...'}</MarkdownRenderer>
+                {msg.map((message) => {
+                    if (!message.parts || message.parts.length === 0) {
+                        return message.content;
+                    }
+
+                    const messageParts = message.parts.map((part, index) => {
+                        if (part.type === 'text') {
+                            if (message.role === 'user') {
+                                return (
+                                    <div key={index} className="text-gray-800">
+                                        {part.text}
+                                    </div>
+                                );
+                            } else if (message.role === 'assistant') {
+                                return <MarkdownRenderer>{part.text}</MarkdownRenderer>;
+                            }
+                        }
+                    });
+
+                    return messageParts;
+                })}
             </div>
 
             {/* <Button
