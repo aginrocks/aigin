@@ -55,7 +55,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
                         <div className="flex items-center gap-2 ">
                             <Button
                                 size="md-icon"
-                                variant={isNotEmpty ? 'default' : 'ghost'}
+                                variant="light"
                                 disabled={!isNotEmpty}
                                 type="submit"
                             >
