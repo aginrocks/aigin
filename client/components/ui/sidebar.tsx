@@ -462,7 +462,10 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 
 function SidebarLabel({ className, children, ...props }: React.ComponentProps<'div'>) {
     return (
-        <div className={cn('px-2 font-semibold mb-1 mt-2', className)} {...props}>
+        <div
+            className={cn('px-2 font-semibold mb-1 mt-2 text-primary-text text-xs', className)}
+            {...props}
+        >
             {children}
         </div>
     );
