@@ -1,5 +1,4 @@
 'use client';
-import { Calendar, Home, Inbox, Search, Settings } from 'lucide-react';
 import { IconPlus, IconSearch } from '@tabler/icons-react';
 
 import {
@@ -9,10 +8,6 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarHeader,
-    SidebarLabel,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { SidebarUser } from './sidebar-user';
@@ -21,54 +16,10 @@ import { Button } from './ui/button';
 import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
 import { useAvatar } from '@lib/hooks';
-import {
-    chat,
-    chatFilter,
-    chatSubscriptionData,
-    SidebarTile,
-    SidebarTilesSection,
-} from './sidebar-tiles';
+import { chatFilter, SidebarTilesSection } from './sidebar-tiles';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useEffect } from 'react';
 import { SidebarGradient } from './ui/sidebar-gradient';
-
-// const chats: chatSubscriptionData[] = [
-//     {
-//         name: 'Template chat',
-//         _id: 'asdfgafgadfgg',
-//         date: new Date('2023-10-01T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'asdfgafgsdfadfgg',
-//         date: new Date('2024-10-01T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'asdasdfgafgadfgg',
-//         date: new Date('2023-11-01T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'asdfga345fgadfgg',
-//         date: new Date('2025-01-01T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'as234dfgafgadfgg',
-//         date: new Date('2021-10-01T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'as234dfgafg4213adfgg',
-//         date: new Date('2025-06-12T12:00:00Z'),
-//     },
-//     {
-//         name: 'Template chat',
-//         id: 'as234dfgaasdfgadfgg',
-//         date: new Date('2025-06-15T18:00:00Z'),
-//     },
-// ];
 
 const chatFilters: chatFilter[] = [
     {
@@ -81,14 +32,48 @@ const chatFilters: chatFilter[] = [
             new Date(Date.now() - 86400000).toDateString(),
         label: 'Yesterday',
     },
-    // {
-    //     func: (chat) => chat.date.getFullYear() === new Date().getFullYear(),
-    //     label: 'This Year',
-    // },
-    // {
-    //     func: (chat) => chat.date.getFullYear() === new Date().getFullYear() - 1,
-    //     label: 'Last Year',
-    // },
+    {
+        func: (chat) => {
+            const chatDate = new Date(chat.updatedAt);
+            const now = new Date();
+            const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+            startOfWeek.setHours(0, 0, 0, 0);
+            return (
+                chatDate >= startOfWeek &&
+                chatDate.toDateString() !== new Date().toDateString() &&
+                chatDate.toDateString() !== new Date(Date.now() - 86400000).toDateString()
+            );
+        },
+        label: 'This Week',
+    },
+    {
+        func: (chat) => {
+            const chatDate = new Date(chat.updatedAt);
+            const now = new Date();
+            return (
+                chatDate.getMonth() === now.getMonth() &&
+                chatDate.getFullYear() === now.getFullYear() &&
+                chatDate < new Date(now.setDate(now.getDate() - now.getDay()))
+            );
+        },
+        label: 'This Month',
+    },
+    {
+        func: (chat) => {
+            const chatDate = new Date(chat.updatedAt);
+            const now = new Date();
+            return (
+                chatDate.getFullYear() === now.getFullYear() &&
+                chatDate.getMonth() !== now.getMonth()
+            );
+        },
+        label: 'This Year',
+    },
+    {
+        func: (chat) =>
+            new Date(chat.updatedAt).getFullYear() < new Date().getFullYear() || !chat.updatedAt,
+        label: 'Older',
+    },
 ];
 
 export function AppSidebar() {
@@ -97,8 +82,11 @@ export function AppSidebar() {
     const chatsHistory = useSubscription(trpc.chat.getAll.subscriptionOptions());
 
     useEffect(() => {
-        if (chatsHistory.error) {
-            console.error('Error fetching chats:', chatsHistory.error);
+        if (chatsHistory.data) {
+            console.log('chatsHistory.data', chatsHistory.data[0]);
+
+            const date = new Date(chatsHistory.data[0].updatedAt);
+            console.log(date);
         }
     }, [chatsHistory.data]);
 
@@ -128,7 +116,9 @@ export function AppSidebar() {
             <SidebarContent>
                 <SidebarGroup className="py-3">
                     <SidebarGroupContent>
-                        {chatsHistory.data && <SidebarTilesSection chats={chatsHistory.data} />}
+                        {chatsHistory.data && (
+                            <SidebarTilesSection chats={chatsHistory.data} filter={chatFilters} />
+                        )}
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
