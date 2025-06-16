@@ -8,6 +8,9 @@ import { useStartTyping } from 'react-use';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AppRouter } from '../../../../server/src';
 import { inferProcedureInput } from '@trpc/server';
+import { useQuery } from '@tanstack/react-query';
+import { useTRPC } from '@lib/trpc';
+import ModelSelector from './model-selector';
 
 export type generateProps = inferProcedureInput<AppRouter['chat']['generate']>;
 
@@ -16,6 +19,8 @@ export type MessageInputProps = {
 };
 
 export function MessageInput({ onSubmit }: MessageInputProps) {
+    const trpc = useTRPC();
+
     const ref = useRef<HTMLTextAreaElement>(null);
 
     const formRef = useRef<HTMLFormElement>(null);
@@ -23,15 +28,30 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
     useStartTyping(() => ref.current?.focus());
     useEffect(() => ref.current?.focus(), []);
 
+    const { data: models } = useQuery(trpc.models.get.queryOptions({}));
+
+    useEffect(() => {
+        if (!models || models.length === 0) {
+            return;
+        }
+        messageForm.setValue('model', models[0].slug);
+        console.log('Models loaded:', models);
+    }, [models]);
+
     const messageForm = useForm<generateProps>({
-        defaultValues: { model: 'openrouter:openai/gpt-4.1' },
-        mode: 'onSubmit',
+        defaultValues: { model: models?.[0].slug },
     });
     const { ref: inputRef, ...inputProps } = messageForm.register('prompt');
 
     const mergedRef = useMergedRef(inputRef, ref);
 
     const isNotEmpty = messageForm.watch('prompt')?.trim().length > 0;
+
+    const selectedModel = messageForm.watch('model');
+
+    useEffect(() => {
+        console.log('Selected model changed:', selectedModel);
+    }, [selectedModel]);
 
     return (
         <form
@@ -63,10 +83,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                             <AttachButton />
-                            <Button size="sm" variant="ghost" type="button">
-                                <span>Claude 3.5</span>
-                                <IconChevronDown />
-                            </Button>
+                            <ModelSelector models={models} selectedModel={selectedModel} />
                         </div>
                         <div className="flex items-center gap-2 ">
                             <Button

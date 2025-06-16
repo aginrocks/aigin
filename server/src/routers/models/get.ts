@@ -1,5 +1,5 @@
 import { protectedProcedure } from '@/trpc';
-import { Model } from '@models/model';
+import { Model, TModel } from '@models/model';
 import { z } from 'zod';
 
 export const get = protectedProcedure
@@ -9,9 +9,9 @@ export const get = protectedProcedure
         })
     )
     .query(async ({ input }) => {
-        const models = await Model.find({
+        const models = await Model.find<TModel>({
             ...(input.includeOther ? {} : { category: 'flagship' }),
-        });
+        }).lean();
 
-        return models;
+        return models as TModel[];
     });

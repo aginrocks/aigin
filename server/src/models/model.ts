@@ -47,7 +47,7 @@ export const modelSchema = z.object({
 });
 
 export type TModel = z.infer<typeof modelSchema> & {
-    _id: Types.ObjectId;
+    _id: Types.ObjectId | string;
 };
 
 const schema = zodSchema(modelSchema);
