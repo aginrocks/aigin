@@ -88,10 +88,16 @@ export type ChatsEventMap = {
 };
 
 export type CachedChatEventsMap = {
-    'message:delta': [TextStreamPart<ToolSet>];
+    'message:delta': [TextStreamPart<ToolSet> & { type: 'text-delta' }];
     'message:created': [Message];
     'message:completed': [{ completed: boolean }];
     'message:error': [{ error: string }];
+    'message:changed': [
+        | { type: 'message:delta'; data: [TextStreamPart<ToolSet> & { type: 'text-delta' }] }
+        | { type: 'message:created'; data: [Message] }
+        | { type: 'message:completed'; data: [{ completed: boolean }] }
+        | { type: 'message:error'; data: [{ error: string }] }
+    ];
 };
 
 export type SendMessage = {
@@ -155,7 +161,7 @@ export class CachedChat {
         this.messages.push(newMessage);
         await this.syncToDatabase();
 
-        // this.emitter.emit('message:created', newMessage);
+        // this.emitEvent('message:created', newMessage);
 
         let tools: ToolSet = {};
         if (mentions.mentions.length > 0 && checkResult.configs) {
@@ -220,14 +226,14 @@ export class CachedChat {
             }
 
             // Emit a completion event when streaming is done
-            this.emitter.emit('message:completed', { completed: true });
+            this.emitEvent('message:completed', { completed: true });
 
             // Final sync to database
             await this.syncToDatabase();
         } catch (error) {
             console.error(`Error processing stream for chat ${this.id}:`, error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            this.emitter.emit('message:error', { error: errorMessage });
+            this.emitEvent('message:error', { error: errorMessage });
         } finally {
             this.setGenerating(false);
         }
@@ -244,7 +250,7 @@ export class CachedChat {
                 parts: [],
             };
             this.messages.push(lastMessage);
-            this.emitter.emit('message:created', lastMessage);
+            this.emitEvent('message:created', lastMessage);
         }
 
         if (part.type === 'text-delta') {
@@ -266,7 +272,7 @@ export class CachedChat {
             ];
         }
 
-        this.emitter.emit('message:delta', part);
+        this.emitEvent('message:delta', part);
     }
 
     private async attemptTitleGeneration(model: ModelId) {
@@ -330,6 +336,14 @@ export class CachedChat {
         emitGlobalChatEvent(this.user._id.toString(), event, ...args);
         if (event !== 'chat:changed')
             emitGlobalChatEvent(this.user._id.toString(), 'chat:changed', args[0]);
+    }
+
+    private emitEvent<K extends keyof CachedChatEventsMap>(
+        event: K,
+        ...args: CachedChatEventsMap[K]
+    ) {
+        this.emitEvent(event, ...(args as any));
+        this.emitGlobalEvent('chat:changed', this.id);
     }
 
     async syncToDatabase() {

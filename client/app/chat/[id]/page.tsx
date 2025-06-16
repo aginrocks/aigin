@@ -35,39 +35,33 @@ export default function ChatPage() {
     );
 
     function handleData(part: ChatStream) {
-        const assistantMessages = msg.filter((message) => message.role === 'assistant');
-        const lastMessage = assistantMessages[assistantMessages.length - 1];
-
         if (part.type == 'message:created') {
             console.log('New message created:', part);
             setMsg((prev) => [...prev, part.data[0]]);
             return;
-        }
+        } else if (part.type === 'message:delta') {
+            const assistantMessages = msg.filter((message) => message.role === 'assistant');
+            const lastMessage = assistantMessages[assistantMessages.length - 1];
 
-        if (!lastMessage) {
-            setMsg((prev) => [
-                ...prev,
-                {
-                    id: Date.now().toString(),
-                    role: 'assistant',
-                    content: part.textDelta,
-                    parts: [{ type: 'text', text: part.textDelta }],
-                },
-            ]);
-        }
+            const data = part.data[0];
+            if (!lastMessage) {
+                console.warn('No matching last message found for delta update:', data);
+                return;
+            }
 
-        const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
-        if (lastPart && lastPart.type === 'text') {
-            lastPart.text += part.textDelta;
-        } else {
-            lastMessage.parts = [
-                ...(lastMessage.parts || []),
-                { type: 'text', text: part.textDelta },
-            ];
-        }
+            const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
+            if (lastPart && lastPart.type === 'text') {
+                lastPart.text += data.textDelta;
+            } else {
+                lastMessage.parts = [
+                    ...(lastMessage.parts || []),
+                    { type: 'text', text: data.textDelta },
+                ];
+            }
 
-        console.log('Updated message:', lastMessage);
-        setMsg([...msg.slice(0, -1), lastMessage]);
+            console.log('Updated message:', lastMessage);
+            setMsg([...msg.slice(0, -1), lastMessage]);
+        }
     }
 
     //data fetching
