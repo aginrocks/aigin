@@ -71,15 +71,11 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                         </a>
                     ),
                     table: ({ children, className, ...props }) => (
-                        <Table
-                            className={cn(
-                                'border rounded-md max-w-full overflow-hidden',
-                                className
-                            )}
-                            {...props}
-                        >
-                            {children}
-                        </Table>
+                        <div className="border rounded-md my-3">
+                            <Table className="max-w-full" {...props}>
+                                {children}
+                            </Table>
+                        </div>
                     ),
                     thead: ({ children, ...props }) => <TableHeader>{children}</TableHeader>,
                     tbody: ({ children, ...props }) => <TableBody>{children}</TableBody>,
