@@ -3,7 +3,7 @@ import ChatWrapper from '@/components/chat/chat-wrapper';
 import { Outputs, useTRPC } from '@lib/trpc';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
 import UserMessage from '@/components/chat/user-message';
@@ -18,6 +18,7 @@ export default function ChatPage() {
     const { id: chatId } = useParams();
 
     const [msg, setMsg] = useState<Chat['messages']>([]);
+    const messagesRef = useRef<Chat['messages']>([]);
 
     //data streaming
     useSubscription(
@@ -37,10 +38,15 @@ export default function ChatPage() {
     function handleData(part: ChatStream) {
         if (part.type == 'message:created') {
             console.log('New message created:', part);
+
+            messagesRef.current.push(part.data[0]);
             setMsg((prev) => [...prev, part.data[0]]);
+
             return;
         } else if (part.type === 'message:delta') {
-            const assistantMessages = msg.filter((message) => message.role === 'assistant');
+            const assistantMessages = messagesRef.current.filter(
+                (message) => message.role === 'assistant'
+            );
             const lastMessage = assistantMessages[assistantMessages.length - 1];
 
             const data = part.data[0];
@@ -60,7 +66,8 @@ export default function ChatPage() {
             }
 
             console.log('Updated message:', lastMessage);
-            setMsg([...msg.slice(0, -1), lastMessage]);
+            setMsg((msg) => [...msg.slice(0, -1), lastMessage]);
+            messagesRef.current = [...messagesRef.current.slice(0, -1), lastMessage];
         }
     }
 

@@ -1,5 +1,5 @@
 import { protectedProcedure } from '@/trpc';
-import { chatsStore } from '@ai/generation-manager';
+import { CachedChatEventsMap, chatsStore } from '@ai/generation-manager';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -9,7 +9,11 @@ export const stream = protectedProcedure
             chatId: z.string(),
         })
     )
-    .subscription(async function* ({ ctx, input, signal }) {
+    .subscription(async function* ({
+        ctx,
+        input,
+        signal,
+    }): AsyncGenerator<CachedChatEventsMap['message:changed'][0]> {
         console.log(
             `Stream subscription requested for chat ${input.chatId} by user ${ctx.user._id}`
         );
@@ -33,6 +37,16 @@ export const stream = protectedProcedure
         }
 
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
+
+        const lastMessage = chat.getMessages().slice(-1)[0];
+
+        // Sending already created message parts on connection
+        if (lastMessage.role === 'assistant') {
+            yield {
+                type: 'message:created',
+                data: [lastMessage],
+            };
+        }
 
         const iterable = chat.emitter.toIterable('message:changed', {
             signal,
