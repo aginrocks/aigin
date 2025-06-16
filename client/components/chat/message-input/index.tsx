@@ -18,6 +18,8 @@ export type MessageInputProps = {
 export function MessageInput({ onSubmit }: MessageInputProps) {
     const ref = useRef<HTMLTextAreaElement>(null);
 
+    const formRef = useRef<HTMLFormElement>(null);
+
     useStartTyping(() => ref.current?.focus());
     useEffect(() => ref.current?.focus(), []);
 
@@ -32,13 +34,27 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
     const isNotEmpty = messageForm.watch('prompt')?.trim().length > 0;
 
     return (
-        <form onSubmit={messageForm.handleSubmit(onSubmit)}>
+        <form
+            onSubmit={messageForm.handleSubmit((...args) => {
+                onSubmit(...args);
+                messageForm.resetField('prompt', { defaultValue: '' });
+            })}
+            ref={formRef}
+        >
             <div className="w-full max-w-4xl min-h-fit mx-auto p-1 absolute bottom-0 left-1/2 -translate-x-1/2 ">
                 <div className="bg-popover/80 backdrop-blur-sm border rounded-2xl flex flex-col p-3">
                     <TextareaAutosize
                         className="focus:outline-none  resize-none text-base px-2 pb-2 pt-1"
                         placeholder="Type your message here..."
-                        onKeyDown={getHotkeyHandler([['Enter', (e) => e.preventDefault()]])}
+                        onKeyDown={getHotkeyHandler([
+                            [
+                                'Enter',
+                                (e) => {
+                                    e.preventDefault();
+                                    formRef.current?.requestSubmit();
+                                },
+                            ],
+                        ])}
                         maxRows={8}
                         minRows={2}
                         {...inputProps}
