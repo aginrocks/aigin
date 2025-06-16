@@ -41,11 +41,7 @@ export function MessageInput() {
                         </Button>
                     </div>
                     <div className="flex items-center gap-2 ">
-                        <Button
-                            size="md-icon"
-                            variant={isNotEmpty ? 'default' : 'ghost'}
-                            disabled={!isNotEmpty}
-                        >
+                        <Button size="md-icon" variant="light" disabled={!isNotEmpty}>
                             <IconArrowUp />
                         </Button>
                     </div>
