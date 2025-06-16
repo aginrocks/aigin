@@ -12,7 +12,7 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                 rehypePlugins={[rehypeKatex]}
                 components={{
                     ul: ({ children, ...props }) => (
-                        <ul className="list-disc leading-8" {...props}>
+                        <ul className="list-disc list-inside leading-8" {...props}>
                             {children}
                         </ul>
                     ),
@@ -35,6 +35,22 @@ export default function MarkdownRenderer({ children }: { children: string }) {
 
                         return <CodeBlock code={children as string} language={lang} />;
                     },
+                    hr: ({ ...props }) => <hr className="my-4 border-t border-border" {...props} />,
+                    h1: ({ children, ...props }) => (
+                        <h1 className="text-2xl font-bold mb-2" {...props}>
+                            {children}
+                        </h1>
+                    ),
+                    h2: ({ children, ...props }) => (
+                        <h2 className="text-xl font-semibold mb-2" {...props}>
+                            {children}
+                        </h2>
+                    ),
+                    h3: ({ children, ...props }) => (
+                        <h3 className="text-lg font-semibold mb-2" {...props}>
+                            {children}
+                        </h3>
+                    ),
                 }}
             >
                 {children}
