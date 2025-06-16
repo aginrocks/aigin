@@ -1,4 +1,4 @@
-import { IconDots, IconFolder, IconPin, IconShare3, IconTrash } from '@tabler/icons-react';
+import { IconDots, IconPin, IconShare3, IconTrash } from '@tabler/icons-react';
 
 import {
     SidebarLabel,
@@ -15,26 +15,31 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { AppRouter } from '../../server/src';
-import { inferOutput } from '@trpc/tanstack-react-query';
-import { Outputs, useTRPC } from '@lib/trpc';
+import { Outputs } from '@lib/trpc';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 type SidebarTileProps = {
     title: string;
     isGenerating?: boolean;
+    id: string;
 };
 
-function SidebarTile({ title, isGenerating }: SidebarTileProps) {
+function SidebarTile({ title, isGenerating, id }: SidebarTileProps) {
     const { isMobile } = useSidebar();
+
+    const active = usePathname() === `/chat/${id}`;
 
     return (
         <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-                <div className="pr-1">
-                    <span className="truncate">{title}</span>
-                    {/* TODO: show if chat is generating */}
-                </div>
-            </SidebarMenuButton>
+            <Link href={`/chat/${id}`}>
+                <SidebarMenuButton isActive={active} asChild>
+                    <div className="pr-1">
+                        <span className="truncate">{title}</span>
+                        {/* TODO: show if chat is generating */}
+                    </div>
+                </SidebarMenuButton>
+            </Link>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuAction
@@ -83,6 +88,8 @@ type SidebarTilesSectionProps = {
 };
 
 function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
+    const router = useRouter();
+
     return (
         <SidebarMenu className="pt-0">
             {filter
@@ -94,6 +101,7 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                                   <SidebarLabel>{f.label}</SidebarLabel>
                                   {elements.map((chat) => (
                                       <SidebarTile
+                                          id={chat._id}
                                           key={chat._id}
                                           title={chat.name}
                                           isGenerating={chat.isGenerating}
@@ -102,7 +110,9 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                               </div>
                           );
                   })
-                : chats.map((chat) => <SidebarTile key={chat._id} title={chat.name} />)}
+                : chats.map((chat) => (
+                      <SidebarTile id={chat._id} key={chat._id} title={chat.name} />
+                  ))}
         </SidebarMenu>
     );
 }
