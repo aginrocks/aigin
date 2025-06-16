@@ -1,6 +1,6 @@
 'use client';
 import ChatWrapper from '@/components/chat/chat-wrapper';
-import { useTRPC } from '@lib/trpc';
+import { Outputs, useTRPC } from '@lib/trpc';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
@@ -8,23 +8,41 @@ import Markdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import { AsyncIterableData } from '@/components/sidebar-tiles';
+
+export type Chat = AsyncIterableData<Outputs['chat']['get']>;
 
 export default function ChatPage() {
     const trpc = useTRPC();
 
     const { id: chatId } = useParams();
 
-    const [msg, setMsg] = useState('');
+    const [msg, setMsg] = useState<Chat['messages']>([]);
 
-    const subscription = useSubscription(
-        trpc.chat.stream.subscriptionOptions(
-            {
-                chatId: chatId?.toString() || '',
-            },
+    // const subscription = useSubscription(
+    //     trpc.chat.stream.subscriptionOptions(
+    //         {
+    //             chatId: chatId?.toString() || '',
+    //         },
+    //         {
+    //             onData: (data) => {
+    //                 console.log('Subscription data:', data);
+    //                 setMsg((m) => `${m}${data.textDelta}`);
+    //             },
+    //             onError: (error) => {
+    //                 console.error('Subscription error:', error);
+    //             },
+    //         }
+    //     )
+    // );
+
+    useSubscription(
+        trpc.chat.get.subscriptionOptions(
+            { chatId: chatId?.toString() || '' },
             {
                 onData: (data) => {
                     console.log('Subscription data:', data);
-                    setMsg((m) => `${m}${data.textDelta}`);
+                    setMsg(data.messages);
                 },
                 onError: (error) => {
                     console.error('Subscription error:', error);
@@ -58,9 +76,7 @@ export default function ChatPage() {
                             );
                         },
                     }}
-                >
-                    {msg}
-                </Markdown>
+                ></Markdown>
             </div>
 
             {/* <Button

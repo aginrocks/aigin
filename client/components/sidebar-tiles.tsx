@@ -71,7 +71,7 @@ function SidebarTile({ title, isGenerating }: SidebarTileProps) {
 
 export type chat = Outputs['chat']['getAll'];
 
-type AsyncIterableData<T> = T extends AsyncIterable<infer U> ? U : never;
+export type AsyncIterableData<T> = T extends AsyncIterable<infer U> ? U : never;
 
 export type chatSubscriptionData = AsyncIterableData<Outputs['chat']['getAll']>[0];
 
