@@ -76,7 +76,7 @@ export const CodeHighlighter = React.memo(
         return (
             <div
                 dangerouslySetInnerHTML={{ __html: highlighted }}
-                className="text-sm [&>pre]:px-4 [&>pre]:py-3"
+                className="text-sm [&>pre]:px-4 [&>pre]:py-3 cursor-text"
             />
         );
     }
