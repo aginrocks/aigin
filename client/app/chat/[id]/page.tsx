@@ -38,6 +38,12 @@ export default function ChatPage() {
         const assistantMessages = msg.filter((message) => message.role === 'assistant');
         const lastMessage = assistantMessages[assistantMessages.length - 1];
 
+        if (part.type == 'message:created') {
+            console.log('New message created:', part);
+            setMsg((prev) => [...prev, part.data[0]]);
+            return;
+        }
+
         if (!lastMessage) {
             setMsg((prev) => [
                 ...prev,
