@@ -88,8 +88,8 @@ export type ChatsEventMap = {
 };
 
 export type CachedChatEventsMap = {
-    'message:delta': [TextStreamPart<ToolSet> & { type: 'text-delta' }];
-    'message:created': [{ type: 'message'; message: Message }];
+    'message:delta': [TextStreamPart<ToolSet>];
+    'message:created': [Message];
     'message:completed': [{ completed: boolean }];
     'message:error': [{ error: string }];
 };
@@ -244,7 +244,7 @@ export class CachedChat {
                 parts: [],
             };
             this.messages.push(lastMessage);
-            this.emitter.emit('message:created', { type: 'message', message: lastMessage });
+            this.emitter.emit('message:created', lastMessage);
         }
 
         if (part.type === 'text-delta') {
