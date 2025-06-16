@@ -66,7 +66,7 @@ export default function ChatPage() {
     );
 
     return (
-        <ChatWrapper>
+        <ChatWrapper chatId={chatId?.toString()}>
             <div className="max-w-4xl mx-auto p-7 pb-40">
                 {msg.map((message) => {
                     if (!message.parts || message.parts.length === 0) {

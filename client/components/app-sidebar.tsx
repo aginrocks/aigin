@@ -20,6 +20,7 @@ import { chatFilter, SidebarTilesSection } from './sidebar-tiles';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useEffect } from 'react';
 import { SidebarGradient } from './ui/sidebar-gradient';
+import Link from 'next/link';
 
 const chatFilters: chatFilter[] = [
     {
@@ -100,9 +101,11 @@ export function AppSidebar() {
                     className="pr-1.5 h-11 pt-1"
                     rightSection={
                         <>
-                            <Button variant="ghost" size="icon">
-                                <IconPlus />
-                            </Button>
+                            <Link href={'/'}>
+                                <Button variant="ghost" size="icon">
+                                    <IconPlus />
+                                </Button>
+                            </Link>
                             <SidebarTrigger />
                         </>
                     }
