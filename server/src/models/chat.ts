@@ -57,7 +57,22 @@ export type TChat = z.infer<typeof chatSchema> & {
 };
 
 const schema = zodSchemaRaw(chatSchema);
-export const Chat = mongoose.model('Chat', new mongoose.Schema(schema, { timestamps: true }));
+
+const mongooseSchema = new mongoose.Schema(schema, { timestamps: true });
+
+mongooseSchema.index({
+    updatedAt: -1,
+    user: 1,
+});
+
+mongooseSchema.index({
+    'messages.content': 'text',
+    'messages.parts.text': 'text',
+    'messages.parts.toolInvocation.args': 'text',
+    'messages.parts.toolInvocation.result': 'text',
+});
+
+export const Chat = mongoose.model('Chat', mongooseSchema);
 
 /**
  * Deserializes an array of messages from the database format to the application format.

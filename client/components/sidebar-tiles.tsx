@@ -21,9 +21,10 @@ import { Outputs, useTRPC } from '@lib/trpc';
 
 type SidebarTileProps = {
     title: string;
+    isGenerating?: boolean;
 };
 
-function SidebarTile({ title }: SidebarTileProps) {
+function SidebarTile({ title, isGenerating }: SidebarTileProps) {
     const { isMobile } = useSidebar();
 
     return (
@@ -31,6 +32,7 @@ function SidebarTile({ title }: SidebarTileProps) {
             <SidebarMenuButton asChild>
                 <div className="pr-1">
                     <span className="truncate">{title}</span>
+                    {/* TODO: show if chat is generating */}
                 </div>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -91,7 +93,11 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                               <div key={i}>
                                   <SidebarLabel>{f.label}</SidebarLabel>
                                   {elements.map((chat) => (
-                                      <SidebarTile key={chat._id} title={chat.name} />
+                                      <SidebarTile
+                                          key={chat._id}
+                                          title={chat.name}
+                                          isGenerating={chat.isGenerating}
+                                      />
                                   ))}
                               </div>
                           );
