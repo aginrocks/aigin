@@ -14,9 +14,9 @@ export async function middleware(request: NextRequest) {
 
     const cookieHeader = request.cookies.get('oidc-auth') || '';
 
-    if (!cookieHeader && !isPublicPath) {
-        return NextResponse.redirect(new URL('/home', request.url));
-    }
+    // if (!cookieHeader && !isPublicPath) {
+    //     return NextResponse.redirect(new URL('/home', request.url));
+    // }
 
     return NextResponse.next();
 }
