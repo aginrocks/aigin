@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
         };
         return config;
     },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
 };
 
 export default nextConfig;

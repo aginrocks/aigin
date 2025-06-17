@@ -84,9 +84,9 @@ export function AppSidebar() {
 
     useEffect(() => {
         if (chatsHistory.data) {
-            console.log('chatsHistory.data', chatsHistory.data[0]);
+            console.log('chatsHistory.data', chatsHistory?.data?.[0]);
 
-            const date = new Date(chatsHistory.data[0].updatedAt);
+            const date = new Date(chatsHistory?.data?.[0]?.updatedAt);
             console.log(date);
         }
     }, [chatsHistory.data]);

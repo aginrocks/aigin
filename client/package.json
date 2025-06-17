@@ -39,6 +39,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.57.0",
     "react-markdown": "^10.1.0",
+    "react-mentions": "^4.4.10",
     "react-textarea-autosize": "^8.5.9",
     "react-use": "^17.6.0",
     "rehype-katex": "^7.0.1",
