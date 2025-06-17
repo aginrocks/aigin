@@ -11,14 +11,21 @@ import { inferProcedureInput } from '@trpc/server';
 import { useQuery } from '@tanstack/react-query';
 import { useTRPC } from '@lib/trpc';
 import ModelSelector from './model-selector';
+import { ScrollToBottom } from './scroll-to-bottom';
 
 export type generateProps = inferProcedureInput<AppRouter['chat']['generate']>;
 
 export type MessageInputProps = {
     onSubmit: SubmitHandler<generateProps>;
+    scrollToBottomVisible?: boolean;
+    scrollToBottom?: () => void;
 };
 
-export function MessageInput({ onSubmit }: MessageInputProps) {
+export function MessageInput({
+    onSubmit,
+    scrollToBottomVisible,
+    scrollToBottom,
+}: MessageInputProps) {
     const trpc = useTRPC();
 
     const ref = useRef<HTMLTextAreaElement>(null);
@@ -61,6 +68,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
             ref={formRef}
         >
             <div className="w-full max-w-4xl min-h-fit mx-auto p-1 absolute bottom-2 left-1/2 -translate-x-1/2 ">
+                <ScrollToBottom onClick={scrollToBottom} visible={scrollToBottomVisible} />
                 <div className="bg-popover/80 backdrop-blur-sm border rounded-2xl flex flex-col p-3">
                     <TextareaAutosize
                         className="focus:outline-none resize-none text-base px-2 pb-2 pt-1"

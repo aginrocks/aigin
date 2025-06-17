@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { useRef, useEffect, useState } from 'react';
 import { useAutoScroll } from '@/lib/hooks';
-import { ChevronDown } from 'lucide-react';
+import { IconChevronDown } from '@tabler/icons-react';
 
 type ChatWrapperProps = {
     children?: React.ReactNode;
@@ -58,22 +58,6 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
                 <div className="p-3">{children}</div>
             </ScrollArea>
 
-            {/* Scroll to bottom button - only show when user is not near bottom and auto-scroll is disabled */}
-            {!autoScroll.isNearBottom && !autoScroll.shouldAutoScroll && (
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    className="absolute bottom-3 right-3 rounded-full shadow-lg z-10 p-2 h-10 w-10"
-                    onClick={() => {
-                        autoScroll.scrollToBottom();
-                        autoScroll.enableAutoScroll();
-                    }}
-                    aria-label="Scroll to bottom"
-                >
-                    <ChevronDown className="h-4 w-4" />
-                </Button>
-            )}
-
             <MessageInput
                 onSubmit={(d) =>
                     generate.mutate({
@@ -82,6 +66,8 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
                         chatId,
                     } as generateChatInputs)
                 }
+                scrollToBottomVisible={!autoScroll.isNearBottom && !autoScroll.shouldAutoScroll}
+                scrollToBottom={autoScroll.scrollToBottom}
             />
         </div>
     );
