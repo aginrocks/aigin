@@ -13,8 +13,8 @@ export function ScrollToBottom({
                 variant="secondary"
                 size="icon"
                 className={cn(
-                    'rounded-full shadow-lg z-10 bg-popover/80 backdrop-blur-sm border pointer-events-auto transition-all',
-                    visible ? 'opacity-100' : 'opacity-0 inisible'
+                    'rounded-full shadow-lg z-10 bg-popover/80 backdrop-blur-sm border transition-all',
+                    visible ? 'opacity-100 pointer-events-auto' : 'opacity-0 invisible'
                 )}
                 aria-label="Scroll to bottom"
                 {...props}

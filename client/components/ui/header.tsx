@@ -1,5 +1,6 @@
 import { cn } from '@lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
+import Link from 'next/link';
 import { ReactNode } from 'react';
 
 export type HeaderProps = VariantProps<typeof headerVariants> &
@@ -39,10 +40,10 @@ export function Header({
                     <div className="flex items-center gap-2">
                         {title && <div className="font-semibold">{title}</div>}
                         {logo && (
-                            <>
+                            <Link href="/" className="hover:opacity-90 transition-opacity">
                                 <img src="/logo-dark.svg" className="not-dark:hidden" />
                                 <img src="/logo-light.svg" className="dark:hidden" />
-                            </>
+                            </Link>
                         )}
                         {children}
                     </div>
