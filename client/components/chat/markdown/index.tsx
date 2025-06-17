@@ -7,7 +7,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { cn } from '@lib/utils';
 import Markdown from 'react-markdown';
 import rehypeKatex from 'rehype-katex';
 import remarkGfm from 'remark-gfm';
@@ -70,18 +69,20 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                             {children}
                         </a>
                     ),
-                    table: ({ children, className, ...props }) => (
+                    table: ({ children, ...props }) => (
                         <div className="border rounded-md my-3">
                             <Table className="max-w-full" {...props}>
                                 {children}
                             </Table>
                         </div>
                     ),
-                    thead: ({ children, ...props }) => <TableHeader>{children}</TableHeader>,
-                    tbody: ({ children, ...props }) => <TableBody>{children}</TableBody>,
-                    th: ({ children, ...props }) => <TableHead>{children}</TableHead>,
-                    tr: ({ children, ...props }) => <TableRow>{children}</TableRow>,
-                    td: ({ children, ...props }) => <TableCell>{children}</TableCell>,
+                    thead: ({ children, ...props }) => (
+                        <TableHeader {...props}>{children}</TableHeader>
+                    ),
+                    tbody: ({ children, ...props }) => <TableBody {...props}>{children}</TableBody>,
+                    th: ({ children, ...props }) => <TableHead {...props}>{children}</TableHead>,
+                    tr: ({ children, ...props }) => <TableRow {...props}>{children}</TableRow>,
+                    td: ({ children, ...props }) => <TableCell {...props}>{children}</TableCell>,
                 }}
             >
                 {children}

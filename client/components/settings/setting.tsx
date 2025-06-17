@@ -10,7 +10,7 @@ import { ThemedIcon, ThemedIconProps } from '@components/ui/themed-icon';
 import { cn } from '@lib/utils';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
-import { FormControl, FormField, FormItem } from '../ui/form';
+import { FormField } from '../ui/form';
 import { Control } from 'react-hook-form';
 
 export type SettingPosition = 'start' | 'middle' | 'end';
@@ -60,7 +60,6 @@ const settingVariants = cva('rounded-md', {
 
 export function Setting({
     title,
-    name,
     description,
     type,
     position,

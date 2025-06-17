@@ -2,10 +2,10 @@ import { Modals } from './modals';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 export type DefaultModalDefinition = {
-    payload: any;
-    returnValue: any;
+    payload: unknown;
+    returnValue: unknown;
 };
-export type ModalDefinition<T extends DefaultModalDefinition = any> = {
+export type ModalDefinition<T extends DefaultModalDefinition = DefaultModalDefinition> = {
     payload: T['payload'] | undefined;
     returnValue: T['returnValue'] | undefined;
 };

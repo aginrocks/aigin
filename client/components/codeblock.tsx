@@ -1,7 +1,7 @@
 import { CodeHighlighter, CodeHighlighterProps } from './code-highlighter';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
 
-export type CodeBlocks = {};
+// export type CodeBlocks = {};
 
 export function CodeBlock({ code, language }: CodeHighlighterProps) {
     return (

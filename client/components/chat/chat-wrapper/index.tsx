@@ -11,7 +11,7 @@ import { ChevronDown } from 'lucide-react';
 type ChatWrapperProps = {
     children?: React.ReactNode;
     chatId?: string;
-    messages?: any[]; // Add messages prop to track changes
+    messages?: unknown[]; // Add messages prop to track changes
 };
 
 export default function ChatWrapper({ children, chatId, messages = [] }: ChatWrapperProps) {

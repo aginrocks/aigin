@@ -29,8 +29,8 @@ export default function ChatPage() {
             },
             {
                 onData: handleData,
-                onError: (error) => {
-                    console.error('Subscription error:', error);
+                onError: () => {
+                    console.error('Subscription error:');
                 },
             }
         )
@@ -41,12 +41,12 @@ export default function ChatPage() {
             console.log('New message created:', part);
 
             messagesRef.current.push(part.data[0]);
-            setMsg((prev) => [...prev, part.data[0]]);
+            setMsg((prev: Chat['messages']) => [...prev, part.data[0]]);
 
             return;
         } else if (part.type === 'message:delta') {
             const assistantMessages = messagesRef.current.filter(
-                (message) => message.role === 'assistant'
+                (message: Chat['messages'][0]) => message.role === 'assistant'
             );
             const lastMessage = assistantMessages[assistantMessages.length - 1];
 
@@ -67,7 +67,7 @@ export default function ChatPage() {
             }
 
             console.log('Updated message:', lastMessage);
-            setMsg((msg) => [...msg.slice(0, -1), lastMessage]);
+            setMsg((msg: Chat['messages']) => [...msg.slice(0, -1), lastMessage]);
             messagesRef.current = [...messagesRef.current.slice(0, -1), lastMessage];
         }
     }
@@ -77,7 +77,8 @@ export default function ChatPage() {
 
     useEffect(() => {
         if (!data.data) return;
-        setMsg(data.data.messages || []);
+        const chatData = data.data as Chat;
+        setMsg(chatData.messages || []);
     }, [data.data]);
 
     return (

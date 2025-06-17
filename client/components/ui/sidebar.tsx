@@ -3,8 +3,6 @@
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, VariantProps } from 'class-variance-authority';
-import { PanelLeftIcon } from 'lucide-react';
-
 import { useIsMobile } from '@lib/hooks';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -250,8 +248,8 @@ interface SidebarTriggerProps extends React.ComponentProps<typeof Button> {
     hideOnOpen?: boolean;
 }
 
-function SidebarTrigger({ className, onClick, hideOnOpen, ...props }: SidebarTriggerProps) {
-    const { toggleSidebar, open, openMobile, state, isMobile, setOpenMobile } = useSidebar();
+function SidebarTrigger({ onClick, hideOnOpen, ...props }: SidebarTriggerProps) {
+    const { toggleSidebar, open, openMobile, isMobile } = useSidebar();
 
     return (
         <>

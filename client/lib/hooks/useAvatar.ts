@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function useAvatar(email: string | undefined) {
     const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
