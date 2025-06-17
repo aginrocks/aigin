@@ -29,8 +29,8 @@ export default function ChatPage() {
             },
             {
                 onData: handleData,
-                onError: () => {
-                    console.error('Subscription error:');
+                onError: (error) => {
+                    console.error('Subscription error:', error);
                 },
             }
         )
