@@ -77,7 +77,7 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
             <MessageInput
                 onSubmit={(d) =>
                     generate.mutate({
-                        model: 'anthropic:claude-3-5-sonnet-20241022',
+                        model: 'google:gemini-2.5-flash-preview-05-20',
                         prompt: d.prompt,
                         chatId,
                     })
