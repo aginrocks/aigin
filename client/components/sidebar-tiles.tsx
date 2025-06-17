@@ -16,8 +16,8 @@ import {
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Outputs } from '@lib/trpc';
-import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type SidebarTileProps = {
     title: string;
@@ -25,7 +25,7 @@ type SidebarTileProps = {
     id: string;
 };
 
-function SidebarTile({ title, isGenerating, id }: SidebarTileProps) {
+function SidebarTile({ title, id }: SidebarTileProps) {
     const { isMobile } = useSidebar();
 
     const active = usePathname() === `/chat/${id}`;
@@ -88,8 +88,6 @@ type SidebarTilesSectionProps = {
 };
 
 function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
-    const router = useRouter();
-
     return (
         <SidebarMenu className="pt-0">
             {filter

@@ -8,7 +8,7 @@ interface UseAutoScrollOptions {
     /**
      * Dependencies that trigger auto scroll (e.g., messages array)
      */
-    dependencies: any[];
+    dependencies: unknown[];
     /**
      * Threshold in pixels from bottom to consider "near bottom"
      * Default: 100
@@ -49,7 +49,7 @@ export function useAutoScroll({
                 top: scrollElement.scrollHeight,
                 behavior: smooth ? 'smooth' : 'auto',
             });
-        } catch (error) {
+        } catch {
             // Fallback for browsers that don't support smooth scrolling
             scrollElement.scrollTop = scrollElement.scrollHeight;
         }

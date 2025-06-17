@@ -1,4 +1,4 @@
-import { useTRPC } from '@lib/trpc';
+import { generateChatInputs, generateChatOutput, useTRPC } from '@lib/trpc';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { MessageInput } from '../message-input';
@@ -11,7 +11,7 @@ import { ChevronDown } from 'lucide-react';
 type ChatWrapperProps = {
     children?: React.ReactNode;
     chatId?: string;
-    messages?: any[]; // Add messages prop to track changes
+    messages?: unknown[]; // Add messages prop to track changes
 };
 
 export default function ChatWrapper({ children, chatId, messages = [] }: ChatWrapperProps) {
@@ -22,12 +22,12 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
 
     const generate = useMutation(
         trpc.chat.generate.mutationOptions({
-            onSuccess: (data) => {
+            onSuccess: (data: generateChatOutput) => {
                 console.log('Generate success:', data);
                 router.push(`/chat/${data.chatId}`);
             },
-            onError: (error) => {
-                console.error('Generate error:', error);
+            onError: () => {
+                console.error('Generate error:');
             },
         })
     );
@@ -80,7 +80,7 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
                         model: 'google:gemini-2.5-flash-preview-05-20',
                         prompt: d.prompt,
                         chatId,
-                    })
+                    } as generateChatInputs)
                 }
             />
         </div>

@@ -1,9 +1,9 @@
 import { Button } from '@components/ui/button';
-import { IconArrowUp, IconChevronDown, IconSend2 } from '@tabler/icons-react';
+import { IconArrowUp } from '@tabler/icons-react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { AttachButton } from './attach-button';
 import { getHotkeyHandler, useMergedRef } from '@mantine/hooks';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useStartTyping } from 'react-use';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AppRouter } from '../../../../server/src';
@@ -30,17 +30,16 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
 
     const { data: models } = useQuery(trpc.models.get.queryOptions({}));
 
+    const messageForm = useForm<generateProps>();
+
     useEffect(() => {
         if (!models || models.length === 0) {
             return;
         }
         messageForm.setValue('model', models[1].slug);
         console.log('Models loaded:', models);
-    }, [models]);
+    }, [models, messageForm]);
 
-    const messageForm = useForm<generateProps>({
-        defaultValues: { model: models?.[0].slug },
-    });
     const { ref: inputRef, ...inputProps } = messageForm.register('prompt');
 
     const mergedRef = useMergedRef(inputRef, ref);

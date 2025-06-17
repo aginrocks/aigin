@@ -13,7 +13,7 @@ export function useSetSettings() {
                 await queryClient.cancelQueries({ queryKey });
 
                 const previousSettings = queryClient.getQueryData(queryKey);
-                queryClient.setQueryData(queryKey, (old: any) => ({
+                queryClient.setQueryData(queryKey, (old) => ({
                     ...old,
                     ...m,
                 }));

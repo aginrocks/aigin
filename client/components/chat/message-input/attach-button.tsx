@@ -5,15 +5,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu';
-import {
-    IconCamera,
-    IconChartBar,
-    IconCirclePlus,
-    IconFilePlus,
-    IconPaperclip,
-    IconPhoto,
-    IconSlash,
-} from '@tabler/icons-react';
+import { IconCamera, IconFilePlus, IconPaperclip } from '@tabler/icons-react';
 
 export function AttachButton() {
     return (
