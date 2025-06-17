@@ -13,12 +13,11 @@ import {
 import { SidebarUser } from './sidebar-user';
 import { Header } from './ui/header';
 import { Button } from './ui/button';
-import { useTRPC } from '@lib/trpc';
+import { Outputs, useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
 import { useAvatar } from '@lib/hooks';
-import { chatFilter, SidebarTilesSection } from './sidebar-tiles';
+import { AsyncIterableData, chatFilter, SidebarTilesSection } from './sidebar-tiles';
 import { useSubscription } from '@trpc/tanstack-react-query';
-import { useEffect } from 'react';
 import { SidebarGradient } from './ui/sidebar-gradient';
 import Link from 'next/link';
 
@@ -77,21 +76,24 @@ const chatFilters: chatFilter[] = [
     },
 ];
 
+export type ChatHisory = AsyncIterableData<Outputs['chat']['getAll']>;
+export type userData = Outputs['auth']['info'];
+
 export function AppSidebar() {
     const trpc = useTRPC();
     const { data: userData } = useQuery(trpc.auth.info.queryOptions());
-    const chatsHistory = useSubscription(trpc.chat.getAll.subscriptionOptions());
+    const { data: chatsHistory } = useSubscription(trpc.chat.getAll.subscriptionOptions());
 
-    useEffect(() => {
-        if (chatsHistory.data) {
-            console.log('chatsHistory.data', chatsHistory.data[0]);
+    // useEffect(() => {
+    //     if (chatsHistory.data as ChatHisory) {
+    //         console.log('chatsHistory.data', chatsHistory.data[0]);
 
-            const date = new Date(chatsHistory.data[0].updatedAt);
-            console.log(date);
-        }
-    }, [chatsHistory.data]);
+    //         const date = new Date(chatsHistory.data[0].updatedAt);
+    //         console.log(date);
+    //     }
+    // }, [chatsHistory.data]);
 
-    const avatarUrl = useAvatar(userData?.email);
+    const avatarUrl = useAvatar((userData as userData)?.email);
 
     return (
         <Sidebar>
@@ -119,8 +121,11 @@ export function AppSidebar() {
             <SidebarContent>
                 <SidebarGroup className="py-3">
                     <SidebarGroupContent>
-                        {chatsHistory.data && (
-                            <SidebarTilesSection chats={chatsHistory.data} filter={chatFilters} />
+                        {!!chatsHistory && (
+                            <SidebarTilesSection
+                                chats={chatsHistory as ChatHisory}
+                                filter={chatFilters}
+                            />
                         )}
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -128,7 +133,11 @@ export function AppSidebar() {
             <SidebarFooter className="relative">
                 <SidebarGradient position="bottom" />
                 <SidebarUser
-                    user={{ email: userData?.email, name: userData?.name, avatar: avatarUrl }}
+                    user={{
+                        email: (userData as userData)?.email,
+                        name: (userData as userData)?.name,
+                        avatar: avatarUrl,
+                    }}
                 />
             </SidebarFooter>
         </Sidebar>

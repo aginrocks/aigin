@@ -84,7 +84,7 @@ export default function ChatPage() {
     return (
         <ChatWrapper chatId={chatId?.toString()} messages={msg}>
             <div className="max-w-4xl mx-auto p-7 pb-40 flex flex-col gap-5">
-                {msg.map((message) => {
+                {msg.map((message: Chat['messages'][0]) => {
                     let parts = message.parts;
 
                     if (!parts || parts.length === 0) {
@@ -92,7 +92,7 @@ export default function ChatPage() {
                         parts.push({ text: message.content, type: 'text' });
                     }
 
-                    const messageParts = parts.map((part, index) => {
+                    const messageParts = parts.map((part: (typeof parts)[0], index: number) => {
                         if (part.type === 'text') {
                             if (message.role === 'user') {
                                 return <UserMessage key={index}>{part.text}</UserMessage>;

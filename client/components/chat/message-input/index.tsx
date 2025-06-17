@@ -30,9 +30,7 @@ export function MessageInput({ onSubmit }: MessageInputProps) {
 
     const { data: models } = useQuery(trpc.models.get.queryOptions({}));
 
-    const messageForm = useForm<generateProps>({
-        defaultValues: { model: models?.[0].slug },
-    });
+    const messageForm = useForm<generateProps>();
 
     useEffect(() => {
         if (!models || models.length === 0) {
