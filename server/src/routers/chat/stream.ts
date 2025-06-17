@@ -1,5 +1,5 @@
 import { protectedProcedure } from '@/trpc';
-import { CachedChatEventsMap, chatsStore } from '@ai/generation-manager';
+import { CachedChatEventsMap, chatsStore, loadContext } from '@ai/generation-manager';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -19,7 +19,7 @@ export const stream = protectedProcedure
         );
         console.log('Current chats in store:', Array.from(chatsStore.keys()));
 
-        const chat = chatsStore.get(input.chatId);
+        const chat = await loadContext(ctx.user, input.chatId);
         if (!chat) {
             console.log(`Chat ${input.chatId} not found in store`);
             throw new TRPCError({
