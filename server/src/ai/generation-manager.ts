@@ -92,6 +92,7 @@ export type CachedChatEventsMap = {
     'message:created': [Message];
     'message:completed': [{ completed: boolean }];
     'message:error': [{ error: string }];
+    'tool:confirm-call': [];
     'message:changed': [
         | { type: 'message:delta'; data: [TextStreamPart<ToolSet> & { type: 'text-delta' }] }
         | { type: 'message:created'; data: [Message] }
@@ -203,13 +204,21 @@ export class CachedChat {
      * @param appIds An array of **valid** app IDs to load.
      */
     private async loadApps(appIds: string[], configs: TAppConfig[]) {
-        const apps = appIds.map(
-            (appId) =>
-                new McpApp({
-                    app: APPS.find((a) => a.slug === appId)!,
-                    user: this.user,
-                    config: configs.find((c) => c.appSlug === appId)!,
-                })
+        const apps = appIds.map((appId) =>
+            new McpApp({
+                app: APPS.find((a) => a.slug === appId)!,
+                user: this.user,
+                config: configs.find((c) => c.appSlug === appId)!,
+            }).setInterceptors(
+                async (request) => {
+                    console.log(`Intercepting request for app ${appId}:`, request);
+                    return request;
+                },
+                async (response) => {
+                    console.log(`Intercepting response for app ${appId}:`, response);
+                    return response;
+                }
+            )
         );
 
         const results = await Promise.all(apps.map((app) => app.start()));
