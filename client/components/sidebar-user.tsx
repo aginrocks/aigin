@@ -19,6 +19,9 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { useModals } from '@lib/modals/ModalsManager';
+import { useTRPC } from '@lib/trpc';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
 
 export function SidebarUser({
     user,
@@ -29,8 +32,20 @@ export function SidebarUser({
         avatar?: string;
     };
 }) {
+    const trpc = useTRPC();
+
     const { isMobile } = useSidebar();
     const modals = useModals();
+    const router = useRouter();
+
+    const logout = useMutation(
+        trpc.auth.logout.mutationOptions({
+            onSuccess: () => {
+                console.log('Logout successful');
+                router.push('/home');
+            },
+        })
+    );
 
     return (
         <SidebarMenu className="pt-0">
@@ -43,7 +58,13 @@ export function SidebarUser({
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                                <AvatarFallback>
+                                    {user?.name
+                                        ?.split(' ')
+                                        .map((word) => word[0])
+                                        .join('')
+                                        .toUpperCase() || 'U'}
+                                </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{user.name}</span>
@@ -86,7 +107,7 @@ export function SidebarUser({
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => logout.mutate()}>
                             <LogOut />
                             Log out
                         </DropdownMenuItem>

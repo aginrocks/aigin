@@ -37,15 +37,7 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <TRPCClientProvider>
-                        <ModalsManagerProvider>
-                            <SidebarProvider>
-                                <AppSidebar />
-                                <div className="w-screen h-screen">
-                                    <SidebarTrigger hideOnOpen />
-                                    {children}
-                                </div>
-                            </SidebarProvider>
-                        </ModalsManagerProvider>
+                        <ModalsManagerProvider>{children}</ModalsManagerProvider>
                     </TRPCClientProvider>
                 </ThemeProvider>
             </body>
