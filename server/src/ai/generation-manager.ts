@@ -7,7 +7,7 @@ import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
 import { parseAppMentions, validateAppsRequest } from '@lib/util';
-import { McpApp } from './mcp/mcp-app';
+import { createInterceptedToolSet, McpApp } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
@@ -172,7 +172,7 @@ export class CachedChat {
             const allTools = await Promise.all(
                 apps.map(async (app) => {
                     await app.createClient();
-                    return await app.client!.tools();
+                    return createInterceptedToolSet(await app.client!.tools());
                 })
             );
 
@@ -204,21 +204,13 @@ export class CachedChat {
      * @param appIds An array of **valid** app IDs to load.
      */
     private async loadApps(appIds: string[], configs: TAppConfig[]) {
-        const apps = appIds.map((appId) =>
-            new McpApp({
-                app: APPS.find((a) => a.slug === appId)!,
-                user: this.user,
-                config: configs.find((c) => c.appSlug === appId)!,
-            }).setInterceptors(
-                async (request) => {
-                    console.log(`Intercepting request for app ${appId}:`, request);
-                    return request;
-                },
-                async (response) => {
-                    console.log(`Intercepting response for app ${appId}:`, response);
-                    return response;
-                }
-            )
+        const apps = appIds.map(
+            (appId) =>
+                new McpApp({
+                    app: APPS.find((a) => a.slug === appId)!,
+                    user: this.user,
+                    config: configs.find((c) => c.appSlug === appId)!,
+                })
         );
 
         const results = await Promise.all(apps.map((app) => app.start()));
