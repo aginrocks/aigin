@@ -90,7 +90,13 @@ export function MessageInput({
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                             <AttachButton />
-                            <ModelSelector models={models} selectedModel={selectedModel} />
+                            <ModelSelector
+                                models={models}
+                                selectedModel={selectedModel}
+                                onModelChange={(modelSlug) =>
+                                    messageForm.setValue('model', modelSlug)
+                                }
+                            />
                         </div>
                         <div className="flex items-center gap-2 ">
                             <Button

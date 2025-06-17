@@ -20,6 +20,7 @@ import { useTRPC } from '@lib/trpc';
 import { useQuery } from '@tanstack/react-query';
 import { ModalsContext } from '../ModalsManager/contexts';
 import { useSetSettings } from '@lib/hooks';
+import { Account } from './Account';
 
 export type SettingsTabName =
     | 'account'
@@ -114,7 +115,10 @@ export function Settings({
                                 />
                             ))}
                         </SettingsSidebar>
-                        <SettingsPage>{tab === 'appearance' && <Appearance />}</SettingsPage>
+                        <SettingsPage>
+                            {tab === 'appearance' && <Appearance />}
+                            {tab === 'account' && <Account />}
+                        </SettingsPage>
                     </div>
                 </DialogContent>
             </Dialog>

@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import { useFormContext } from 'react-hook-form';
 import { Settings } from '.';
 
-export function Appearance() {
+export function Account() {
     const { setTheme, theme } = useTheme();
 
     const form = useFormContext<Settings>();
