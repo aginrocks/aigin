@@ -222,4 +222,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   [Website](https://ai.agin.rocks)
 </div>
 
-_This document was mostly generated using Ai heh_
+_This document was mostly generated using AI heh_
