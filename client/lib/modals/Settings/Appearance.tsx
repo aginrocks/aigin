@@ -20,6 +20,7 @@ export function Appearance() {
         <>
             <SettingsGroup title="Appearance">
                 <Setting
+                    name="theme"
                     title="Theme"
                     defaultValue={theme}
                     description="Choose between light and dark mode."

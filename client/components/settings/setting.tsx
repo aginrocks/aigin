@@ -10,8 +10,9 @@ import { ThemedIcon, ThemedIconProps } from '@components/ui/themed-icon';
 import { cn } from '@lib/utils';
 import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
-import { FormField } from '../ui/form';
+import { FormControl, FormField } from '../ui/form';
 import { Control } from 'react-hook-form';
+import { Input } from '../ui/input';
 
 export type SettingPosition = 'start' | 'middle' | 'end';
 
@@ -23,12 +24,12 @@ export type SettingOption = {
 export type SettingProps = {
     title: string;
     description?: string;
-    name?: string;
     position?: SettingPosition;
     rightSection?: ReactNode;
     icon?: ThemedIconProps;
     children?: ReactNode;
     formControl?: Control;
+    name: string;
 } & (
     | {
           type: 'select';
@@ -46,6 +47,14 @@ export type SettingProps = {
           props?: React.ComponentProps<typeof Switch>;
           value?: boolean;
       }
+    | {
+          type: 'text';
+          options?: never;
+          onValueChange?: (value: string) => void;
+          defaultValue?: string;
+          props?: React.ComponentProps<typeof Input>;
+          value?: string;
+      }
 );
 
 const settingVariants = cva('rounded-md', {
@@ -54,6 +63,21 @@ const settingVariants = cva('rounded-md', {
             start: 'rounded-b-none',
             middle: 'rounded-none',
             end: 'rounded-t-none',
+        },
+    },
+});
+
+const settingContainerVariants = cva('flex justify-between items-center', {
+    variants: {
+        text: {
+            true: 'gap-2 flex-col items-start',
+        },
+    },
+});
+const inputContainerVariants = cva('', {
+    variants: {
+        text: {
+            true: 'w-full',
         },
     },
 });
@@ -70,33 +94,34 @@ export function Setting({
     onValueChange,
     defaultValue,
     props,
+    name,
     value,
     formControl,
 }: SettingProps) {
     return (
         <FormField
             control={formControl}
-            name="statsForNerds"
+            name={name}
             render={({ field }) => (
                 <div
                     className={cn(
-                        'p-3 pl-3.5 rounded-md bg-secondary flex flex-col gap-2',
+                        'p-3 pl-3.5 rounded-md bg-secondary/50 backdrop-blur-sm flex flex-col gap-2',
                         settingVariants({ position })
                     )}
                 >
-                    <div className="flex justify-between items-center">
+                    <div className={settingContainerVariants({ text: type === 'text' })}>
                         <div className="flex items-center gap-3">
                             {icon && <ThemedIcon {...icon} />}
                             <div className="flex flex-col gap-0.5">
-                                <div className="font-semibold text-sm">{title}</div>
-                                {description && (
-                                    <div className="text-xs text-muted-foreground">
+                                <div className="font-semibold text-sm px-1">{title}</div>
+                                {description && type !== 'text' && (
+                                    <div className="text-xs text-muted-foreground px-1">
                                         {description}
                                     </div>
                                 )}
                             </div>
                         </div>
-                        <div>
+                        <div className={inputContainerVariants({ text: type === 'text' })}>
                             {type === 'select' && (
                                 <Select
                                     onValueChange={
@@ -131,6 +156,24 @@ export function Setting({
                                     }
                                     {...props}
                                 />
+                            )}
+                            {type === 'text' && (
+                                <FormControl>
+                                    <Input
+                                        className="w-full"
+                                        {...field}
+                                        onChange={
+                                            value
+                                                ? (value) =>
+                                                      onValueChange?.(value.currentTarget.value)
+                                                : (value) =>
+                                                      field.onChange(value.currentTarget.value)
+                                        }
+                                        defaultValue={value ? defaultValue : undefined}
+                                        value={value ? value : field.value}
+                                        {...props}
+                                    />
+                                </FormControl>
                             )}
                             {rightSection}
                         </div>

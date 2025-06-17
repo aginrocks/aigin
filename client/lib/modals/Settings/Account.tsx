@@ -4,41 +4,23 @@ import { useFormContext } from 'react-hook-form';
 import { Settings } from '.';
 
 export function Account() {
-    const { setTheme, theme } = useTheme();
-
     const form = useFormContext<Settings>();
 
     return (
         <>
             <SettingsGroup title="Account">
                 <Setting
-                    title="Theme"
-                    defaultValue={theme}
-                    description="Choose between light and dark mode."
-                    type="select"
-                    options={[
-                        {
-                            label: 'Light',
-                            value: 'light',
-                        },
-                        {
-                            label: 'Dark',
-                            value: 'dark',
-                        },
-                        {
-                            label: 'System',
-                            value: 'system',
-                        },
-                    ]}
-                    onValueChange={(value) => {
-                        setTheme(value);
-                    }}
+                    title="Call name"
+                    name="callName"
+                    description="What should we call you?"
+                    type="text"
+                    formControl={form.control}
                 />
                 <Setting
-                    title="Stats For Nerds"
-                    description="Enable or disable additional info for nerds."
-                    type="switch"
-                    name="statsForNerds"
+                    title="Profession"
+                    description="What do you do?"
+                    type="text"
+                    name="profession"
                     formControl={form.control}
                 />
             </SettingsGroup>
