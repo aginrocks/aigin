@@ -15,6 +15,7 @@ import { ScrollToBottom } from './scroll-to-bottom';
 import { useAtom, useAtomValue } from 'jotai';
 import { modelsAtom } from '@lib/atoms/models';
 import { selectedModelAtom } from '@lib/atoms/selectedmodel';
+import AppSelect from './app-select';
 
 export type generateProps = inferProcedureInput<AppRouter['chat']['generate']>;
 
@@ -120,6 +121,7 @@ export function MessageInput({
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                             <AttachButton />
+                            <AppSelect />
                             <ModelSelector
                                 onProviderChange={(provider) => {
                                     messageForm.setValue('provider', provider.provider);

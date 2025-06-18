@@ -15,3 +15,5 @@ export type generateChatInputs = Inputs['chat']['generate'];
 export type GetModelsOutput = Outputs['models']['get'];
 
 export type GetProvidersOutput = Outputs['models']['providers']['get'];
+
+export type GetAppsOutput = Outputs['apps']['getAll'];

@@ -1,7 +1,6 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import type { TRPCContext } from './context';
 import { User } from '@models/user';
-
 /**
  * Initialization of tRPC backend
  * Should be done only once per backend!
