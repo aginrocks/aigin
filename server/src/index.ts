@@ -7,7 +7,7 @@ import { Hono } from 'hono';
 import { trpcServer } from '@hono/trpc-server';
 import { serve } from '@hono/node-server';
 import dotenv from 'dotenv';
-import { oidcAuthMiddleware, processOAuthCallback } from '@hono/oidc-auth';
+import { getAuth, oidcAuthMiddleware, processOAuthCallback } from '@hono/oidc-auth';
 import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
 import { modelsRouter } from '@routers/models';
@@ -18,6 +18,7 @@ import { updateAllModels } from '@ai/models-fetcher';
 import { initKubernetes } from './kubernetes';
 import { initHandlebars } from './handlebars-json';
 import { appsRouter } from '@routers/apps';
+import { User } from '@models/user';
 
 dotenv.config();
 extendZod(z);
@@ -57,6 +58,19 @@ app.get('/api/auth/callback', async (c) => {
 });
 
 app.get('/api/login', oidcAuthMiddleware(), async (c) => {
+    const auth = await getAuth(c);
+    if (!auth?.sub) {
+        return c.redirect('/');
+    }
+
+    const user = await User.findOne({ subject: auth.sub });
+    const keys = Object.values(user?.providers || {});
+
+    if (!user || keys.every((value) => !value.apiKey)) {
+        console.log(user);
+
+        return c.redirect('/onboarding');
+    }
     return c.redirect('/');
 });
 
