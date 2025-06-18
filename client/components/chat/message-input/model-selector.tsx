@@ -124,9 +124,9 @@ export default function ModelSelector({
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className=" h-8 w-full dark:bg-transparent shadow-none border-none focus-visible:border-none"
                         />
-                        <Button variant={'outline'} size={'icon'}>
+                        {/* <Button variant={'outline'} size={'icon'}>
                             <IconFilter />
-                        </Button>
+                        </Button> */}
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
