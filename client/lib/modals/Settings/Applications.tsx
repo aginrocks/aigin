@@ -1,14 +1,10 @@
-import { Setting, SettingsGroup } from '@/components/settings';
-import { useFormContext } from 'react-hook-form';
-import { Settings } from '.';
+import { SettingsGroup } from '@/components/settings';
 
-export function Account() {
-    const form = useFormContext<Settings>();
-
+export default function Applications() {
     return (
         <>
             <SettingsGroup title="Account">
-                <Setting
+                {/* <Setting
                     title="Call name"
                     name="callName"
                     description="What should we call you?"
@@ -21,7 +17,7 @@ export function Account() {
                     type="text"
                     name="profession"
                     formControl={form.control}
-                />
+                /> */}
             </SettingsGroup>
         </>
     );

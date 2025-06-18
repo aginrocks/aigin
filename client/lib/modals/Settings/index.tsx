@@ -103,7 +103,7 @@ export function Settings({
     return (
         <FormProvider {...settingForm}>
             <Dialog {...props} onOpenChange={onOpenChange}>
-                <DialogContent className="sm:max-w-3xl h-150 p-0 bg-background/50 backdrop-blur-sm overflow-hidden">
+                <DialogContent className="sm:max-w-3xl h-150 p-0 dark:bg-background/50 bg-background/70 backdrop-blur-sm overflow-hidden">
                     <DialogTitle className="sr-only">Settings</DialogTitle>
                     <div className="flex w-full h-full">
                         <SettingsSidebar title="Settings">
