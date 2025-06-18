@@ -121,7 +121,17 @@ export function MessageInput({
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                             <AttachButton />
-                            <AppSelect />
+                            <AppSelect
+                                onClick={(app) => {
+                                    const currentValue = ref.current?.value || '';
+                                    ref.current?.setRangeText(
+                                        `@{app:${app.slug}} ${currentValue}`,
+                                        0,
+                                        currentValue.length
+                                    );
+                                    ref.current?.focus();
+                                }}
+                            />
                             <ModelSelector
                                 onProviderChange={(provider) => {
                                     messageForm.setValue('provider', provider.provider);
