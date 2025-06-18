@@ -54,11 +54,11 @@
     "typescript-eslint": "^8.34.0"
   },
   "_moduleAliases": {
-    "@": "build",
-    "@models": "build/models",
-    "@routers": "build/routers",
-    "@ai": "build/ai",
-    "@constants": "build/constants",
-    "@lib": "build/lib"
+    "@": "dist/src",
+    "@models": "dist/src/models",
+    "@routers": "dist/src/routers",
+    "@ai": "dist/src/ai",
+    "@constants": "dist/src/constants",
+    "@lib": "dist/src/lib"
   }
 }

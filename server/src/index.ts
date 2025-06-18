@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
