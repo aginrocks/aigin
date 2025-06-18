@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ModalsContext } from '../ModalsManager/contexts';
 import { useSetSettings } from '@lib/hooks';
 import { Account } from './Account';
+import { Providers } from './Providers';
 
 export type SettingsTabName =
     | 'account'
@@ -43,11 +44,11 @@ const tabs: SettingsTab[] = [
         icon: IconBrush,
         label: 'Appearance',
     },
-    {
-        id: 'models',
-        icon: IconMessage,
-        label: 'Models',
-    },
+    // {
+    //     id: 'models',
+    //     icon: IconMessage,
+    //     label: 'Models',
+    // },
     {
         id: 'api-keys',
         icon: IconKey,
@@ -118,6 +119,7 @@ export function Settings({
                         <SettingsPage>
                             {tab === 'appearance' && <Appearance />}
                             {tab === 'account' && <Account />}
+                            {tab === 'api-keys' && <Providers />}
                         </SettingsPage>
                     </div>
                 </DialogContent>

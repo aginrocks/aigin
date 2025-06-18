@@ -9,7 +9,7 @@ import { Switch } from '@components/ui/switch';
 import { ThemedIcon, ThemedIconProps } from '@components/ui/themed-icon';
 import { cn } from '@lib/utils';
 import { cva } from 'class-variance-authority';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { FormControl, FormField } from '../ui/form';
 import { Control } from 'react-hook-form';
 import { Input } from '../ui/input';
@@ -98,6 +98,8 @@ export function Setting({
     value,
     formControl,
 }: SettingProps) {
+    const [inputValue, setInputValue] = useState('');
+
     return (
         <FormField
             control={formControl}
@@ -158,22 +160,23 @@ export function Setting({
                                 />
                             )}
                             {type === 'text' && (
-                                <FormControl>
-                                    <Input
-                                        className="w-full"
-                                        {...field}
-                                        onChange={
-                                            value
-                                                ? (value) =>
-                                                      onValueChange?.(value.currentTarget.value)
-                                                : (value) =>
-                                                      field.onChange(value.currentTarget.value)
-                                        }
-                                        defaultValue={value ? defaultValue : undefined}
-                                        value={value ? value : field.value}
-                                        {...props}
-                                    />
-                                </FormControl>
+                                <Input
+                                    className="w-full"
+                                    type="text"
+                                    onChange={
+                                        value
+                                            ? (value) => {
+                                                  onValueChange?.(value.currentTarget.value);
+                                                  setInputValue(value.currentTarget.value);
+                                              }
+                                            : (value) => {
+                                                  field.onChange(value.currentTarget.value);
+                                                  setInputValue(value.currentTarget.value);
+                                              }
+                                    }
+                                    // defaultValue={value ? defaultValue : ''}
+                                    value={value ? value : field.value || ''}
+                                />
                             )}
                             {rightSection}
                         </div>

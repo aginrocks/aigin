@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import { ModalsManagerProvider } from '@lib/modals/ModalsManager';
+import { ReactQueryProvider } from '@/components/providers/react-query-provider';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -37,7 +38,9 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <TRPCClientProvider>
-                        <ModalsManagerProvider>{children}</ModalsManagerProvider>
+                        <ModalsManagerProvider>
+                            <ReactQueryProvider>{children}</ReactQueryProvider>
+                        </ModalsManagerProvider>
                     </TRPCClientProvider>
                 </ThemeProvider>
             </body>

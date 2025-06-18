@@ -26,9 +26,7 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
                 console.log('Generate success:', data);
                 router.push(`/chat/${data.chatId}`);
             },
-            onError: (error) => {
-                console.error('Generate error:', error);
-            },
+            // Remove onError since it's handled globally now
         })
     );
 
