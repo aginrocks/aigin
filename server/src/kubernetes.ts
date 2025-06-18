@@ -5,7 +5,8 @@ export let k8sApi: k8s.CoreV1Api | null = null;
 
 export function initKubernetes() {
     kc = new k8s.KubeConfig();
-    kc.loadFromDefault();
+    if (process.env.NODE_ENV === 'production') kc.loadFromCluster();
+    else kc.loadFromDefault();
 
     k8sApi = kc.makeApiClient(k8s.CoreV1Api);
 }

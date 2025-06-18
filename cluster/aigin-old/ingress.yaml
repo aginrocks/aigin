@@ -2,6 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: aigin-ingress
+  namespace: aigin
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.entrypoints: "web"
 spec:
   rules:
   - http:
@@ -12,4 +16,4 @@ spec:
           service:
             name: frontend
             port:
-              name: web
+              number: 3000

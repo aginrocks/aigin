@@ -4,7 +4,7 @@ metadata:
   name: traefik-dashboard-service
 
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 8080
       targetPort: dashboard
@@ -17,9 +17,10 @@ metadata:
   name: traefik-web-service
 
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - targetPort: web
+      nodePort: 30080
       port: 80
   selector:
     app: traefik
