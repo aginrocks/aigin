@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-export function useAvatar(email: string | undefined) {
-    const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+export function useAvatar(email: string | undefined, defaultAvatar?: string): string | undefined {
+    const [avatarUrl, setAvatarUrl] = useState<string | undefined>(defaultAvatar);
 
     useEffect(() => {
         (async () => {
-            if (!email) return;
+            if (!email || defaultAvatar) return;
 
             const encoder = new TextEncoder();
             const data = encoder.encode(email.toLowerCase().trim() || '');
@@ -15,7 +15,7 @@ export function useAvatar(email: string | undefined) {
 
             setAvatarUrl(`https://www.gravatar.com/avatar/${gravatarHash}?d=identicon`);
         })();
-    }, [email]);
+    }, [email, defaultAvatar]);
 
     return avatarUrl;
 }

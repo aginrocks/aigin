@@ -10,6 +10,7 @@ declare module 'hono' {
         preferred_username: string;
         nickname: string;
         groups: string[];
+        picture: string | undefined;
     }
 }
 
@@ -27,5 +28,6 @@ export async function oidcClaimsHook(
             (claims?.preferred_username as string) ?? orig?.preferred_username ?? '',
         nickname: (claims?.nickname as string) ?? orig?.nickname ?? '',
         groups: (claims?.groups as string[]) ?? orig?.groups ?? [],
+        picture: (claims?.picture as string) ?? orig?.picture ?? undefined,
     };
 }

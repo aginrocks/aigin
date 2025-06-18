@@ -96,7 +96,7 @@ export function AppSidebar() {
     const { data: userData } = useQuery(trpc.auth.info.queryOptions());
     const { data: chatsHistory } = useSubscription(trpc.chat.getAll.subscriptionOptions());
 
-    const avatarUrl = useAvatar((userData as userData)?.email);
+    const avatarUrl = useAvatar(userData?.email, userData?.picture);
 
     const setSearchCommand = useSetAtom(searchCommandAtom);
 
