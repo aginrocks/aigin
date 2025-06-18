@@ -7,6 +7,7 @@ import { modify } from './modify';
 import { share } from './share';
 import { getShared } from './getShared';
 import { deleteChat } from './delete';
+import { confirmMCPCall } from './confirmMCPCall';
 
 export const chatRouter = router({
     generate,
@@ -17,4 +18,5 @@ export const chatRouter = router({
     share,
     getShared,
     delete: deleteChat,
+    confirmMCPCall,
 });
