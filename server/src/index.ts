@@ -1,4 +1,16 @@
-import 'module-alias/register';
+import moduleAlias from 'module-alias';
+import dotenv from 'dotenv';
+dotenv.config();
+
+if (process.env.NODE_ENV === 'production')
+    moduleAlias.addAliases({
+        '@models': 'dist/src/models',
+        '@routers': 'dist/src/routers',
+        '@ai': 'dist/src/ai',
+        '@constants': 'dist/src/constants',
+        '@lib': 'dist/src/lib',
+    });
+
 import { router } from './trpc';
 import { extendZod } from '@zodyac/zod-mongoose';
 import { z } from 'zod';
@@ -7,7 +19,6 @@ import { authRouter } from '@routers/auth';
 import { Hono } from 'hono';
 import { trpcServer } from '@hono/trpc-server';
 import { serve } from '@hono/node-server';
-import dotenv from 'dotenv';
 import { getAuth, oidcAuthMiddleware, processOAuthCallback } from '@hono/oidc-auth';
 import { createContext } from './context';
 import { oidcClaimsHook } from './oidc';
@@ -21,7 +32,6 @@ import { initHandlebars } from './handlebars-json';
 import { appsRouter } from '@routers/apps';
 import { User } from '@models/user';
 
-dotenv.config();
 extendZod(z);
 initHandlebars();
 initKubernetes();
