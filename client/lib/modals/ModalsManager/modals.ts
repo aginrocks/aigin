@@ -1,5 +1,5 @@
 import { Confirm } from '../Confirm';
-import { Input } from '../Input';
+import { InputDialog } from '../Input';
 import { Settings, SettingsTabName } from '../Settings';
 import { ModalComponentBindings, ModalDefinition } from './types';
 
@@ -25,6 +25,7 @@ export type Modals = {
             description?: string;
             confirmText?: string;
             cancelText?: string;
+            initialValue?: string;
         };
         returnValue: string;
     }>;
@@ -33,5 +34,5 @@ export type Modals = {
 export const ModalsBinding: ModalComponentBindings = {
     Settings: Settings,
     Confirm: Confirm,
-    Input: Input,
+    Input: InputDialog,
 };

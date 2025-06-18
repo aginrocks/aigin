@@ -96,7 +96,19 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
                         {pinned ? <IconPinnedOff /> : <IconPin />}
                         <span>{pinned ? 'Unpin' : 'Pin'}</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={async () => {
+                            const change = await modals.show('Input', {
+                                title: 'Rename Chat',
+                                confirmText: 'Rename',
+                                initialValue: title,
+                            });
+                            console.log('asdfasdfasdf', change);
+                            if (!change) return;
+
+                            modifyChat.mutate({ chatId: id, name: change });
+                        }}
+                    >
                         <IconPencil />
                         <span>Rename</span>
                     </DropdownMenuItem>
