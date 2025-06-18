@@ -2,9 +2,11 @@ import { App } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 import { TUser } from '@models/user';
 import { getPodAddress, getServerPod, waitUntilReady } from './get-server';
-import { experimental_createMCPClient, Tool, ToolSet } from 'ai';
+import { experimental_createMCPClient, Tool, ToolExecutionOptions, ToolSet } from 'ai';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { createRemoteHeaders } from './run-new-server';
+import { randomUUID } from 'node:crypto';
+import { CachedChat } from '@ai/generation-manager';
 
 export type McpAppConstructorProps = {
     app: App;
@@ -19,15 +21,82 @@ export type StartedApp = App & {
 
 export type MCPClient = Awaited<ReturnType<typeof experimental_createMCPClient>>;
 
-export function createInterceptedToolSet(toolSet: ToolSet): ToolSet {
+export type McpAction = {
+    userId: string;
+    resolve: (canContinue: boolean) => void;
+};
+
+export type UnconfirmedToolCall = {
+    userId: string;
+    args: any;
+    tool: Tool;
+    app: Pick<McpApp['app'], 'name' | 'slug' | 'icon' | 'image' | 'description' | 'isPersistant'>;
+    toolName: string;
+    options: ToolExecutionOptions;
+    callId: string;
+};
+
+export const mcpActionsQueue: Map<string, McpAction> = new Map();
+
+export type createInterceptedToolSetProps = {
+    chat: CachedChat;
+    app: McpApp;
+    toolSet: ToolSet;
+};
+
+export function createInterceptedToolSet({
+    chat,
+    app,
+    toolSet,
+}: createInterceptedToolSetProps): ToolSet {
     const interceptedToolSet: ToolSet = {};
 
     for (const [name, tool] of Object.entries(toolSet)) {
         interceptedToolSet[name] = {
             ...tool,
-            execute: (args, options) => {
+            execute: async (args, options) => {
                 console.log(`[INTERCEPTOR] Tried to execute tool: ${name}`);
-                return tool.execute?.(args, options) as PromiseLike<any>;
+                const canContinue = await new Promise<boolean>((resolve) => {
+                    const actionId = randomUUID();
+
+                    mcpActionsQueue.set(actionId, {
+                        userId: chat.user._id.toString(),
+                        resolve,
+                    });
+
+                    chat.emitEvent('tool:confirm-call', {
+                        app: {
+                            name: app.app.name,
+                            slug: app.app.slug,
+                            icon: app.app.icon,
+                            image: app.app.image,
+                            description: app.app.description,
+                            isPersistant: app.app.isPersistant,
+                        },
+                        args,
+                        options: options || {},
+                        toolName: name,
+                        tool,
+                        userId: chat.user._id.toString(),
+                        callId: actionId,
+                    });
+                });
+
+                if (!canContinue) {
+                    console.log(`[INTERCEPTOR] Execution of tool: ${name} was cancelled.`);
+                    return;
+                }
+
+                console.log(`[INTERCEPTOR] Executing tool: ${name} with args:`, args);
+
+                const result = await tool.execute?.(args, options);
+
+                console.log(
+                    `[INTERCEPTOR] Tool: ${name} executed successfully with result:`,
+                    result
+                );
+
+                return result;
             },
         };
     }

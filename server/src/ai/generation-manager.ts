@@ -7,7 +7,7 @@ import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
 import { parseAppMentions, validateAppsRequest } from '@lib/util';
-import { createInterceptedToolSet, McpApp } from './mcp/mcp-app';
+import { createInterceptedToolSet, McpApp, UnconfirmedToolCall } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
@@ -92,12 +92,13 @@ export type CachedChatEventsMap = {
     'message:created': [Message];
     'message:completed': [{ completed: boolean }];
     'message:error': [{ error: string }];
-    'tool:confirm-call': [];
+    'tool:confirm-call': [UnconfirmedToolCall];
     'message:changed': [
         | { type: 'message:delta'; data: [TextStreamPart<ToolSet> & { type: 'text-delta' }] }
         | { type: 'message:created'; data: [Message] }
         | { type: 'message:completed'; data: [{ completed: boolean }] }
         | { type: 'message:error'; data: [{ error: string }] }
+        | { type: 'tool:confirm-call'; data: [UnconfirmedToolCall] }
     ];
 };
 
@@ -172,7 +173,11 @@ export class CachedChat {
             const allTools = await Promise.all(
                 apps.map(async (app) => {
                     await app.createClient();
-                    return createInterceptedToolSet(await app.client!.tools());
+                    return createInterceptedToolSet({
+                        chat: this,
+                        app,
+                        toolSet: await app.client!.tools(),
+                    });
                 })
             );
 
@@ -333,13 +338,13 @@ export class CachedChat {
         console.log(`Chat title generated in ${Date.now() - before}ms: ${title}`);
     }
 
-    private emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {
+    public emitGlobalEvent<K extends keyof ChatsEventMap>(event: K, ...args: ChatsEventMap[K]) {
         emitGlobalChatEvent(this.user._id.toString(), event, ...args);
         if (event !== 'chat:changed')
             emitGlobalChatEvent(this.user._id.toString(), 'chat:changed', args[0]);
     }
 
-    private emitEvent<K extends keyof CachedChatEventsMap>(
+    public emitEvent<K extends keyof CachedChatEventsMap>(
         event: K,
         ...args: CachedChatEventsMap[K]
     ) {
