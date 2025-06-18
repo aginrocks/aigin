@@ -12,6 +12,9 @@ import { useQuery } from '@tanstack/react-query';
 import { GetModelsOutput, useTRPC } from '@lib/trpc';
 import ModelSelector from './model-selector';
 import { ScrollToBottom } from './scroll-to-bottom';
+import { useAtom, useAtomValue } from 'jotai';
+import { modelsAtom } from '@lib/atoms/models';
+import { selectedModelAtom } from '@lib/atoms/selectedmodel';
 
 export type generateProps = inferProcedureInput<AppRouter['chat']['generate']>;
 
@@ -37,21 +40,12 @@ export function MessageInput({
     useStartTyping(() => ref.current?.focus());
     useEffect(() => ref.current?.focus(), []);
 
-    const { data: models } = useQuery(trpc.models.get.queryOptions({}));
+    const models = useAtomValue(modelsAtom);
     const { data: providers } = useQuery(trpc.models.providers.get.queryOptions());
 
-    const [selectedModel, setSelectedModel] = useState<GetModelsOutput[number]>();
+    const [selectedModel, setSelectedModel] = useAtom(selectedModelAtom);
 
     const messageForm = useForm<FormType>();
-
-    useEffect(() => {
-        if (!models || models.length === 0) {
-            return;
-        }
-        setSelectedModel(models[1]);
-
-        console.log('Models loaded:', models);
-    }, [models]);
 
     const avabileProviders = useMemo(
         () =>
