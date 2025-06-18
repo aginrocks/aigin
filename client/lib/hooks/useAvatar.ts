@@ -17,5 +17,5 @@ export function useAvatar(email: string | undefined, defaultAvatar?: string): st
         })();
     }, [email, defaultAvatar]);
 
-    return avatarUrl;
+    return defaultAvatar || avatarUrl;
 }
