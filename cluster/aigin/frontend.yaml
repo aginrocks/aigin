@@ -1,23 +1,23 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: frontend
+  name: aigin-frontend
+  namespace: aigin
   labels:
-    app: aigin
-
+    app: aigin-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aigin
+      app: aigin-frontend
   template:
     metadata:
       labels:
-        app: aigin
+        app: aigin-frontend
     spec:
       containers:
-        - name: aigin-frontend
-          image: ghcr.io/aginrocks/aigin-frontend:master
-          ports:
-            - name: web
-              containerPort: 3000
+      - name: aigin-frontend
+        image: ghcr.io/aginrocks/aigin-frontend:master
+        ports:
+        - name: web
+          containerPort: 3000
