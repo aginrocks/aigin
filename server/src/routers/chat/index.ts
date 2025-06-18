@@ -6,6 +6,7 @@ import { getAll } from './getAll';
 import { modify } from './modify';
 import { share } from './share';
 import { getShared } from './getShared';
+import { deleteChat } from './delete';
 
 export const chatRouter = router({
     generate,
@@ -15,4 +16,5 @@ export const chatRouter = router({
     modify,
     share,
     getShared,
+    delete: deleteChat,
 });

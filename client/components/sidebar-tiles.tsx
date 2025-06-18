@@ -24,8 +24,10 @@ import {
 } from './ui/dropdown-menu';
 import { Outputs, useTRPC } from '@lib/trpc';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
+import { useModals } from '@lib/modals/ModalsManager';
+import { useModifier } from '@lib/hooks';
 
 type SidebarTileProps = {
     title: string;
@@ -40,8 +42,14 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
     const active = usePathname() === `/chat/${id}`;
 
     const trpc = useTRPC();
-
     const modifyChat = useMutation(trpc.chat.modify.mutationOptions());
+    const deleteChat = useMutation(trpc.chat.delete.mutationOptions());
+
+    const skipConfirm = useModifier('Shift');
+
+    const router = useRouter();
+
+    const modals = useModals();
 
     return (
         <SidebarMenuItem>
@@ -83,7 +91,24 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
                         <span>Share</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">
+                    <DropdownMenuItem
+                        variant="destructive"
+                        onClick={async () => {
+                            if (!skipConfirm) {
+                                const confirmed = await modals.show('Confirm', {
+                                    title: 'Delete Chat',
+                                    description: 'Are you sure you want to delete this chat?',
+                                    confirmText: 'Delete',
+                                    cancelText: 'Cancel',
+                                });
+                                if (!confirmed) return;
+                            }
+
+                            await deleteChat.mutateAsync({ chatId: id });
+
+                            router.replace('/');
+                        }}
+                    >
                         <IconTrash />
                         <span>Delete</span>
                     </DropdownMenuItem>

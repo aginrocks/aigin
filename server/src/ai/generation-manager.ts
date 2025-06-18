@@ -360,6 +360,12 @@ export class CachedChat {
         });
     }
 
+    public destroy() {
+        // TODO: Handle better cleanup
+        this.emitter.removeAllListeners();
+        chatsStore.delete(this.id);
+    }
+
     public debug() {
         this.emitter.on('message:created', (message) => {
             console.log(`[message:created] New message created in chat ${this.id}:`, message);
