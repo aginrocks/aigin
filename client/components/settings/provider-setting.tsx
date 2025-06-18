@@ -29,7 +29,7 @@ export type SettingProps = {
     // icon?: ThemedIconProps;
     children?: ReactNode;
     // name: string;
-    switchValue?: boolean;
+    switchValue: boolean;
     onSwitchChange?: (value: boolean) => void;
     textValue?: string;
     onTextChange?: (value: string) => void;
@@ -70,6 +70,8 @@ export function ProviderSetting({
 }: SettingProps) {
     const type = 'text';
 
+    const [text, setText] = useState(textValue || '');
+
     return (
         <div
             className={cn(
@@ -93,11 +95,12 @@ export function ProviderSetting({
                             type="text"
                             onChange={(value) => {
                                 onTextChange?.(value.currentTarget.value);
+                                setText(value.currentTarget.value);
                             }}
-                            defaultValue={textValue}
+                            // defaultValue={textValue}
                         />
                         <Switch
-                            disabled={switchDisabled}
+                            disabled={switchDisabled && text === '' ? true : false}
                             defaultChecked={switchValue}
                             onCheckedChange={(value) => onSwitchChange?.(value)}
                         />

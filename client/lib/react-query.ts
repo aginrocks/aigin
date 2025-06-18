@@ -14,9 +14,11 @@ export const queryClient = new QueryClient({
             },
         },
         mutations: {
-            onError: (error: any) => {
+            onError: (error: Error) => {
+                console.log('Mutation error:', error);
+
                 // Handle global mutation errors here
-                if (error?.status === 401) {
+                if (error.message.includes('You must be logged in to access this resource.')) {
                     window.location.href = '/api/login';
                 } else {
                     console.error('Mutation error:', error);

@@ -38,9 +38,9 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <TRPCClientProvider>
-                        <ModalsManagerProvider>
-                            <ReactQueryProvider>{children}</ReactQueryProvider>
-                        </ModalsManagerProvider>
+                        <ReactQueryProvider>
+                            <ModalsManagerProvider>{children}</ModalsManagerProvider>
+                        </ReactQueryProvider>
                     </TRPCClientProvider>
                 </ThemeProvider>
             </body>
