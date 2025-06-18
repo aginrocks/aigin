@@ -24,6 +24,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./dist/node_modules
 
 USER nodejs
 
