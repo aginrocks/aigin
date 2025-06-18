@@ -20,6 +20,8 @@ import { AsyncIterableData, chatFilter, SidebarTilesSection } from './sidebar-ti
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { SidebarGradient } from './ui/sidebar-gradient';
 import Link from 'next/link';
+import { useAtom, useSetAtom } from 'jotai';
+import { searchCommandAtom } from '@lib/atoms/search-command';
 
 const chatFilters: chatFilter[] = [
     {
@@ -94,16 +96,9 @@ export function AppSidebar() {
     const { data: userData } = useQuery(trpc.auth.info.queryOptions());
     const { data: chatsHistory } = useSubscription(trpc.chat.getAll.subscriptionOptions());
 
-    // useEffect(() => {
-    //     if (chatsHistory.data as ChatHisory) {
-    //         console.log('chatsHistory.data', chatsHistory.data[0]);
-
-    //         const date = new Date(chatsHistory.data[0].updatedAt);
-    //         console.log(date);
-    //     }
-    // }, [chatsHistory.data]);
-
     const avatarUrl = useAvatar((userData as userData)?.email);
+
+    const setSearchCommand = useSetAtom(searchCommandAtom);
 
     return (
         <Sidebar>
@@ -122,7 +117,13 @@ export function AppSidebar() {
                         </>
                     }
                 />
-                <Button variant="outline" className="text-muted-foreground text-xs justify-start">
+                <Button
+                    variant="outline"
+                    className="text-muted-foreground text-xs justify-start"
+                    onClick={() => {
+                        setSearchCommand(true);
+                    }}
+                >
                     <IconSearch />
                     Search Chats
                 </Button>

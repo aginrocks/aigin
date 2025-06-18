@@ -6,6 +6,7 @@ import {
     IconShare3,
     IconTrash,
 } from '@tabler/icons-react';
+import { useState } from 'react';
 
 import {
     SidebarLabel,
@@ -28,6 +29,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useModals } from '@lib/modals/ModalsManager';
 import { useModifier } from '@lib/hooks';
+import { useRef } from 'react';
 
 type SidebarTileProps = {
     title: string;
@@ -51,8 +53,17 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
 
     const modals = useModals();
 
+    const ref = useRef<HTMLButtonElement | null>(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
     return (
-        <SidebarMenuItem>
+        <SidebarMenuItem
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDropdownOpen((prev) => !prev);
+            }}
+        >
             <Link href={`/chat/${id}`}>
                 <SidebarMenuButton isActive={active} asChild>
                     <div className="pr-1">
@@ -61,11 +72,12 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
                     </div>
                 </SidebarMenuButton>
             </Link>
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuAction
+                        ref={ref}
                         showOnHover
-                        className="data-[state=open]:bg-accent rounded-sm"
+                        className="data-[state=open]:bg-accent rounded-sm "
                     >
                         <IconDots />
                         <span className="sr-only">More</span>

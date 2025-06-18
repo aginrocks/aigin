@@ -12,6 +12,8 @@ export async function middleware(request: NextRequest) {
         path.endsWith('.png') ||
         path.endsWith('.svg');
 
+    // Check if JWT isn't expired
+
     const cookieHeader = request.cookies.get('oidc-auth') || '';
 
     if (!cookieHeader && !isPublicPath) {

@@ -66,7 +66,7 @@ export default function ChatPage() {
                 ];
             }
 
-            console.log('Updated message:', lastMessage);
+            // console.log('Updated message:', lastMessage);
             setMsg((msg: Chat['messages']) => [...msg.slice(0, -1), lastMessage]);
             messagesRef.current = [...messagesRef.current.slice(0, -1), lastMessage];
         }
