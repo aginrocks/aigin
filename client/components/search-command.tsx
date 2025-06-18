@@ -40,7 +40,7 @@ export function CommandMenu() {
             <CommandList>
                 <CommandEmpty>No results found.</CommandEmpty>
                 {pinned?.length != 0 && (
-                    <CommandGroup heading="pinned">
+                    <CommandGroup heading="Pinned">
                         {pinned?.map((chat) => (
                             <CommandItem key={chat._id} value={chat._id}>
                                 {chat.name}
@@ -48,13 +48,15 @@ export function CommandMenu() {
                         ))}
                     </CommandGroup>
                 )}
-                <CommandGroup heading="Chat History">
-                    {chatsHistoryWithoutPinned?.map((chat) => (
-                        <CommandItem key={chat._id} value={chat._id}>
-                            {chat.name}
-                        </CommandItem>
-                    ))}
-                </CommandGroup>
+                {chatsHistoryWithoutPinned?.length != 0 && (
+                    <CommandGroup heading="Chat History">
+                        {chatsHistoryWithoutPinned?.map((chat) => (
+                            <CommandItem key={chat._id} value={chat._id}>
+                                {chat.name}
+                            </CommandItem>
+                        ))}
+                    </CommandGroup>
+                )}
             </CommandList>
         </CommandDialog>
     );
