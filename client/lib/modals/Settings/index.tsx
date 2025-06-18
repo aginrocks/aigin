@@ -22,6 +22,7 @@ import { ModalsContext } from '../ModalsManager/contexts';
 import { useSetSettings } from '@lib/hooks';
 import { Account } from './Account';
 import { Providers } from './Providers';
+import Applications from './Applications';
 
 export type SettingsTabName =
     | 'account'
@@ -103,9 +104,9 @@ export function Settings({
     return (
         <FormProvider {...settingForm}>
             <Dialog {...props} onOpenChange={onOpenChange}>
-                <DialogContent className="sm:max-w-3xl h-150 p-0 dark:bg-background/50 bg-background/70 backdrop-blur-sm overflow-hidden">
+                <DialogContent className="sm:max-w-3xl h-150 max-h-150 p-0 dark:bg-background/50 bg-background/70 backdrop-blur-sm overflow-hidden">
                     <DialogTitle className="sr-only">Settings</DialogTitle>
-                    <div className="flex w-full h-full">
+                    <div className="flex w-full h-full max-h-150">
                         <SettingsSidebar title="Settings">
                             {tabs.map((t) => (
                                 <SidebarTab
@@ -120,6 +121,7 @@ export function Settings({
                             {tab === 'appearance' && <Appearance />}
                             {tab === 'account' && <Account />}
                             {tab === 'api-keys' && <Providers />}
+                            {tab === 'applications' && <Applications />}
                         </SettingsPage>
                     </div>
                 </DialogContent>

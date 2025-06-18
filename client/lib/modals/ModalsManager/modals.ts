@@ -1,3 +1,5 @@
+import { StrippedApp } from '../../../../server/src/constants/apps';
+import { AppSet } from '../AppSet';
 import { Confirm } from '../Confirm';
 import { InputDialog } from '../Input';
 import { Settings, SettingsTabName } from '../Settings';
@@ -29,10 +31,18 @@ export type Modals = {
         };
         returnValue: string;
     }>;
+    AppSet: ModalDefinition<{
+        payload: {
+            title: string;
+            app: StrippedApp;
+        };
+        returnValue: undefined;
+    }>;
 };
 
 export const ModalsBinding: ModalComponentBindings = {
     Settings: Settings,
     Confirm: Confirm,
     Input: InputDialog,
+    AppSet: AppSet,
 };

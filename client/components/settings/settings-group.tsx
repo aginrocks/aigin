@@ -14,10 +14,10 @@ export function SettingsGroup({ title, children }: SettingsGroupProps) {
                     React.Children.count(children) === 1
                         ? undefined
                         : i === 0
-                          ? 'start'
-                          : i === React.Children.count(children) - 1
-                            ? 'end'
-                            : 'middle',
+                        ? 'start'
+                        : i === React.Children.count(children) - 1
+                        ? 'end'
+                        : 'middle',
             });
         }
         return child;

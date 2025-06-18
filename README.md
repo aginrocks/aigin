@@ -19,7 +19,7 @@
 
 - **Multi-Provider AI Support**: Seamlessly switch between OpenAI, Anthropic, Google, Groq, DeepSeek, XAI, Azure, and OpenRouter
 - **Real-time Streaming**: Live response streaming with delta updates and typing indicators
-- **Smart Chat Management**: Automatic title generation, conversation history, and intelligent categorization
+- **Smart Chat Management**: Automatic title generation, conversation history
 - **Modern UI/UX**: Beautiful dark/light theme with responsive design and smooth animations
 
 ### 🔧 **Extensibility (MCP Integration)**
