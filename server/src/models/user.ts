@@ -37,6 +37,7 @@ export const userSchema = z.object({
         }, {} as Record<(typeof PROVIDER_IDS)[number], typeof modelProvider>)
     ),
     settings: settingsSchema.default({}),
+    picture: z.string().optional(),
 });
 
 export type TUser = z.infer<typeof userSchema> & {

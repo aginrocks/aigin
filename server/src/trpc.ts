@@ -34,6 +34,7 @@ export const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
                 name: auth.given_name,
                 username: auth.preferred_username,
                 subject: auth.sub,
+                picture: auth.picture,
             },
             {
                 upsert: true,

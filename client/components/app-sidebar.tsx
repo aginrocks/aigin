@@ -103,7 +103,7 @@ export function AppSidebar() {
     //     }
     // }, [chatsHistory.data]);
 
-    const avatarUrl = useAvatar((userData as userData)?.email);
+    const avatarUrl = useAvatar(userData?.email, userData?.picture);
 
     return (
         <Sidebar>
