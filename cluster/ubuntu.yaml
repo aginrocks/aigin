@@ -1,0 +1,21 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: debug-ubuntu
+  namespace: aigin
+  labels:
+    app: debug-ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug-ubuntu
+  template:
+    metadata:
+      labels:
+        app: debug-ubuntu
+    spec:
+      containers:
+      - name: debug-ubuntu
+        image: ubuntu:latest
+        command: ["/bin/sleep", "infinity"]
