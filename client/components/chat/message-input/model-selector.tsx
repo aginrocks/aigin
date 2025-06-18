@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { IconCheck, IconChevronDown, IconFilter, IconSearch } from '@tabler/icons-react';
+import {
+    IconCheck,
+    IconChevronDown,
+    IconFilter,
+    IconKey,
+    IconKeyOff,
+    IconSearch,
+} from '@tabler/icons-react';
 import { AppRouter } from '../../../../server/src';
 import { inferProcedureOutput } from '@trpc/server';
 import {
@@ -112,7 +119,7 @@ export default function ModelSelector({
                         </div>
                         <Input
                             ref={searchInputRef}
-                            placeholder="Search models"
+                            placeholder={type === 'model' ? 'Search models' : 'Search providers'}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className=" h-8 w-full dark:bg-transparent shadow-none border-none focus-visible:border-none"
@@ -173,7 +180,7 @@ export default function ModelSelector({
                                         >
                                             <div className="flex items-center gap-2 justify-between w-full">
                                                 <span>{userProvider?.name}</span>
-                                                {userProvider?.enabled && <IconCheck />}
+                                                {!userProvider?.enabled && <IconKeyOff />}
                                                 {/* <Capabilities modelCapabilities={provider.capabilities} /> */}
                                             </div>
                                         </Button>
