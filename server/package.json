@@ -46,19 +46,12 @@
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/module-alias": "^2.0.4",
     "@types/node": "^24.0.0",
     "eslint": "^9.28.0",
     "globals": "^16.2.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.34.0"
-  },
-  "_moduleAliases": {
-    "@": "dist/src",
-    "@models": "dist/src/models",
-    "@routers": "dist/src/routers",
-    "@ai": "dist/src/ai",
-    "@constants": "dist/src/constants",
-    "@lib": "dist/src/lib"
   }
 }
