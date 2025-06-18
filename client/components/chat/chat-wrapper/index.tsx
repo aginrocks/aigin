@@ -59,7 +59,7 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
             <MessageInput
                 onSubmit={(d) =>
                     generate.mutate({
-                        model: 'google:gemini-2.5-flash-preview-05-20',
+                        model: d.provider + ':' + d.model,
                         prompt: d.prompt,
                         chatId,
                     } as generateChatInputs)

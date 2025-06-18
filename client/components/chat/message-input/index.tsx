@@ -3,23 +3,25 @@ import { IconArrowUp } from '@tabler/icons-react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { AttachButton } from './attach-button';
 import { getHotkeyHandler, useMergedRef } from '@mantine/hooks';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStartTyping } from 'react-use';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { AppRouter } from '../../../../server/src';
 import { inferProcedureInput } from '@trpc/server';
 import { useQuery } from '@tanstack/react-query';
-import { useTRPC } from '@lib/trpc';
+import { GetModelsOutput, useTRPC } from '@lib/trpc';
 import ModelSelector from './model-selector';
 import { ScrollToBottom } from './scroll-to-bottom';
 
 export type generateProps = inferProcedureInput<AppRouter['chat']['generate']>;
 
 export type MessageInputProps = {
-    onSubmit: SubmitHandler<generateProps>;
+    onSubmit: SubmitHandler<FormType>;
     scrollToBottomVisible?: boolean;
     scrollToBottom?: () => void;
 };
+
+export type FormType = generateProps & { provider: string };
 
 export function MessageInput({
     onSubmit,
@@ -36,16 +38,37 @@ export function MessageInput({
     useEffect(() => ref.current?.focus(), []);
 
     const { data: models } = useQuery(trpc.models.get.queryOptions({}));
+    const { data: providers } = useQuery(trpc.models.providers.get.queryOptions());
 
-    const messageForm = useForm<generateProps>();
+    const [selectedModel, setSelectedModel] = useState<GetModelsOutput[number]>();
+
+    const messageForm = useForm<FormType>();
 
     useEffect(() => {
         if (!models || models.length === 0) {
             return;
         }
-        messageForm.setValue('model', models[1].slug);
+        setSelectedModel(models[1]);
+
         console.log('Models loaded:', models);
-    }, [models, messageForm]);
+    }, [models]);
+
+    const avabileProviders = useMemo(
+        () =>
+            selectedModel?.providers?.filter(
+                (p) => providers?.find((f) => f.id == p.provider)?.enabled
+            ),
+        [selectedModel, providers]
+    );
+
+    useEffect(() => {
+        if (avabileProviders?.length == 0 || !avabileProviders) {
+            return;
+        }
+
+        messageForm.setValue('provider', avabileProviders?.[0].provider || '');
+        messageForm.setValue('model', avabileProviders?.[0].modelId || '');
+    }, [avabileProviders]);
 
     const { ref: inputRef, ...inputProps } = messageForm.register('prompt');
 
@@ -53,15 +76,22 @@ export function MessageInput({
 
     const isNotEmpty = messageForm.watch('prompt')?.trim().length > 0;
 
-    const selectedModel = messageForm.watch('model');
+    const selectedProviderModel = messageForm.watch('model');
+    const selectedProvider = messageForm.watch('provider');
 
     useEffect(() => {
+        console.log('Selected provider changed:', selectedProvider);
+        console.log('Selected provider model changed:', selectedProviderModel);
         console.log('Selected model changed:', selectedModel);
-    }, [selectedModel]);
+    }, [selectedProvider, selectedProviderModel, selectedModel]);
 
     return (
         <form
             onSubmit={messageForm.handleSubmit((...args) => {
+                if (!isNotEmpty || avabileProviders?.length == 0) {
+                    console.log('Form is empty or no available providers');
+                    return;
+                }
                 onSubmit(...args);
                 messageForm.resetField('prompt', { defaultValue: '' });
             })}
@@ -97,18 +127,24 @@ export function MessageInput({
                         <div className="flex items-center gap-1">
                             <AttachButton />
                             <ModelSelector
+                                onProviderChange={(provider) => {
+                                    messageForm.setValue('provider', provider.provider);
+                                    messageForm.setValue('model', provider.modelId);
+                                }}
                                 models={models}
+                                avabileProviders={avabileProviders}
+                                providers={providers}
                                 selectedModel={selectedModel}
-                                onModelChange={(modelSlug) =>
-                                    messageForm.setValue('model', modelSlug)
-                                }
+                                selectedProviderModel={selectedProviderModel}
+                                selectedProvider={selectedProvider}
+                                onModelChange={(modelSlug) => setSelectedModel(modelSlug)}
                             />
                         </div>
                         <div className="flex items-center gap-2 ">
                             <Button
                                 size="md-icon"
                                 variant="light"
-                                disabled={!isNotEmpty}
+                                disabled={!isNotEmpty || avabileProviders?.length == 0}
                                 type="submit"
                             >
                                 <IconArrowUp />
