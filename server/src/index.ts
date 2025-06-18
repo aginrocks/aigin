@@ -4,11 +4,12 @@ dotenv.config();
 
 if (process.env.NODE_ENV === 'production')
     moduleAlias.addAliases({
-        '@models': 'dist/src/models',
-        '@routers': 'dist/src/routers',
-        '@ai': 'dist/src/ai',
-        '@constants': 'dist/src/constants',
-        '@lib': 'dist/src/lib',
+        '@': __dirname,
+        '@models': __dirname + '/models',
+        '@routers': __dirname + '/routers',
+        '@ai': __dirname + '/ai',
+        '@constants': __dirname + '/constants',
+        '@lib': __dirname + '/lib',
     });
 
 import { router } from './trpc';

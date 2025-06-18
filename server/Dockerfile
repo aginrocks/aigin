@@ -25,7 +25,7 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/src/ .
 COPY --from=builder /app/node_modules ./node_modules
 
 USER nodejs

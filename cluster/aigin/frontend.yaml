@@ -18,6 +18,7 @@ spec:
       containers:
       - name: aigin-frontend
         image: ghcr.io/aginrocks/aigin-frontend:master
+        imagePullPolicy: Always
         ports:
         - name: web
           containerPort: 3000
