@@ -30,6 +30,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useModals } from '@lib/modals/ModalsManager';
 import { useModifier } from '@lib/hooks';
 import { useRef } from 'react';
+import MoonLoader from 'react-spinners/MoonLoader';
+import Spinner from './loaders/spinner';
 
 type SidebarTileProps = {
     title: string;
@@ -66,9 +68,9 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
         >
             <Link href={`/chat/${id}`}>
                 <SidebarMenuButton isActive={active} asChild>
-                    <div className="pr-1">
+                    <div className="pr-1 flex justify-between items-center">
                         <span className="truncate">{title}</span>
-                        {/* TODO: show if chat is generating */}
+                        {isGenerating && <Spinner />}
                     </div>
                 </SidebarMenuButton>
             </Link>
@@ -166,7 +168,13 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                           );
                   })
                 : chats.map((chat) => (
-                      <SidebarTile id={chat._id} key={chat._id} title={chat.name} />
+                      <SidebarTile
+                          id={chat._id}
+                          key={chat._id}
+                          title={chat.name}
+                          pinned={chat.pinned}
+                          isGenerating={chat.isGenerating}
+                      />
                   ))}
         </SidebarMenu>
     );
