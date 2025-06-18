@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef, memo } from 'react';
+import { Button } from './ui/button';
+import { IconCopy } from '@tabler/icons-react';
 
 export type CodeHighlighterProps = {
     code: string;

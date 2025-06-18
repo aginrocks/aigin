@@ -22,6 +22,7 @@ import { useModals } from '@lib/modals/ModalsManager';
 import { useTRPC } from '@lib/trpc';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
+import { IconApps, IconKey } from '@tabler/icons-react';
 
 export function SidebarUser({
     user,
@@ -99,13 +100,25 @@ export function SidebarUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    modals.show('Settings', {
+                                        initialTab: 'api-keys',
+                                    })
+                                }
+                            >
+                                <IconKey />
+                                Api Keys
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Bell />
-                                Notifications
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    modals.show('Settings', {
+                                        initialTab: 'applications',
+                                    })
+                                }
+                            >
+                                <IconApps />
+                                Applications
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => modals.show('Settings')}>
                                 <Settings />

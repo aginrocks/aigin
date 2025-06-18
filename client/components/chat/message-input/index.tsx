@@ -91,7 +91,7 @@ export function MessageInput({
             })}
             ref={formRef}
         >
-            <div className="w-full max-w-4xl min-h-fit mx-auto p-1 absolute bottom-2 left-1/2 -translate-x-1/2 ">
+            <div className="w-full z-50 max-w-4xl min-h-fit mx-auto p-1 absolute bottom-2 left-1/2 -translate-x-1/2 ">
                 <ScrollToBottom
                     onClick={(e) => {
                         e.preventDefault();
