@@ -1,4 +1,11 @@
-import { IconDots, IconPin, IconShare3, IconTrash } from '@tabler/icons-react';
+import {
+    IconDots,
+    IconPencil,
+    IconPin,
+    IconPinnedOff,
+    IconShare3,
+    IconTrash,
+} from '@tabler/icons-react';
 
 import {
     SidebarLabel,
@@ -15,20 +22,26 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Outputs } from '@lib/trpc';
+import { Outputs, useTRPC } from '@lib/trpc';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
 
 type SidebarTileProps = {
     title: string;
     isGenerating?: boolean;
     id: string;
+    pinned?: boolean;
 };
 
-function SidebarTile({ title, id }: SidebarTileProps) {
+function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
     const { isMobile } = useSidebar();
 
     const active = usePathname() === `/chat/${id}`;
+
+    const trpc = useTRPC();
+
+    const modifyChat = useMutation(trpc.chat.modify.mutationOptions());
 
     return (
         <SidebarMenuItem>
@@ -55,9 +68,15 @@ function SidebarTile({ title, id }: SidebarTileProps) {
                     side={isMobile ? 'bottom' : 'right'}
                     align={isMobile ? 'end' : 'start'}
                 >
+                    <DropdownMenuItem
+                        onClick={() => modifyChat.mutate({ chatId: id, pinned: !pinned })}
+                    >
+                        {pinned ? <IconPinnedOff /> : <IconPin />}
+                        <span>{pinned ? 'Unpin' : 'Pin'}</span>
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
-                        <IconPin />
-                        <span>Pin</span>
+                        <IconPencil />
+                        <span>Rename</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         <IconShare3 />
@@ -102,6 +121,7 @@ function SidebarTilesSection({ chats, filter }: SidebarTilesSectionProps) {
                                           id={chat._id}
                                           key={chat._id}
                                           title={chat.name}
+                                          pinned={chat.pinned}
                                           isGenerating={chat.isGenerating}
                                       />
                                   ))}

@@ -23,13 +23,18 @@ import Link from 'next/link';
 
 const chatFilters: chatFilter[] = [
     {
-        func: (chat) => new Date(chat.updatedAt).toDateString() === new Date().toDateString(),
+        func: (chat) => chat.pinned,
+        label: 'Pinned',
+    },
+    {
+        func: (chat) =>
+            new Date(chat.updatedAt).toDateString() === new Date().toDateString() && !chat.pinned,
         label: 'Today',
     },
     {
         func: (chat) =>
             new Date(chat.updatedAt).toDateString() ===
-            new Date(Date.now() - 86400000).toDateString(),
+                new Date(Date.now() - 86400000).toDateString() && !chat.pinned,
         label: 'Yesterday',
     },
     {
@@ -41,7 +46,8 @@ const chatFilters: chatFilter[] = [
             return (
                 chatDate >= startOfWeek &&
                 chatDate.toDateString() !== new Date().toDateString() &&
-                chatDate.toDateString() !== new Date(Date.now() - 86400000).toDateString()
+                chatDate.toDateString() !== new Date(Date.now() - 86400000).toDateString() &&
+                !chat.pinned
             );
         },
         label: 'This Week',
@@ -53,7 +59,8 @@ const chatFilters: chatFilter[] = [
             return (
                 chatDate.getMonth() === now.getMonth() &&
                 chatDate.getFullYear() === now.getFullYear() &&
-                chatDate < new Date(now.setDate(now.getDate() - now.getDay()))
+                chatDate < new Date(now.setDate(now.getDate() - now.getDay())) &&
+                !chat.pinned
             );
         },
         label: 'This Month',
@@ -64,14 +71,17 @@ const chatFilters: chatFilter[] = [
             const now = new Date();
             return (
                 chatDate.getFullYear() === now.getFullYear() &&
-                chatDate.getMonth() !== now.getMonth()
+                chatDate.getMonth() !== now.getMonth() &&
+                !chat.pinned
             );
         },
         label: 'This Year',
     },
     {
         func: (chat) =>
-            new Date(chat.updatedAt).getFullYear() < new Date().getFullYear() || !chat.updatedAt,
+            (new Date(chat.updatedAt).getFullYear() < new Date().getFullYear() ||
+                !chat.updatedAt) &&
+            !chat.pinned,
         label: 'Older',
     },
 ];

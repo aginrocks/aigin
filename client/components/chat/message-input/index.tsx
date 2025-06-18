@@ -68,7 +68,13 @@ export function MessageInput({
             ref={formRef}
         >
             <div className="w-full max-w-4xl min-h-fit mx-auto p-1 absolute bottom-2 left-1/2 -translate-x-1/2 ">
-                <ScrollToBottom onClick={scrollToBottom} visible={scrollToBottomVisible} />
+                <ScrollToBottom
+                    onClick={(e) => {
+                        e.preventDefault();
+                        scrollToBottom?.();
+                    }}
+                    visible={scrollToBottomVisible}
+                />
                 <div className="bg-popover/60 backdrop-blur-sm border rounded-2xl flex flex-col p-3">
                     <TextareaAutosize
                         className="focus:outline-none resize-none text-base px-2 pb-2 pt-1"
