@@ -171,6 +171,8 @@ export class CachedChat {
         this.messages.push(newMessage);
         await this.syncToDatabase();
 
+        console.log('emittijg new message', newMessage);
+
         this.emitEvent('message:created', newMessage);
 
         let tools: ToolSet = {};
