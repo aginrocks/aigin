@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { useRef, useEffect, useState, Dispatch } from 'react';
 import { useAutoScroll } from '@/lib/hooks';
 import { IconChevronDown } from '@tabler/icons-react';
-import { SetStateAction } from 'jotai';
+import { SetStateAction, useAtom } from 'jotai';
+import { selectedModelAtom } from '@lib/atoms/selectedmodel';
 
 type ChatWrapperProps = {
     children?: React.ReactNode;
@@ -26,6 +27,8 @@ export default function ChatWrapper({
     const router = useRouter();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
     const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
+
+    const [selectedModel, setSelectedModel] = useAtom(selectedModelAtom);
 
     const generate = useMutation(
         trpc.chat.generate.mutationOptions({
@@ -68,6 +71,7 @@ export default function ChatWrapper({
                     generate.mutate({
                         model: d.provider + ':' + d.model,
                         prompt: d.prompt,
+                        modelSlug: selectedModel?.slug,
                         chatId,
                     } as generateChatInputs);
                     setGenerate?.(true);

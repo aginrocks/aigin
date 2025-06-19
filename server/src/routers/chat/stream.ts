@@ -54,7 +54,7 @@ export const stream = protectedProcedure
 
         try {
             for await (const [part] of iterable) {
-                console.log(`Streaming part for chat ${input.chatId}:`, part);
+                // console.log(`Streaming part for chat ${input.chatId}:`, part);
                 yield part;
             }
         } catch (error) {

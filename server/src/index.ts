@@ -79,8 +79,6 @@ app.get('/api/login', oidcAuthMiddleware(), async (c) => {
     const keys = Object.values(user?.providers || {});
 
     if (!user || keys.every((value) => !value.apiKey)) {
-        console.log(user);
-
         return c.redirect('/onboarding');
     }
     return c.redirect('/');

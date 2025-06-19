@@ -17,7 +17,7 @@ export const generate = protectedProcedure
         })
     )
     .mutation(async ({ ctx, input }) => {
-        const chat = await loadContext(ctx.user, input.chatId);
+        const chat = await loadContext(ctx.user, input.chatId, input.model);
 
         await chat.sendMessage({
             model: input.model as `${string}:${string}`,

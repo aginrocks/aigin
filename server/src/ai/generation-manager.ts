@@ -120,11 +120,15 @@ export class CachedChat {
     emitter = new IterableEventEmitter<CachedChatEventsMap>();
     isGenerating = false;
     apps: McpApp[] = [];
+    model?: string;
 
-    constructor(id: string, user: TUser, messages: Message[] = []) {
+    constructor(id: string, user: TUser, messages: Message[] = [], model?: string) {
         this.id = id;
         this.user = user;
         this.messages = messages;
+        if (model) {
+            this.model = model;
+        }
     }
 
     public getMessages() {
@@ -395,13 +399,26 @@ export class CachedChat {
  * @param chatId The ID of the chat to load.
  * @returns The cached chat context.
  */
-export async function loadContext(user: TUser, chatId?: string) {
+export async function loadContext(user: TUser, chatId?: string, model?: string) {
     let chatDetails;
     let messages: Message[] = [];
 
+    async function updateModel(oldModel?: string) {
+        if (!model) return;
+        if (!oldModel || oldModel != model) {
+            await Chat.findByIdAndUpdate(chatId, {
+                model: model,
+            });
+        }
+    }
+
     if (chatId) {
         const alreadyCached = chatsStore.get(chatId);
-        if (alreadyCached) return alreadyCached;
+        if (alreadyCached) {
+            updateModel(alreadyCached?.model);
+            alreadyCached.model = model;
+            return alreadyCached;
+        }
     }
 
     if (chatId) {
@@ -420,18 +437,21 @@ export async function loadContext(user: TUser, chatId?: string) {
             });
         }
 
+        updateModel(chatDetails.model.toString());
+
         messages = deserializeMessages(chatDetails.messages);
     } else {
         chatDetails = await Chat.create({
             user: user._id,
             name: 'New Chat',
             messages: [],
+            model: model,
         });
         chatId = chatDetails._id.toString();
         messages = [];
     }
 
-    const chat = new CachedChat(chatId, user, messages);
+    const chat = new CachedChat(chatId, user, messages, model);
     chat.debug();
 
     chatsStore.set(chatId, chat);

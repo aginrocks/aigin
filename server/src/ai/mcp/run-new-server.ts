@@ -80,7 +80,7 @@ export async function runNewServer({ app, config, userId }: RunServerProps) {
         pvcName = await ensurePVCExists({ app, userId });
     }
 
-    console.log({ pvcName });
+    // console.log({ pvcName });
 
     const pod = await k8sApi?.createNamespacedPod({
         namespace: NAMESPACE,

@@ -1,6 +1,6 @@
 'use client';
 import ChatWrapper from '@/components/chat/chat-wrapper';
-import { Outputs, useTRPC } from '@lib/trpc';
+import { GetModelsOutput, Outputs, useTRPC } from '@lib/trpc';
 import { useSubscription } from '@trpc/tanstack-react-query';
 import { useParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -9,6 +9,8 @@ import MarkdownRenderer from '@/components/chat/markdown';
 import UserMessage from '@/components/chat/user-message';
 import { useQuery } from '@tanstack/react-query';
 import Spinner from '@/components/loaders/spinner';
+import { useSetAtom } from 'jotai';
+import { selectedModelAtom } from '@lib/atoms/selectedmodel';
 
 export type Chat = Outputs['chat']['get'];
 
@@ -88,11 +90,28 @@ export default function ChatPage() {
 
     //data fetching
     const data = useQuery(trpc.chat.get.queryOptions({ chatId: chatId?.toString() || '' }));
+    const { data: models } = useQuery(trpc.models.get.queryOptions({}));
 
+    const setSelectedModelAtom = useSetAtom(selectedModelAtom);
     useEffect(() => {
         if (!data.data) return;
+        console.log('Fetched chat data:', data.data);
+
         const chatData = data.data as Chat;
         setMsg(chatData.messages || []);
+        messagesRef.current = chatData.messages || [];
+
+        console.log('modle', data.data?.model);
+
+        if (data.data?.model) {
+            const modelToSet = models?.find((model) =>
+                model.providers.some((s) => s.modelId == data.data?.model.split(':')[1])
+            );
+            console.log('Setting model:', modelToSet);
+            setSelectedModelAtom(modelToSet);
+        } else {
+            setSelectedModelAtom(models?.[1]);
+        }
     }, [data.data]);
 
     return (

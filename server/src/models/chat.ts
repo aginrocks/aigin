@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose';
-import { Schema, z } from 'zod';
-import zodSchema, { zId, zodSchemaRaw } from '@zodyac/zod-mongoose';
+import { z } from 'zod';
+import { zId, zodSchemaRaw } from '@zodyac/zod-mongoose';
 import { Message } from 'ai';
 
 export const toolInvocationSchema = z.object({
@@ -50,6 +50,7 @@ export const chatSchema = z.object({
     name: z.string().min(1, 'Name is required'),
     pinned: z.boolean().default(false),
     messages: z.array(messageSchema).default([]),
+    model: z.string().optional(),
 });
 
 export type TChat = z.infer<typeof chatSchema> & {

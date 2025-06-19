@@ -5,7 +5,7 @@ import type { LanguageModelV1Middleware } from 'ai';
  */
 export const fixEmptyParts: LanguageModelV1Middleware = {
     transformParams: async ({ params }) => {
-        console.log('A_PARAMS', params);
+        // console.log('A_PARAMS', params);
         // @ts-expect-error fuck vercel
         params.prompt = params.prompt
             .map((message) => ({
@@ -27,7 +27,7 @@ export const fixEmptyParts: LanguageModelV1Middleware = {
  */
 export const fixOpenAIToolCalls: LanguageModelV1Middleware = {
     transformParams: async ({ params }) => {
-        console.log('O_PARAMS', params);
+        // console.log('O_PARAMS', params);
         if (params.mode.type === 'regular')
             params.mode.tools = params.mode.tools?.map((t) => {
                 // @ts-expect-error someone fucked up types

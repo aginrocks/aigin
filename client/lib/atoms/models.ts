@@ -8,9 +8,7 @@ export const modelsAtom = atom<GetModelsOutput>();
 
 export function useBindModels() {
     const trpc = useTRPC();
-
     const setModels = useSetAtom(modelsAtom);
-
     const { data: models } = useQuery(trpc.models.get.queryOptions({}));
     useEffect(() => {
         if (models) {
