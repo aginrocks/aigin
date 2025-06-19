@@ -83,9 +83,9 @@ export const APPS: App[] = [
         slug: 'chess-com',
         name: 'Chess.com',
         description: 'A popular online chess platform.',
-        icon: '',
         configuration: [],
         environment: [],
+        icon: '/icons/chess.svg',
         image: 'pab1it0/chess-mcp:latest',
         runCommand: '/app/.venv/bin/chess-mcp',
     },
@@ -94,7 +94,7 @@ export const APPS: App[] = [
         slug: 'gitea',
         name: 'Gitea',
         description: 'A self-hosted Git service.',
-        icon: '',
+        icon: '/icons/gitea.svg',
         configuration: [
             {
                 id: 'host',
@@ -126,7 +126,7 @@ export const APPS: App[] = [
         slug: 'tmdb',
         name: 'TMDB',
         description: 'Discover movies, TV shows, and celebrities.',
-        icon: '',
+        icon: '/icons/tmdb.svg',
         configuration: [
             {
                 id: 'api_key',
@@ -149,7 +149,7 @@ export const APPS: App[] = [
         slug: 'furryos',
         name: 'FurryOS',
         description: "Because Your AI Assistant Shouldn't Hallucinate About Packages",
-        icon: '',
+        icon: '/icons/nixos.svg',
         configuration: [],
         environment: [],
         image: 'ghcr.io/tymekv/mcp-nixos:main',
@@ -161,7 +161,7 @@ export const APPS: App[] = [
         slug: 'outline',
         name: 'Outline',
         description: 'A modern team knowledge base and wiki.',
-        icon: '',
+        icon: '/icons/outline.svg',
         configuration: [
             {
                 id: 'host',
@@ -239,7 +239,7 @@ export const APPS: App[] = [
         slug: 'clickup',
         name: 'ClickUp',
         description: 'A productivity platform for teams.',
-        icon: '',
+        icon: '/icons/clickup.svg',
         configuration: [
             {
                 id: 'api_key',
@@ -297,7 +297,7 @@ export const APPS: App[] = [
         slug: 'pure-md',
         name: 'pure.md',
         description: 'Markdown delivery network for LLMs.',
-        icon: '',
+        icon: '/icons/puremd.png',
         configuration: [
             {
                 id: 'api_key',
@@ -320,7 +320,7 @@ export const APPS: App[] = [
         slug: 'context7',
         name: 'Context7',
         description: 'Up-to-date documentation for LLMs and AI code editors.',
-        icon: '',
+        icon: '/icons/context7.svg',
         configuration: [],
         environment: [],
         url: 'https://mcp.context7.com/mcp',
@@ -330,7 +330,7 @@ export const APPS: App[] = [
         slug: 'memory',
         name: 'Memory',
         description: 'Let your AI assistant remember things.',
-        icon: '',
+        icon: '/icons/memory.svg',
         configuration: [],
         environment: [
             {
@@ -349,7 +349,7 @@ export const APPS: App[] = [
         slug: 'fetch',
         name: 'Fetch',
         description: 'Fetch data from the web.',
-        icon: '',
+        icon: '/icons/fetch.svg',
         configuration: [],
         environment: [],
         url: 'https://remote.mcpservers.org/fetch/mcp',
@@ -359,7 +359,7 @@ export const APPS: App[] = [
         slug: 'mail',
         name: 'Mail',
         description: 'Send and receive emails (ClaudePost).',
-        icon: '',
+        icon: '/icons/mail.svg',
         configuration: [
             {
                 id: 'email_address',
