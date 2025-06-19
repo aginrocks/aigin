@@ -7,11 +7,13 @@ import { useEffect, useReducer, useRef, useState } from 'react';
 import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
 import UserMessage from '@/components/chat/user-message';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import Spinner from '@/components/loaders/spinner';
 import { useSetAtom } from 'jotai';
 import { selectedModelAtom } from '@lib/atoms/selectedmodel';
 import { chatMessagesReducer } from '@lib/reducers';
+import { Button } from '@/components/ui/button';
+import { ToolCall } from '@/components/ui/tool-call';
 
 export type Chat = Outputs['chat']['get'];
 
@@ -28,6 +30,8 @@ export default function ChatPage() {
     const [isGenerating, setGenerating] = useState(false);
 
     const [toolsMappings, setToolsMappings] = useState<ToolMapping[]>([]);
+
+    const confirmCall = useMutation(trpc.chat.confirmMCPCall.mutationOptions());
 
     //data streaming
     useSubscription(
@@ -139,7 +143,25 @@ export default function ChatPage() {
                                 return <MarkdownRenderer key={index}>{part.text}</MarkdownRenderer>;
                             }
                         } else if (part.type === 'tool-invocation') {
-                            return <div key={index}>Tool: {part.toolInvocation.toolName}</div>;
+                            const mapping = toolsMappings.find(
+                                (m) => m.callId === part.toolInvocation.toolCallId
+                            );
+
+                            return (
+                                <ToolCall
+                                    key={index}
+                                    data={mapping}
+                                    callId={part.toolInvocation.toolCallId}
+                                    toolName={part.toolInvocation.toolName}
+                                    args={part.toolInvocation.args}
+                                    onConfirm={() => {
+                                        confirmCall.mutate({
+                                            callId: part.toolInvocation.toolCallId,
+                                            canContinue: true,
+                                        });
+                                    }}
+                                />
+                            );
                         }
                     });
 
