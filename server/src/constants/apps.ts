@@ -275,7 +275,7 @@ export const APPS: App[] = [
         slug: 'github',
         name: 'GitHub',
         description: 'A platform for version control and collaboration.',
-        icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg',
+        icon: '/icons/github.svg',
         configuration: [
             {
                 id: 'pat',
