@@ -37,10 +37,14 @@ export function TRPCClientProvider({ children }: { children: React.ReactNode }) 
                 splitLink({
                     condition: (op) => op.type === 'subscription',
                     true: httpSubscriptionLink({
-                        url: 'http://localhost:3020/api/trpc',
+                        url: `${
+                            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3020'
+                        }/api/trpc`,
                     }),
                     false: httpBatchLink({
-                        url: 'http://localhost:3020/api/trpc',
+                        url: `${
+                            process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3020'
+                        }/api/trpc`,
                     }),
                 }),
             ],
