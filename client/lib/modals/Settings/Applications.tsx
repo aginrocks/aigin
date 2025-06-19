@@ -28,7 +28,8 @@ export default function Applications() {
                             key={app.slug}
                             className="flex flex-col items-center p-4 border rounded-lg hover:bg-secondary"
                         >
-                            <img src={app.icon} alt={app.name} className="w-12 h-12 mb-2" />
+                            {/* @ts-ignore */}
+                            <img src={app.icon || null} alt={app.name} className="w-12 h-12 mb-2" />
                             <span className="text-sm font-bold text-center">{app.name}</span>
                             {/* <span className="text-sm font-bold text-center">
                                 {JSON.stringify(app.configuration)}

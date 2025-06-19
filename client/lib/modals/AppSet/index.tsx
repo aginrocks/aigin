@@ -10,11 +10,10 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { StrippedApp } from '../../../../server/src/constants/apps';
-import { useMutation } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Inputs, useTRPC } from '@lib/trpc';
+import { Switch } from '@/components/ui/switch';
 
 export function AppSet({
     payload,
@@ -23,20 +22,32 @@ export function AppSet({
     const modals = useModals();
     const trpc = useTRPC();
 
-    const inputRef = useRef<HTMLInputElement>(null);
+    const { data: apps } = useQuery(trpc.apps.getAll.queryOptions());
 
     const [formState, setFormState] = useState<Inputs['apps']['configure']['config']>();
 
+    const [enabled, setEnabled] = useState<boolean>(true);
+
     const applicationMutate = useMutation(trpc.apps.configure.mutationOptions());
 
+    const selectedApp = useMemo(
+        () => apps?.find((app) => app.slug === payload?.app?.slug),
+        [payload?.app?.slug, apps]
+    );
+
+    useEffect(() => {
+        setEnabled(selectedApp?.isEnabled || false);
+        console.log(selectedApp?.isEnabled);
+    }, [apps]);
+
     function handleSubmit() {
-        console.log('handleSubmit', formState);
+        // console.log('handleSubmit', formState);
 
         if (!payload?.app) return;
 
         applicationMutate.mutate({
             appSlug: payload?.app.slug,
-            enabled: true,
+            enabled: enabled,
             config: formState,
         });
 
@@ -52,12 +63,20 @@ export function AppSet({
                     </DialogTitle>
                     {/* <DialogDescription>{'Set Application'}</DialogDescription> */}
                 </DialogHeader>
+                <div className="flex text-bold items-center px-1 justify-between">
+                    <span>Enable</span>
+                    <Switch checked={enabled} onCheckedChange={setEnabled} />
+                </div>
                 {payload?.app.configuration?.map((config, i) => {
                     const value = formState?.find((f) => f.id == config.id);
                     return (
-                        <div className="flex flex-col gap-1" key={config.name}>
-                            <span className="text-sm px-1 font-semibold">{config.name}</span>
-                            <span className="text-sm px-1">{config.description}</span>
+                        <div className="flex flex-col gap-2" key={config.name}>
+                            <div className="flex flex-col items-start gap-2">
+                                {/* <span className="text-sm px-1 font-semibold">
+                                        {config.name}
+                                    </span> */}
+                                <span className="text-sm px-1">{config.description}</span>
+                            </div>
                             <Input
                                 placeholder={config.name}
                                 value={value?.value || ''}
