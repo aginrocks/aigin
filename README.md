@@ -63,8 +63,8 @@ Aigin follows a modern microservices architecture designed for scalability and m
 
 ### 🎨 **Frontend (Client)**
 
-- **Framework**: Next.js 15 with App Router and Turbopack
-- **Styling**: Tailwind CSS with custom design system
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Shadcn
 - **State Management**: TanStack Query + tRPC for type-safe API calls
 - **UI Components**: Radix UI primitives with custom styling
 - **Real-time**: tRPC subscriptions for live chat updates
@@ -86,7 +86,7 @@ Aigin follows a modern microservices architecture designed for scalability and m
 
 ## 🎛️ Supported AI Models
 
-Aigin supports **50+ flagship models** across multiple providers:
+Aigin supports **30+ flagship models** across multiple providers:
 
 | Provider       | Models                       | Capabilities              |
 | -------------- | ---------------------------- | ------------------------- |
@@ -96,7 +96,9 @@ Aigin supports **50+ flagship models** across multiple providers:
 | **Meta**       | Llama 4 Scout/Maverick       | Vision, Open Source       |
 | **DeepSeek**   | v3, R1                       | Reasoning, Cost-effective |
 | **XAI**        | Grok 3, Grok 3 Mini          | Real-time, Reasoning      |
-| **OpenRouter** | 100+ models                  | Unified access            |
+| **OpenRouter** | 100+ models\*                | Unified access            |
+
+> **_NOTE:_** For demo purposes not all OpenRouter models are enabled
 
 ### 🧠 **Advanced Features**
 
