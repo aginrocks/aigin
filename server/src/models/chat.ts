@@ -45,11 +45,24 @@ export const messageSchema = z.object({
     // TODO: add model that generated the message
 });
 
+export const simpleToolCallSchema = z.object({
+    callId: z.string(),
+    appSlug: z.string(),
+    toolName: z.string(),
+    confirmed: z.boolean(),
+});
+
+/**
+ * Tool call in the format that is stored in the database.
+ */
+export type SimpleToolCall = z.infer<typeof simpleToolCallSchema>;
+
 export const chatSchema = z.object({
     user: zId('User'),
     name: z.string().min(1, 'Name is required'),
     pinned: z.boolean().default(false),
     messages: z.array(messageSchema).default([]),
+    calls: z.array(simpleToolCallSchema).default([]),
     model: z.string().optional(),
 });
 

@@ -7,7 +7,7 @@ import { TRPCError } from '@trpc/server';
 import { getGenerationPrompt, getTitleGenerationModels } from '@constants/title-generation';
 import { ModelId } from '@constants/providers';
 import { parseAppMentions, validateAppsRequest } from '@lib/util';
-import { createInterceptedToolSet, McpApp, UnconfirmedToolCall } from './mcp/mcp-app';
+import { createInterceptedToolSet, McpApp, ExtendedToolCall } from './mcp/mcp-app';
 import { APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 
@@ -92,13 +92,15 @@ export type CachedChatEventsMap = {
     'message:created': [Message];
     'message:completed': [{ completed: boolean }];
     'message:error': [{ error: string }];
-    'tool:confirm-call': [UnconfirmedToolCall];
+    'tool:call-metadata': [ExtendedToolCall];
+    'tool:call': [SdkToolCall];
     'message:changed': [
         | { type: 'message:delta'; data: [TextStreamPart<ToolSet> & { type: 'text-delta' }] }
         | { type: 'message:created'; data: [Message] }
         | { type: 'message:completed'; data: [{ completed: boolean }] }
         | { type: 'message:error'; data: [{ error: string }] }
-        | { type: 'tool:confirm-call'; data: [UnconfirmedToolCall] }
+        | { type: 'tool:call-metadata'; data: [ExtendedToolCall] }
+        | { type: 'tool:call'; data: [SdkToolCall] }
     ];
 };
 
@@ -107,6 +109,8 @@ export type SendMessage = {
     content: string;
     // TODO: Add tools and attachments
 };
+
+export type SdkToolCall = Exclude<Message['parts'], undefined>[number];
 
 /**
  * When a chat is generating, the incoming tokens are cached here.
@@ -265,7 +269,26 @@ export class CachedChat {
 
         if (part.type === 'text-delta') {
             this.handleDelta(lastMessage, part);
+        } else if (part.type === 'tool-call') {
+            this.handleToolCall(lastMessage, part);
         }
+    }
+
+    private handleToolCall(
+        lastMessage: Message,
+        part: TextStreamPart<ToolSet> & { type: 'tool-call' }
+    ) {
+        const sdkPart: SdkToolCall = {
+            type: 'tool-invocation',
+            toolInvocation: {
+                args: part.args,
+                state: 'call',
+                toolCallId: part.toolCallId,
+                toolName: part.toolName,
+            },
+        };
+        lastMessage.parts = [...(lastMessage.parts || []), sdkPart];
+        this.emitEvent('tool:call', sdkPart);
     }
 
     private handleDelta(

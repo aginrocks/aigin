@@ -38,15 +38,15 @@ export const stream = protectedProcedure
 
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
 
-        // const lastMessage = chat.getMessages().slice(-1)[0];
+        const lastMessage = chat.getMessages().slice(-1)[0];
 
         // Sending already created message parts on connection
-        // if (lastMessage.role === 'assistant') {
-        //     yield {
-        //         type: 'message:created',
-        //         data: [lastMessage],
-        //     };
-        // }
+        if (lastMessage.role === 'assistant' && chat.isGenerating) {
+            yield {
+                type: 'message:created',
+                data: [lastMessage],
+            };
+        }
 
         const iterable = chat.emitter.toIterable('message:changed', {
             signal,

@@ -1,4 +1,4 @@
-import { App } from '@constants/apps';
+import { App, APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 import { TUser } from '@models/user';
 import { getPodAddress, getServerPod, waitUntilReady } from './get-server';
@@ -7,6 +7,7 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { createRemoteHeaders } from './run-new-server';
 import { randomUUID } from 'node:crypto';
 import { CachedChat } from '@ai/generation-manager';
+import { SimpleToolCall } from '@models/chat';
 
 export type McpAppConstructorProps = {
     app: App;
@@ -23,18 +24,38 @@ export type MCPClient = Awaited<ReturnType<typeof experimental_createMCPClient>>
 
 export type McpAction = {
     userId: string;
+    appSlug: string;
     resolve: (canContinue: boolean) => void;
 };
 
-export type UnconfirmedToolCall = {
-    userId: string;
-    args: any;
-    tool: Tool;
+/**
+ * Tool call in the format that is returned to the client.
+ */
+export type ExtendedToolCall = {
     app: Pick<McpApp['app'], 'name' | 'slug' | 'icon' | 'image' | 'description' | 'isPersistant'>;
     toolName: string;
-    options: ToolExecutionOptions;
     callId: string;
 };
+
+export function constructUnconfirmedToolCall(
+    simpleCall: SimpleToolCall
+): ExtendedToolCall | undefined {
+    const app = APPS.find((a) => a.slug === simpleCall.appSlug);
+    if (!app) return;
+
+    return {
+        app: {
+            name: app.name,
+            slug: app.slug,
+            icon: app.icon,
+            image: app.image,
+            description: app.description,
+            isPersistant: app.isPersistant,
+        },
+        toolName: simpleCall.toolName,
+        callId: simpleCall.callId,
+    };
+}
 
 export const mcpActionsQueue: Map<string, McpAction> = new Map();
 
@@ -57,29 +78,24 @@ export function createInterceptedToolSet({
             execute: async (args, options) => {
                 console.log(`[INTERCEPTOR] Tried to execute tool: ${name}`);
                 const canContinue = await new Promise<boolean>((resolve) => {
-                    const actionId = randomUUID();
+                    const actionId = options.toolCallId;
 
                     mcpActionsQueue.set(actionId, {
                         userId: chat.user._id.toString(),
+                        appSlug: app.app.slug,
                         resolve,
                     });
 
-                    chat.emitEvent('tool:confirm-call', {
-                        app: {
-                            name: app.app.name,
-                            slug: app.app.slug,
-                            icon: app.app.icon,
-                            image: app.app.image,
-                            description: app.app.description,
-                            isPersistant: app.app.isPersistant,
-                        },
-                        args,
-                        options: options || {},
-                        toolName: name,
-                        tool,
-                        userId: chat.user._id.toString(),
+                    const simpleCall: SimpleToolCall = {
                         callId: actionId,
-                    });
+                        appSlug: app.app.slug,
+                        toolName: name,
+                        confirmed: false,
+                    };
+
+                    const call = constructUnconfirmedToolCall(simpleCall);
+
+                    if (call) chat.emitEvent('tool:call-metadata', call);
                 });
 
                 if (!canContinue) {

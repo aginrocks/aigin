@@ -16,6 +16,7 @@ import remarkMath from 'remark-math';
 import Copy from './copy';
 
 export default function MarkdownRenderer({ children }: { children: string }) {
+    console.log('Rendering Markdown:', children);
     return (
         <div className=" flex flex-col">
             <div className="leading-relaxed px-2">
