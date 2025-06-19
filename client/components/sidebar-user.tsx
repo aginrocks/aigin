@@ -42,7 +42,7 @@ export function SidebarUser({
     const logout = useMutation(
         trpc.auth.logout.mutationOptions({
             onSuccess: () => {
-                console.log('Logout successful');
+                // console.log('Logout successful');
                 router.push('/home');
             },
         })

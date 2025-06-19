@@ -14,15 +14,10 @@ type ChatWrapperProps = {
     children?: React.ReactNode;
     chatId?: string;
     messages?: unknown[];
-    setGenerate: Dispatch<SetStateAction<boolean>>;
+    setGenerate?: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function ChatWrapper({
-    children,
-    chatId,
-    messages = [],
-    setGenerate,
-}: ChatWrapperProps) {
+export default function ChatWrapper({ children, chatId, messages, setGenerate }: ChatWrapperProps) {
     const trpc = useTRPC();
     const router = useRouter();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -33,7 +28,7 @@ export default function ChatWrapper({
     const generate = useMutation(
         trpc.chat.generate.mutationOptions({
             onSuccess: (data: generateChatOutput) => {
-                console.log('Generate success:', data);
+                // console.log('Generate success:', data);
                 router.push(`/chat/${data.chatId}`);
             },
             // Remove onError since it's handled globally now

@@ -103,7 +103,7 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
                                 confirmText: 'Rename',
                                 initialValue: title,
                             });
-                            console.log('asdfasdfasdf', change);
+                            // console.log('asdfasdfasdf', change);
                             if (!change) return;
 
                             modifyChat.mutate({ chatId: id, name: change });

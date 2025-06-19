@@ -92,13 +92,13 @@ export function Settings({
             // console.log(settingForm.getValues());
             setSettings.mutate(settingForm.getValues(), {
                 onSuccess: () => {
-                    console.log('Settings saved successfully');
+                    // console.log('Settings saved successfully');
                 },
                 onError: (error) => {
                     console.error('Error saving settings:', error);
                 },
             });
-            console.log('closing settings modal');
+            // console.log('closing settings modal');
         }
     };
 

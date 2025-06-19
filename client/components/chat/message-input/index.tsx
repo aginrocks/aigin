@@ -75,16 +75,16 @@ export function MessageInput({
     const selectedProvider = messageForm.watch('provider');
 
     useEffect(() => {
-        console.log('Selected provider changed:', selectedProvider);
-        console.log('Selected provider model changed:', selectedProviderModel);
-        console.log('Selected model changed:', selectedModel);
+        // console.log('Selected provider changed:', selectedProvider);
+        // console.log('Selected provider model changed:', selectedProviderModel);
+        // console.log('Selected model changed:', selectedModel);
     }, [selectedProvider, selectedProviderModel, selectedModel]);
 
     return (
         <form
             onSubmit={messageForm.handleSubmit((...args) => {
                 if (!isNotEmpty || avabileProviders?.length == 0) {
-                    console.log('Form is empty or no available providers');
+                    // console.log('Form is empty or no available providers');
                     return;
                 }
                 onSubmit(...args);

@@ -67,7 +67,6 @@ export default function ChatPage() {
                 data: part.data[0].textDelta,
             });
 
-            console.log('Updated message');
             setGenerating(false);
         } else if (part.type === 'message:completed') {
             console.log('Message completed:', part);
@@ -110,16 +109,14 @@ export default function ChatPage() {
             data: chatData.messages,
         });
 
-        console.log('modle', data.data?.model);
+        // console.log('modle', data.data?.model);
 
         if (data.data?.model) {
+            console.log('Setting model111:');
             const modelToSet = models?.find((model) =>
                 model.providers.some((s) => s.modelId == data.data?.model.split(':')[1])
             );
-            console.log('Setting model:', modelToSet);
             setSelectedModelAtom(modelToSet);
-        } else {
-            setSelectedModelAtom(models?.[1]);
         }
     }, [data.data]);
 
