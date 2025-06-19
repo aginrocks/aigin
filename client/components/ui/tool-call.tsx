@@ -30,20 +30,14 @@ export function ToolCall({ data, callId, toolName, args, onConfirm }: ToolCallPr
 
     return (
         <div className="border rounded-md p-4 bg-popover/80">
-            <div className="flex items-center mb-1">
-                {data?.app.icon && (
-                    <div className="h-6 w-6">
-                        <img
-                            src={data.app.icon}
-                            alt={`${data.app.name} icon`}
-                            className="size-6 object-contain"
-                        />
-                    </div>
-                )}
+            <div className="flex items-center mb-1 gap-2 justify-between">
                 <div>
                     <div className="text-sm font-medium">{data?.app.name}</div>
                     <div className="text-xs text-muted-foreground">{data?.app.description}</div>
                 </div>
+                {data?.app.icon && (
+                    <img src={data.app.icon} alt={`${data.app.name} icon`} className="h-8" />
+                )}
             </div>
 
             <div className="font-semibold">{toolName}</div>
