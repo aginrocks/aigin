@@ -26,7 +26,6 @@ COPY --from=builder /app/dist/src/ .
 COPY --from=builder /app/node_modules ./node_modules
 
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=https://ai.agin.rocks
 
 EXPOSE 3001
 
