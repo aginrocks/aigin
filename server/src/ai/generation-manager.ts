@@ -437,7 +437,7 @@ export async function loadContext(user: TUser, chatId?: string, model?: string) 
             });
         }
 
-        updateModel(chatDetails.model.toString());
+        updateModel(chatDetails.model?.toString());
 
         messages = deserializeMessages(chatDetails.messages);
     } else {

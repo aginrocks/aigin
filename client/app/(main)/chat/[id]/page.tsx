@@ -44,6 +44,7 @@ export default function ChatPage() {
         if (part.type == 'message:created') {
             console.log('New message created:', part);
 
+            //FIXME: This is a workaround to avoid the issue of messages not being displayed correctly
             messagesRef.current.push(part.data[0]);
             setMsg((prev: Chat['messages']) => [...prev, part.data[0]]);
 
@@ -60,17 +61,17 @@ export default function ChatPage() {
                 return;
             }
 
-            const lastPart = lastMessage.parts?.[lastMessage.parts.length - 1];
+            const lastPart = lastMessage?.parts?.[lastMessage.parts.length - 1];
             if (lastPart && lastPart.type === 'text') {
                 lastPart.text += data.textDelta;
             } else {
                 lastMessage.parts = [
-                    ...(lastMessage.parts || []),
+                    ...(lastMessage?.parts || []),
                     { type: 'text', text: data.textDelta },
                 ];
             }
 
-            console.log('Updated message:', lastMessage);
+            // console.log('Updated message:', lastMessage);
             setMsg((msg: Chat['messages']) => [...msg.slice(0, -1), lastMessage]);
             setGenerating(false);
 
@@ -101,23 +102,21 @@ export default function ChatPage() {
         setMsg(chatData.messages || []);
         messagesRef.current = chatData.messages || [];
 
-        console.log('modle', data.data?.model);
+        // console.log('modle', data.data?.model);
 
         if (data.data?.model) {
+            console.log('Setting model111:');
             const modelToSet = models?.find((model) =>
                 model.providers.some((s) => s.modelId == data.data?.model.split(':')[1])
             );
-            console.log('Setting model:', modelToSet);
             setSelectedModelAtom(modelToSet);
-        } else {
-            setSelectedModelAtom(models?.[1]);
         }
     }, [data.data]);
 
     return (
         <ChatWrapper setGenerate={setGenerating} chatId={chatId?.toString()} messages={msg}>
             <div className="max-w-4xl mx-auto p-7 pb-40 flex flex-col gap-5">
-                {msg.map((message: Chat['messages'][0]) => {
+                {messagesRef.current.map((message: Chat['messages'][0]) => {
                     let parts = message.parts;
 
                     if (!parts || parts.length === 0) {

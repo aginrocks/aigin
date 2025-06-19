@@ -2,6 +2,7 @@ import { protectedProcedure } from '@/trpc';
 import { CachedChatEventsMap, chatsStore, loadContext } from '@ai/generation-manager';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { generate } from './generate';
 
 export const stream = protectedProcedure
     .input(
@@ -38,15 +39,17 @@ export const stream = protectedProcedure
 
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
 
-        // const lastMessage = chat.getMessages().slice(-1)[0];
+        if (chat.isGenerating) {
+            const lastMessage = chat.getMessages().slice(-1)[0];
 
-        // Sending already created message parts on connection
-        // if (lastMessage.role === 'assistant') {
-        //     yield {
-        //         type: 'message:created',
-        //         data: [lastMessage],
-        //     };
-        // }
+            // Sending already created message parts on connection
+            if (lastMessage.role === 'assistant') {
+                yield {
+                    type: 'message:created',
+                    data: [lastMessage],
+                };
+            }
+        }
 
         const iterable = chat.emitter.toIterable('message:changed', {
             signal,

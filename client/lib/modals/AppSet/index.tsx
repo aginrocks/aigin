@@ -37,7 +37,7 @@ export function AppSet({
 
     useEffect(() => {
         setEnabled(selectedApp?.isEnabled || false);
-        console.log(selectedApp?.isEnabled);
+        // console.log(selectedApp?.isEnabled);
     }, [apps]);
 
     function handleSubmit() {
