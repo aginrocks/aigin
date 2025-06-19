@@ -4,17 +4,24 @@ import { useRouter } from 'next/navigation';
 import { MessageInput } from '../message-input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, Dispatch } from 'react';
 import { useAutoScroll } from '@/lib/hooks';
 import { IconChevronDown } from '@tabler/icons-react';
+import { SetStateAction } from 'jotai';
 
 type ChatWrapperProps = {
     children?: React.ReactNode;
     chatId?: string;
-    messages?: unknown[]; // Add messages prop to track changes
+    messages?: unknown[];
+    setGenerate: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function ChatWrapper({ children, chatId, messages = [] }: ChatWrapperProps) {
+export default function ChatWrapper({
+    children,
+    chatId,
+    messages = [],
+    setGenerate,
+}: ChatWrapperProps) {
     const trpc = useTRPC();
     const router = useRouter();
     const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -57,13 +64,14 @@ export default function ChatWrapper({ children, chatId, messages = [] }: ChatWra
             </ScrollArea>
 
             <MessageInput
-                onSubmit={(d) =>
+                onSubmit={(d) => {
                     generate.mutate({
                         model: d.provider + ':' + d.model,
                         prompt: d.prompt,
                         chatId,
-                    } as generateChatInputs)
-                }
+                    } as generateChatInputs);
+                    setGenerate?.(true);
+                }}
                 scrollToBottomVisible={!autoScroll.isNearBottom && !autoScroll.shouldAutoScroll}
                 scrollToBottom={autoScroll.scrollToBottom}
             />

@@ -1,9 +1,13 @@
 import { SettingsGroup } from '@/components/settings';
+import { OnboardingHeader } from '../onboarding-header';
 import { useTRPC } from '@lib/trpc';
+import { useModals } from '@lib/modals/ModalsManager';
 import { useQuery } from '@tanstack/react-query';
-import { useModals } from '../ModalsManager';
+import { IconApps, IconArrowRight, IconCheck } from '@tabler/icons-react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
-export default function Applications() {
+export default function ApplicationsSetup() {
     const trpc = useTRPC();
 
     const modals = useModals();
@@ -11,8 +15,13 @@ export default function Applications() {
     const { data: apps } = useQuery(trpc.apps.getAll.queryOptions());
 
     return (
-        <>
-            <SettingsGroup title="Appications">
+        <div className="flex flex-col gap-4">
+            <OnboardingHeader
+                title="Choose your applications"
+                description="Select the applications you want to use and configure them."
+                icon={IconApps}
+            />
+            <SettingsGroup>
                 <div className="h-140 overflow-auto grid grid-cols-2 lg:grid-cols-3 gap-4">
                     {apps?.map((app) => (
                         <div
@@ -35,6 +44,14 @@ export default function Applications() {
                     ))}
                 </div>
             </SettingsGroup>
-        </>
+            <div className="flex justify-end mt-4">
+                <Link href={'/'}>
+                    <Button size="lg">
+                        Done
+                        <IconCheck />
+                    </Button>
+                </Link>
+            </div>
+        </div>
     );
 }

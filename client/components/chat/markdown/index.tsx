@@ -101,7 +101,9 @@ export default function MarkdownRenderer({ children }: { children: string }) {
                     {children}
                 </Markdown>
             </div>
-            <Copy content={children} />
+            <div className="pl-1 pt-1">
+                <Copy content={children} />
+            </div>
         </div>
     );
 }

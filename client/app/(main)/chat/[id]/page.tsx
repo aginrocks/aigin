@@ -8,6 +8,7 @@ import { AsyncIterableData } from '@/components/sidebar-tiles';
 import MarkdownRenderer from '@/components/chat/markdown';
 import UserMessage from '@/components/chat/user-message';
 import { useQuery } from '@tanstack/react-query';
+import Spinner from '@/components/loaders/spinner';
 
 export type Chat = Outputs['chat']['get'];
 
@@ -20,6 +21,7 @@ export default function ChatPage() {
 
     const [msg, setMsg] = useState<Chat['messages']>([]);
     const messagesRef = useRef<Chat['messages']>([]);
+    const [isGenerating, setGenerating] = useState(false);
 
     //data streaming
     useSubscription(
@@ -66,9 +68,21 @@ export default function ChatPage() {
                 ];
             }
 
-            // console.log('Updated message:', lastMessage);
+            console.log('Updated message:', lastMessage);
             setMsg((msg: Chat['messages']) => [...msg.slice(0, -1), lastMessage]);
+            setGenerating(false);
+
             messagesRef.current = [...messagesRef.current.slice(0, -1), lastMessage];
+        } else if (part.type === 'message:completed') {
+            console.log('Message completed:', part);
+
+            setGenerating(false);
+            return;
+        } else if (part.type === 'message:error') {
+            console.log('Message error:', part);
+
+            setGenerating(false);
+            return;
         }
     }
 
@@ -82,7 +96,7 @@ export default function ChatPage() {
     }, [data.data]);
 
     return (
-        <ChatWrapper chatId={chatId?.toString()} messages={msg}>
+        <ChatWrapper setGenerate={setGenerating} chatId={chatId?.toString()} messages={msg}>
             <div className="max-w-4xl mx-auto p-7 pb-40 flex flex-col gap-5">
                 {msg.map((message: Chat['messages'][0]) => {
                     let parts = message.parts;
@@ -104,62 +118,8 @@ export default function ChatPage() {
 
                     return messageParts;
                 })}
+                {isGenerating && <Spinner />}
             </div>
-
-            {/* <Button
-                    onClick={() =>
-                    share.mutate({
-                        chatId: '684ca6cc15ea4a1b1032395b',
-                        })
-                        }
-                        >
-                        share
-                        </Button>
-                        <Button
-                        onClick={() =>
-                        configureApp.mutate({
-                            appSlug: 'notion',
-                            enabled: true,
-                            config: [
-                                {
-                                    id: 'api_key',
-                                    value: prompt('API Key')!,
-                                    },
-                                    ],
-                                    })
-                                    }
-                                    >
-                                    configure notion
-                                    </Button>
-                                    <Button
-                                    variant="secondary"
-                                    onClick={() =>
-                                    generate.mutate({
-                                        // prompt: '@{app:outline} write a blog post about AI',
-                                        // prompt: '@{app:mail} read my latest email',
-                                        // prompt: '@{app:clickup} create a todo that says: "build an ai chat app" in "Personal" list',
-                                        // prompt: '@{app:fetch} summarize this article: https://medium.com/@platform.engineers/deploying-a-simple-web-application-on-kubernetes-43bbf724c23d',
-                                        // prompt: '@{app:context7} explain layout routes in nextjs approuter',
-                                        // prompt: '@{app:memory} which desktop environment am I using?',
-                                        prompt: 'how to use mongodb in js',
-                                        model: 'google:gemini-2.5-flash-preview-05-20',
-                                        // model: 'openrouter:openai/gpt-4.1',
-                                        // model: 'openrouter:anthropic/claude-sonnet-4',
-                            // model: 'anthropic:claude-3-5-sonnet-20241022',
-                            // model: 'groq:deepseek-r1-distill-llama-70b',
-                            // model: 'groq:meta-llama/llama-4-scout-17b-16e-instruct',
-                            // chatId: '684a07d0e4d1230fcaaf67b1',
-                            // model: 'openai:gpt-4o-mini',
-                            // model: 'azure:meta/Llama-4-Scout-17B-16E-Instruct',
-                            // model: 'azure:openai/gpt-4.1',
-                            })
-                            }
-                            >
-                            b
-                            </Button>
-                            {settings.data && <div>{JSON.stringify(settings.data)}</div>}
-                            {test.data && <div>{JSON.stringify(test.data)}</div>}
-                            {msg} */}
         </ChatWrapper>
     );
 }

@@ -16,11 +16,12 @@ import Welcome from '@/components/onboarding/pages/Welcome';
 import ProvidersSetup from '@/components/onboarding/pages/ProvidersSetup';
 import { useQuery } from '@tanstack/react-query';
 import { useTRPC } from '@lib/trpc';
+import ApplicationsSetup from '@/components/onboarding/pages/ApplicationsSetup';
 
 export default function Page() {
     const trpc = useTRPC();
 
-    const [page, setPage] = useState<'welcome' | 'providers'>('welcome');
+    const [page, setPage] = useState<'welcome' | 'providers' | 'apps'>('welcome');
 
     useQuery(trpc.models.providers.get.queryOptions());
     return (
@@ -39,7 +40,14 @@ export default function Page() {
                             }}
                         />
                     )}
-                    {page === 'providers' && <ProvidersSetup />}
+                    {page === 'providers' && (
+                        <ProvidersSetup
+                            onClick={() => {
+                                setPage('apps');
+                            }}
+                        />
+                    )}
+                    {page === 'apps' && <ApplicationsSetup />}
                 </motion.div>
             </AnimatePresence>
         </OnboardingPage>

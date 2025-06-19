@@ -23,6 +23,7 @@ import { useSetSettings } from '@lib/hooks';
 import { Account } from './Account';
 import { Providers } from './Providers';
 import Applications from './Applications';
+import { About } from './About';
 
 export type SettingsTabName =
     | 'account'
@@ -122,6 +123,7 @@ export function Settings({
                             {tab === 'account' && <Account />}
                             {tab === 'api-keys' && <Providers />}
                             {tab === 'applications' && <Applications />}
+                            {tab === 'about' && <About />}
                         </SettingsPage>
                     </div>
                 </DialogContent>

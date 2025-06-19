@@ -120,7 +120,7 @@ export function MessageInput({
                     />
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
-                            <AttachButton />
+                            {/* <AttachButton /> */}
                             <AppSelect
                                 onClick={(app) => {
                                     const currentValue = ref.current?.value || '';
