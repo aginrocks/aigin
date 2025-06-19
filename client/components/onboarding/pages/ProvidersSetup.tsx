@@ -1,13 +1,16 @@
-import { IconArrowRight, IconMessage } from '@tabler/icons-react';
+import { IconArrowRight, IconKey, IconMessage } from '@tabler/icons-react';
 import { OnboardingHeader } from '../onboarding-header';
 import { GetProvidersOutput, useTRPC } from '@lib/trpc';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ProviderSetting } from '@/components/settings/provider-setting';
 import { SettingsGroup } from '@/components/settings';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
-export default function ProvidersSetup() {
+type ProvidersSetupProps = {
+    onClick: () => void;
+};
+
+export default function ProvidersSetup({ onClick }: ProvidersSetupProps) {
     const trpc = useTRPC();
 
     const { data: providers } = useQuery(trpc.models.providers.get.queryOptions());
@@ -19,7 +22,7 @@ export default function ProvidersSetup() {
             <OnboardingHeader
                 title="Let's set up your chat"
                 description="Choose the providers you'd like to use and configure your API keys."
-                icon={IconMessage}
+                icon={IconKey}
             />
             <SettingsGroup>
                 {providers?.map((provider: GetProvidersOutput[number]) => (
@@ -45,12 +48,10 @@ export default function ProvidersSetup() {
                 ))}
             </SettingsGroup>
             <div className="flex justify-end mt-4">
-                <Link href={'/'}>
-                    <Button size="lg">
-                        Done
-                        <IconArrowRight />
-                    </Button>
-                </Link>
+                <Button onClick={onClick} size="lg">
+                    Next
+                    <IconArrowRight />
+                </Button>
             </div>
         </div>
     );

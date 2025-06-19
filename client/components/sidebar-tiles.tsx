@@ -112,10 +112,10 @@ function SidebarTile({ title, id, isGenerating, pinned }: SidebarTileProps) {
                         <IconPencil />
                         <span>Rename</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    {/* <DropdownMenuItem>
                         <IconShare3 />
                         <span>Share</span>
-                    </DropdownMenuItem>
+                    </DropdownMenuItem> */}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                         variant="destructive"
