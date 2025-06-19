@@ -25,8 +25,11 @@ export default function Applications() {
                             key={app.slug}
                             className="flex flex-col items-center p-4 border rounded-lg hover:bg-secondary"
                         >
-                            {/* @ts-ignore */}
-                            <img src={app.icon || null} alt={app.name} className="w-12 h-12 mb-2" />
+                            <img
+                                src={app.icon || undefined}
+                                alt={app.name}
+                                className="w-12 h-12 mb-2"
+                            />
                             <span className="text-sm font-bold text-center">{app.name}</span>
                         </div>
                     ))}
