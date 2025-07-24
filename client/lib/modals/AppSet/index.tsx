@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Inputs, useTRPC } from '@lib/trpc';
 import { Switch } from '@/components/ui/switch';
 
@@ -28,7 +28,15 @@ export function AppSet({
 
     const [enabled, setEnabled] = useState<boolean>(true);
 
-    const applicationMutate = useMutation(trpc.apps.configure.mutationOptions());
+    const queryClient = useQueryClient();
+
+    const applicationMutate = useMutation(
+        trpc.apps.configure.mutationOptions({
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: trpc.apps.getAll.queryKey() });
+            },
+        })
+    );
 
     const selectedApp = useMemo(
         () => apps?.find((app) => app.slug === payload?.app?.slug),

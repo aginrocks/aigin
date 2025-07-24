@@ -6,6 +6,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { GetAppsOutput, useTRPC } from '@lib/trpc';
+import { DropdownMenuLabel } from '@radix-ui/react-dropdown-menu';
 import { IconApps } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -27,8 +28,13 @@ export default function AppSelect({ onClick }: AppSelectProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {apps?.map((app) => (
-                    <DropdownMenuItem key={app.slug} onClick={() => onClick?.(app)}>
+                    <DropdownMenuItem
+                        key={app.slug}
+                        disabled={!app.isEnabled}
+                        onClick={() => onClick?.(app)}
+                    >
                         {app.name}
+                        {app.isEnabled ? '' : ' (Disabled in settings)'}
                     </DropdownMenuItem>
                 ))}
             </DropdownMenuContent>
