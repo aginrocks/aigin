@@ -3,6 +3,7 @@ import { CachedChatEventsMap, chatsStore, loadContext } from '@ai/generation-man
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { generate } from './generate';
+import { constructUnconfirmedToolCall, ExtendedToolCall } from '@ai/mcp/mcp-app';
 
 export const stream = protectedProcedure
     .input(
@@ -38,6 +39,23 @@ export const stream = protectedProcedure
         }
 
         console.log(`Starting stream for chat ${input.chatId}, isGenerating: ${chat.isGenerating}`);
+
+        try {
+            const allToolCalls = chat.simpleCalls.map((c) => constructUnconfirmedToolCall(c));
+            console.log({ allToolCalls });
+
+            if (allToolCalls) {
+                for (const call of allToolCalls) {
+                    if (call)
+                        yield {
+                            type: 'tool:call-metadata',
+                            data: [call],
+                        };
+                }
+            }
+        } catch (e) {
+            console.log(e);
+        }
 
         if (chat.isGenerating) {
             const lastMessage = chat.getMessages().slice(-1)[0];

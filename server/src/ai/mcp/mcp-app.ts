@@ -2,10 +2,9 @@ import { App, APPS } from '@constants/apps';
 import { TAppConfig } from '@models/app-config';
 import { TUser } from '@models/user';
 import { getPodAddress, getServerPod, waitUntilReady } from './get-server';
-import { experimental_createMCPClient, Tool, ToolExecutionOptions, ToolSet } from 'ai';
+import { experimental_createMCPClient, ToolSet } from 'ai';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import { createRemoteHeaders } from './run-new-server';
-import { randomUUID } from 'node:crypto';
 import { CachedChat } from '@ai/generation-manager';
 import { SimpleToolCall } from '@models/chat';
 
@@ -92,6 +91,8 @@ export function createInterceptedToolSet({
                         toolName: name,
                         confirmed: false,
                     };
+
+                    chat.simpleCalls.push(simpleCall);
 
                     const call = constructUnconfirmedToolCall(simpleCall);
 

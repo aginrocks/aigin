@@ -1,4 +1,4 @@
-import { Chat, deserializeMessages, serializeMessages } from '@models/chat';
+import { Chat, deserializeMessages, serializeMessages, SimpleToolCall, TChat } from '@models/chat';
 import { getUserProviders, TUser } from '@models/user';
 import { generateText, Message, streamText, TextStreamPart, ToolSet } from 'ai';
 import { getUserRegistry, wrapModel } from './registry';
@@ -125,13 +125,24 @@ export class CachedChat {
     isGenerating = false;
     apps: McpApp[] = [];
     model?: string;
+    details?: TChat;
+    simpleCalls: SimpleToolCall[] = [];
 
-    constructor(id: string, user: TUser, messages: Message[] = [], model?: string) {
+    constructor(
+        id: string,
+        user: TUser,
+        messages: Message[] = [],
+        model?: string,
+        simpleCalls?: SimpleToolCall[]
+    ) {
         this.id = id;
         this.user = user;
         this.messages = messages;
         if (model) {
             this.model = model;
+        }
+        if (simpleCalls) {
+            this.simpleCalls = simpleCalls;
         }
     }
 
@@ -391,6 +402,7 @@ export class CachedChat {
 
         return await Chat.findByIdAndUpdate(this.id, {
             messages: serializedMessages,
+            calls: this.simpleCalls,
         });
     }
 
@@ -476,7 +488,9 @@ export async function loadContext(user: TUser, chatId?: string, model?: string) 
         messages = [];
     }
 
-    const chat = new CachedChat(chatId, user, messages, model);
+    console.log({ calls: chatDetails.calls });
+
+    const chat = new CachedChat(chatId, user, messages, model, chatDetails.calls);
     chat.debug();
 
     chatsStore.set(chatId, chat);
